@@ -1,2 +1,6 @@
 #Ignoramos los .lst, .rel, .map, .rst y .s19
-*.{lst,rel,map,rst,s19}
+*.lst
+*.rel
+*.map
+*.rst
+*.s19
