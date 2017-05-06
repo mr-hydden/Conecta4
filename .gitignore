@@ -4,3 +4,6 @@
 *.map
 *.rst
 *.s19
+
+README*
+main.asm
