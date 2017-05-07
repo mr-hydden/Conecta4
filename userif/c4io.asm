@@ -71,8 +71,8 @@ finFila:	.asciz			")|"	;;;;;;;;;
 
 
 
-fichaJugador1:	.asciz			"\[\033[41m\]O"	; Representacion de las fichas 
-fichaJugador2:	.asciz			"\[\033[34m\]X"	; de los jugadores, roja y azul
+fichaJugador1:	.asciz			"O"	; Representacion de las fichas 
+fichaJugador2:	.asciz			"X"	; de los jugadores, roja y azul
 
 		;------------------------------; <- Fin constantes compartidas
 		
