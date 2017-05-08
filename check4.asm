@@ -425,11 +425,11 @@ comprueba4:
 					mul											;	;
 					jsr			negd								;	;
 					addd			,s	; Y, direccion de comienzo en e el tablero		;	;
-					pshs			d
-					clra
-					ldb			5,s	; Counter 2
+					pshs			d								;	;
+					clra											;	;
+					ldb			5,s	; Counter 2						;	;
 					addd			,s	; Lo que había en D					;	;
-					tfr			d,y			
+					tfr			d,y								;	;
 					puls			d	; Sacamos lo que hemos metido temporalmente		;	;
 									; en pila						;	;
 					;----------------------------;								;	;
@@ -442,35 +442,35 @@ comprueba4:
 																;	;
 					jsr			comprueba4diagonalDerecha					;	;
 					beq			check4_comprueba4_fixPC1					;	;
-								
-					bra			check4_comprueba4_continuar
-					
-				check4_comprueba4_fixPC1:
-					
-					puls			y
-					bra			check4_comprueba4_finTest
-													;	;	
+																;	;
+					bra			check4_comprueba4_continuar					;	;
+																;	;
+				check4_comprueba4_fixPC1:									;	;
+																;	;
+					puls			y								;	;
+					bra			check4_comprueba4_finTest					;	;
+																;	;	
 																;	;
 					;- Aqui cargamos Y con la direccion adecuada para empezar a comprobar -;		;	;
 					;- Lo que hacemos es realizar un desplazamiento relativo a la posicion -;		;	;
 					;- inicial, la de abajo a la derecha							;	;
-					
+																;	;
 				check4_comprueba4_continuar:									;	;
-				
+																;	;
 					lda			numCols								;	;
 					ldb			2,s	; Counter 1						;	;
 					mul											;	;
 					jsr			negd								;	;
 					addd			,s	; Y, direccion de comienzo en e el tablero		;	;
-					pshs			d
-					clra
+					pshs			d								;	;
+					clra											;	;
 					ldb			numCols								;	;
 					subb			#1								;	;
 					subb			5,s	; Counter 2						;	;
-					addd			,s
+					addd			,s								;	;
 					tfr			d,y								;	;
-					puls			d	; Sacamos de la pila D lo que 
-									; habiamos metido temporalmente (D)
+					puls			d	; Sacamos de la pila D lo que 				;	;
+									; habiamos metido temporalmente (D)			;	;
 					;----------------------------;								;	;
 																;	;
 					jsr			comprueba4filaIzquierda						;	;
@@ -481,15 +481,15 @@ comprueba4:
 																;	;
 					jsr			comprueba4diagonalIzquierda					;	;
 					beq			check4_comprueba4_finfixPC2					;	;
-						
+																;	;
 					puls			y								;	;
 					inc			1,s								;	;
 					bra			check4_comprueba4_for2						;	;
-					
-				check4_comprueba4_finfixPC2:
-					
-					puls			y
-					bra			check4_comprueba4_finTest
+																;	;
+				check4_comprueba4_finfixPC2:									;	;
+																;	;
+					puls			y								;	;	
+					bra			check4_comprueba4_finTest					;	;
 																;	;
 			check4_comprueba4_finFor2:									;;;;;;;;;	;
 																	;
