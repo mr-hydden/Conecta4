@@ -4,10 +4,16 @@
 		
 		.area			_INGAME
 		
+		;>>>> Objetos globales compartidos <<<<
+		.globl			siguiente_posicion_dinamica
+		
+		
+		
 		;>>>> Etiquetas globales internas <<<<
 		
 		.globl			lda_fichaJugador
 		.globl			posicion_ij
+		.globl			generarTablero
 		
 		;------------------------------------;
 		
@@ -35,19 +41,28 @@ pantalla	.equ			0xFF00
 			
 			
 			
-			; Datos constantes
+			; Variables locales
 ;--------------------------------------------------------------------;
 
 		;>>>> Constantes compartidas <<<<
 		;------------------------------;
 		
 		
-	;>>>> Objetos estaticos lda_fichaJugador <<<<
+		;>>>> Objetos estaticos <<<<
 	
 	fichaTurno:	.asciz			"O" 	; Se va modificando en cada turno. Solo la funcion lda_fichaJugador
 							; puede acceder aqui, en principio.
 	
 	;----------------------------------------------; <- Fin objetos estaticos lda_fichaJugador
+	
+	
+	
+		;>>>> Objetos locales generarTablero <<<<
+		
+	ingame_generarTablero_numCeldas:
+			.word			0
+			
+		;---------------------------------------;
 	
 	
 	
@@ -139,7 +154,63 @@ posicion_ij:
 		
 		
 		
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;			generarTablero					;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Genera un tablero vacio con las dimensiones indicadas en D, cuya	;
+; direccion devuelve en X.						;
+;									;
+; Input: numero de celdas registro D					;
+; Output: registro X			.				;
+;									;
+; Registros afectados: CC, X						;
+; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
+;		   	| | |X| |X|X|X|X|		     		;
+;								    	;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+generarTablero:
+		pshs			d
+		
+		std			ingame_generarTablero_numCeldas
+		
+		tfr			s,d	; Hacemos espacio para 
+		subd			#2	; un contador en la pila	;<--- Recordar "arreglar PC"
+		tfr			d,s	;
+		
+		pshs			siguiente_posicion_dinamica		;;;;;;;;;
+		clra									;
+		clrb									;
+		std			2,s	; Inicializamos contador a 0		;
+		lda			#0x20	;Caracter espacio ASCII			;
+											;
+	ingame_generarTablero_for:							;
+											;
+		ldd			2,s						;
+		cmpd			ingame_generarTablero_numCeldas			;
+		beq			ingame_generarTablero_finFor			;
+											;
+			sta			[siguiente_posicion_dinamica]		;
+			ldd			siguiente_posicion_dinamica		;
+			addd			#1					;
+			std			siguiente_posicion_dinamica
+		
+			ldd			2,s
+			addd			#1
+			std			2,s
+			
+		bra			ingame_generarTablero_for
+		
+	ingame_generarTablero_finFor:			
+		
+		puls			x	; Guardamos direccion de inicio del tablero
+		
+		puls			d	; Eliminamos contadores
+		puls			d	; Sacamos D de la pila
+		
+		rts
+
+;--------------------------------------------------------------------;
 
 
 	

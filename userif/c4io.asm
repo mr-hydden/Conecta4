@@ -7,7 +7,6 @@
 		;>>>> Etiquetas globales internas <<<<
 		
 		.globl			imprimirTablero
-		.globl			imprimirFila
 		.globl			mostrarMenu
 		
 		;------------------------------------;
