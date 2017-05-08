@@ -158,12 +158,12 @@ posicion_ij:
 ;			generarTablero					;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Genera un tablero vacio con las dimensiones indicadas en D, cuya	;
-; direccion devuelve en X.						;
+; direccion devuelve en Y.						;
 ;									;
 ; Input: numero de celdas registro D					;
-; Output: registro X			.				;
+; Output: registro Y			.				;
 ;									;
-; Registros afectados: CC, X						;
+; Registros afectados: CC, Y						;
 ; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
 ;		   	| | |X| |X|X|X|X|		     		;
 ;								    	;
@@ -178,11 +178,11 @@ generarTablero:
 		subd			#2	; un contador en la pila	;<--- Recordar "arreglar PC"
 		tfr			d,s	;
 		
-		pshs			siguiente_posicion_dinamica		;;;;;;;;;
+		ldd			siguiente_posicion_dinamica		;;;;;;;;;
+		pshs			d						;
 		clra									;
 		clrb									;
 		std			2,s	; Inicializamos contador a 0		;
-		lda			#0x20	;Caracter espacio ASCII			;
 											;
 	ingame_generarTablero_for:							;
 											;
@@ -190,20 +190,21 @@ generarTablero:
 		cmpd			ingame_generarTablero_numCeldas			;
 		beq			ingame_generarTablero_finFor			;
 											;
+			lda			#0x20					;
 			sta			[siguiente_posicion_dinamica]		;
 			ldd			siguiente_posicion_dinamica		;
 			addd			#1					;
-			std			siguiente_posicion_dinamica
-		
-			ldd			2,s
-			addd			#1
-			std			2,s
-			
-		bra			ingame_generarTablero_for
-		
+			std			siguiente_posicion_dinamica		;
+											;
+			ldd			2,s					;
+			addd			#1					;
+			std			2,s					;
+											;
+		bra			ingame_generarTablero_for			;
+										;;;;;;;;;
 	ingame_generarTablero_finFor:			
 		
-		puls			x	; Guardamos direccion de inicio del tablero
+		puls			y	; Guardamos direccion de inicio del tablero
 		
 		puls			d	; Eliminamos contadores
 		puls			d	; Sacamos D de la pila

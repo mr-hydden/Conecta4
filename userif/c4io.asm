@@ -17,7 +17,7 @@
 		
 		.globl			numFils
 		.globl			numCols
-		.globl			tablero
+		;.globl			tablero
 		
 		.globl			println
 		.globl			print
@@ -99,6 +99,7 @@ fichaJugador2:	.asciz			"X"	; de los jugadores, roja y azul
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 imprimirTablero:
 		pshs			x,b
+		pshs			y
 		
 		tfr			s,d	; Hacemos espacio en la pila para
 		decb				; un contador. El bloque que lo
@@ -160,7 +161,7 @@ imprimirTablero:
 		
 
 		
-		ldy			#tablero
+		ldy			1,s	; Direccion del tablero
 
 
 		clrb							;;;;;;;;; 
@@ -173,7 +174,7 @@ imprimirTablero:
 										;	for (counter = 0; counter < numFils; ++counter)
 			inc			,s		;;;;;;;;;	;		imprimeFila
 									;	;
-			lbsr			imprimirFila		;Cuerpo	;
+			jsr			imprimirFila		;Cuerpo	;
 			tfr			y,x			;del	;
 			ldb			numCols			;bucle	;
 			abx						;	;
@@ -185,7 +186,7 @@ imprimirTablero:
 		
 		
 		ldx			#inicioBaseTablero
-		lbsr			print
+		jsr			print
 		
 		ldb			#1				;;;;;;;;; 
 		stb			,s					;
@@ -198,7 +199,7 @@ imprimirTablero:
 										;	for (	counter = 1, X = &medioBaseTablero; 
 			inc			,s		;;;;;;;;;Cuerpo	;		counter < numCols; 
 									;del	;		++counter	)
-			lbsr			print		;;;;;;;;;bucle	;		
+			jsr			print		;;;;;;;;;bucle	;		
 										;		imprime(medioBaseTablero)
 										;
 		bra			c4io_imprimirTablero_for4		;
@@ -208,12 +209,13 @@ imprimirTablero:
 			
 	
 		ldx			#finBaseTablero
-		lbsr			println
+		jsr			println
 
 		tfr			s,d	; Eliminamos el espacio
 		incb				; para el contador
 		tfr			d,s	;
 		
+		puls			y
 		puls			x,b
 		rts
 
@@ -243,7 +245,7 @@ imprimirFila:
 		
 		
 		ldx			#inicioFila		;; Imprime el inicio de fila
-		lbsr			print
+		jsr			print
 		
 		
 		ldb			#1				;;;;;;;;; 
@@ -260,7 +262,7 @@ imprimirFila:
 			sta			pantalla		;del	;	}
 									;bucle	;
 			ldx			#medioFila		;	;
-			lbsr			print		;;;;;;;;;	;
+			jsr			print		;;;;;;;;;	;
 										;
 		bra			c4io_imprimirFila_for			;
 										;
@@ -272,7 +274,7 @@ imprimirFila:
 		sta			pantalla
 		
 		ldx			#finFila		;; Imprime el final de la fila
-		lbsr			println
+		jsr			println
 		
 		
 		tfr			s,d	; Eliminamos el espacio
@@ -299,15 +301,15 @@ imprimirFila:
 
 
 mostrarMenu:
-		bsr			clearScreen
+		jsr			clearScreen
 		
 		ldx			#menu
-		bsr			print
+		jsr			print
 		
 		ldx			#promptMenu
-		bsr			print
+		jsr			print
 		
-		bsr			getchar
+		jsr			getchar
 		
 		rts
 
