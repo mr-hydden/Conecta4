@@ -1,1 +1,10 @@
-Reserva pagina de memoria 0xEE00-0xEEFF para reservas dinamicas.
+Registro de decisiones:
+
+	1) Reservar la página de memoria 0xEE00-0xEEFF para 
+	objetos dinamicos.
+	Motivo: generacion del tablero en tiempo de ejecucion
+	Gestion: inclusion de objeto estatico compartido 
+	siguiente_posicion_dinamica que contiene el valor de la 
+	siguiente direccion que hay libre en dicha pagina.
+	
+	2) 
