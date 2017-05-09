@@ -1,4 +1,4 @@
-	; Zona configuracion de memoria
+		; Zona configuracion de memoria
 ;--------------------------------------------------------------------;		
 		.module			check4
 		
@@ -26,7 +26,11 @@
 ;--------------------------------------------------------------------;
 		; Fin zona configuracion memoria
 		
-					
+		
+		
+		
+		
+		
 		; Inicio definicion de constantes
 ;--------------------------------------------------------------------;												
 			
@@ -36,24 +40,29 @@ pantalla	.equ			0xFF00
 
 ;--------------------------------------------------------------------;
 		; Fin definicion de constantes
-
-
-		; Declaracion de variables
+		
+		
+		
+		
+		
+		
+		; Objetos subrutinas
 ;--------------------------------------------------------------------;	
 											
-		;>>>> Variables locales a comprueba4 <<<<
+		;>>>> Objetos comprueba4 <<<<
+			; >>>> Variables <<<<
 				
-check4_md_comprueba4_coordX:
-		.byte			0
+			check4_comprueba4_coordX:
+					.byte			0
 		
-check4_md_comprueba4_coordY:		
-		.byte			0
+			check4_comprueba4_coordY:		
+					.byte			0
 		
-		;------------------------------------;	
-
+		;---------------------------;
+		; Fin objetos comprueba4
 
 ;--------------------------------------------------------------------;
-		; Fin variables
+		; Fin objetos subrutinas
 
 
 
@@ -104,8 +113,13 @@ check4_comprueba4filaDerecha_return:
 		rts
 
 ;--------------------------------------------------------------------;	
-
-
+		; Fin comprueba4filaDerecha
+		
+		
+		
+		
+		
+		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;			comprueba4filaIzquierda				;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -150,9 +164,13 @@ check4_comprueba4filaIzquierda_return:
 		rts
 
 ;--------------------------------------------------------------------;
-
-
-
+		; Fin comprueba4filaIzquierda
+		
+		
+		
+		
+		
+		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;			comprueba4columnaArriba				;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -190,15 +208,15 @@ comprueba4columnaArriba:
 		tst			1,s						;
 		beq			check4_comprueba4columnaArriba_finFor		;
 											;
-			dec			1,s					;
-											;
 			tfr			y,d					; for (i = 3; i > 0; --i, Y-= numCols)
 			subd			2,s					;	if (ContentOf(Y) != ficha)
 			tfr			d,y					;		break
 			lda			,s					;
 			cmpa			,y					;
 			bne			check4_comprueba4columnaArriba_finTest	;
-			bra			check4_comprueba4columnaArriba_for	;
+											;
+		dec			1,s						;
+		bra			check4_comprueba4columnaArriba_for		;
 										;;;;;;;;;
 										
 	check4_comprueba4columnaArriba_finFor:
@@ -225,10 +243,13 @@ comprueba4columnaArriba:
 		rts
 
 ;--------------------------------------------------------------------;
-
-
-
-
+		; Fin comprueba4columnaArriba
+		
+		
+		
+		
+		
+		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;			comprueba4columnaAbajo				;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -266,15 +287,15 @@ comprueba4columnaAbajo:
 		tst			1,s						;
 		beq			check4_comprueba4columnaAbajo_finFor		;
 											;
-			dec			1,s					;
-											;
 			tfr			y,d					; for (i = 3; i > 0; --i, Y += numCols)
 			addd			2,s					;	if (ContentOf(Y) != ficha)
 			tfr			d,y					;		break
 			lda			,s					;
 			cmpa			,y					;
 			bne			check4_comprueba4columnaAbajo_finTest	;
-			bra			check4_comprueba4columnaAbajo_for	;
+											;
+		dec			1,s						;
+		bra			check4_comprueba4columnaAbajo_for		;
 										;;;;;;;;;
 										
 	check4_comprueba4columnaAbajo_finFor:
@@ -301,10 +322,13 @@ comprueba4columnaAbajo:
 		rts
 
 ;--------------------------------------------------------------------;
-
-
-
-
+		; Fin comprueba4columnaAbajo
+		
+		
+		
+		
+		
+		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;			comprueba4diagonalArribaDerecha			;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -333,25 +357,25 @@ comprueba4diagonalArribaDerecha:
 		
 		
 		
-		ldb			#3					;;;;;;;;;
-		pshs			b,a						;
-											;
+		ldb			#3						;;;;;;;;;
+		pshs			b,a							;
+												;
 	check4_comprueba4diagonalArribaDerecha_for:						;
-											;
-		tst			1,s						;
+												;
+		tst			1,s							;
 		beq			check4_comprueba4diagonalArribaDerecha_finFor		;
-											;
-			dec			1,s					;
-											;
-			tfr			y,d					; for (i = 3; i > 0; --i, Y-= numCols)
-			subd			2,s					;	if (ContentOf(Y) != ficha)
-			addd			#1					;		break
-			tfr			d,y					;		
-			lda			,s					;
-			cmpa			,y					;
-			bne			check4_comprueba4diagonalArribaDerecha_finTest;
-			bra			check4_comprueba4diagonalArribaDerecha_for	;
-										;;;;;;;;;
+												;
+			tfr			y,d						; for (i = 3; i > 0; --i, Y-= numCols)
+			subd			2,s						;	if (ContentOf(Y) != ficha)
+			addd			#1						;		break
+			tfr			d,y						;		
+			lda			,s						;
+			cmpa			,y						;
+			bne			check4_comprueba4diagonalArribaDerecha_finTest	;
+												;
+		dec			1,s							;
+		bra			check4_comprueba4diagonalArribaDerecha_for		;
+											;;;;;;;;;
 										
 	check4_comprueba4diagonalArribaDerecha_finFor:
 		
@@ -377,9 +401,13 @@ comprueba4diagonalArribaDerecha:
 		rts
 
 ;--------------------------------------------------------------------;	
-
-
-
+		; Fin comprueba4diagonalArribaDerecha
+		
+		
+		
+		
+		
+		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;			comprueba4diagonalArribaIzquierda		;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -408,25 +436,25 @@ comprueba4diagonalArribaIzquierda:
 		
 		
 		
-		ldb			#3						;;;;;;;;;
-		pshs			b,a							;
-												;
-	check4_comprueba4diagonalArribaIzquierda_for:						;
-												;
-		tst			1,s							;
-		beq			check4_comprueba4diagonalArribaIzquierda_finFor		;
-												;
-			dec			1,s						;
-												;
-			tfr			y,d						; for (i = 3; i > 0; --i, Y-= numCols)
-			subd			2,s						;	if (ContentOf(Y) != ficha)
-			subd			#1						;		break
-			tfr			d,y						;		
-			lda			,s						;
-			cmpa			,y						;
-			bne			check4_comprueba4diagonalArribaIzquierda_finTest	;	
-			bra			check4_comprueba4diagonalArribaIzquierda_for		;
-											;;;;;;;;;
+		ldb			#3							;;;;;;;;;
+		pshs			b,a								;
+													;
+	check4_comprueba4diagonalArribaIzquierda_for:							;
+													;
+		tst			1,s								;
+		beq			check4_comprueba4diagonalArribaIzquierda_finFor			;
+													;
+			tfr			y,d							; for (i = 3; i > 0; --i, Y-= numCols)
+			subd			2,s							;	if (ContentOf(Y) != ficha)
+			subd			#1							;		break
+			tfr			d,y							;		
+			lda			,s							;
+			cmpa			,y							;
+			bne			check4_comprueba4diagonalArribaIzquierda_finTest	;
+													;
+		dec			1,s								;
+		bra			check4_comprueba4diagonalArribaIzquierda_for			;
+												;;;;;;;;;
 										
 	check4_comprueba4diagonalArribaIzquierda_finFor:
 	
@@ -452,9 +480,13 @@ comprueba4diagonalArribaIzquierda:
 		rts
 
 ;--------------------------------------------------------------------;	
-
-
-
+		; Fin comprueba4diagonalArribaIzquierda
+		
+		
+		
+		
+		
+		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;			comprueba4diagonalAbajoDerecha			;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -486,12 +518,10 @@ comprueba4diagonalAbajoDerecha:
 		ldb			#3						;;;;;;;;;
 		pshs			b,a							;
 												;
-	check4_comprueba4diagonalAbajoDerecha_for:							;
+	check4_comprueba4diagonalAbajoDerecha_for:						;
 												;
 		tst			1,s							;
 		beq			check4_comprueba4diagonalAbajoDerecha_finFor		;
-												;
-			dec			1,s						;
 												;
 			tfr			y,d						; for (i = 3; i > 0; --i, Y-= numCols)
 			addd			2,s						;	if (ContentOf(Y) != ficha)
@@ -499,8 +529,11 @@ comprueba4diagonalAbajoDerecha:
 			tfr			d,y						;		
 			lda			,s						;
 			cmpa			,y						;
-			bne			check4_comprueba4diagonalAbajoDerecha_finTest	;	
-			bra			check4_comprueba4diagonalAbajoDerecha_for		;
+			bne			check4_comprueba4diagonalAbajoDerecha_finTest	;
+												;
+												;
+		dec			1,s							;	
+		bra			check4_comprueba4diagonalAbajoDerecha_for		;
 											;;;;;;;;;
 										
 	check4_comprueba4diagonalAbajoDerecha_finFor:
@@ -527,11 +560,13 @@ comprueba4diagonalAbajoDerecha:
 		rts
 
 ;--------------------------------------------------------------------;
-
-
-
-
-
+		; Fin comprueba4diagonalAbajoDerecha
+		
+		
+		
+		
+		
+		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;			comprueba4diagonalAbajoIzquierda		;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -563,12 +598,10 @@ comprueba4diagonalAbajoIzquierda:
 		ldb			#3						;;;;;;;;;
 		pshs			b,a							;
 												;
-	check4_comprueba4diagonalAbajoIzquierda_for:							;
+	check4_comprueba4diagonalAbajoIzquierda_for:						;
 												;
 		tst			1,s							;
 		beq			check4_comprueba4diagonalAbajoIzquierda_finFor		;
-												;
-			dec			1,s						;
 												;
 			tfr			y,d						; for (i = 3; i > 0; --i, Y-= numCols)
 			addd			2,s						;	if (ContentOf(Y) != ficha)
@@ -576,8 +609,10 @@ comprueba4diagonalAbajoIzquierda:
 			tfr			d,y						;		
 			lda			,s						;
 			cmpa			,y						;
-			bne			check4_comprueba4diagonalAbajoIzquierda_finTest	;	
-			bra			check4_comprueba4diagonalAbajoIzquierda_for	;
+			bne			check4_comprueba4diagonalAbajoIzquierda_finTest	;
+												;
+		dec			1,s							;	
+		bra			check4_comprueba4diagonalAbajoIzquierda_for		;
 											;;;;;;;;;
 										
 	check4_comprueba4diagonalAbajoIzquierda_finFor:
@@ -604,10 +639,13 @@ comprueba4diagonalAbajoIzquierda:
 		rts
 
 ;--------------------------------------------------------------------;
-
-
-
-
+		; Fin comprueba4diagonalAbajoIzquierda
+		
+		
+		
+		
+		
+		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;				comprueba4				;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -625,144 +663,140 @@ comprueba4diagonalAbajoIzquierda:
 
 comprueba4:
 		pshs			y,d
-		sta			check4_md_comprueba4_coordY	; Guardamos las coordenadas de 
-		stb			check4_md_comprueba4_coordX	; la ficha
+		sta			check4_comprueba4_coordY	; Guardamos las coordenadas de 
+		stb			check4_comprueba4_coordX	; la ficha
 		
 		jsr			posicion_ij			; Obtenemos la direccion
 									; en la que se encuentra
 									; la ficha en el tablero	
 									; que queda en Y
 		
-	check4_md_comprueba4_caseFil0:
+	check4_comprueba4_caseFil0:
 	
 		clra		
-		cmpa			check4_md_comprueba4_coordY
-		bne			check4_md_comprueba4_caseFilN
+		cmpa			check4_comprueba4_coordY
+		bne			check4_comprueba4_caseFilN
 		
 			jsr			comprueba4filaIzquierda
-			lbeq			check4_md_comprueba4_finTest
+			lbeq			check4_comprueba4_finTest
 		
 			jsr			comprueba4filaDerecha
-			lbeq			check4_md_comprueba4_finTest
+			lbeq			check4_comprueba4_finTest
 		
 			jsr			comprueba4diagonalAbajoIzquierda
-			lbeq			check4_md_comprueba4_finTest
+			lbeq			check4_comprueba4_finTest
 		
 			jsr			comprueba4columnaAbajo
-			lbeq			check4_md_comprueba4_finTest
+			lbeq			check4_comprueba4_finTest
 		
 			jsr			comprueba4diagonalAbajoDerecha
-			lbeq			check4_md_comprueba4_finTest
+			lbeq			check4_comprueba4_finTest
 				
-	check4_md_comprueba4_caseFilN:	
+	check4_comprueba4_caseFilN:	
 	
 		lda			numFils
 		deca		
-		cmpa			check4_md_comprueba4_coordY
-		bne			check4_md_comprueba4_caseCol0
+		cmpa			check4_comprueba4_coordY
+		bne			check4_comprueba4_caseCol0
 		
 			jsr			comprueba4filaIzquierda
-			lbeq			check4_md_comprueba4_finTest
+			lbeq			check4_comprueba4_finTest
 		
 			jsr			comprueba4filaDerecha
-			lbeq			check4_md_comprueba4_finTest
+			lbeq			check4_comprueba4_finTest
 		
 			jsr			comprueba4diagonalArribaIzquierda
-			lbeq			check4_md_comprueba4_finTest
+			lbeq			check4_comprueba4_finTest
 		
 			jsr			comprueba4columnaArriba
-			lbeq			check4_md_comprueba4_finTest
+			lbeq			check4_comprueba4_finTest
 		
 			jsr			comprueba4diagonalArribaDerecha
-			lbeq			check4_md_comprueba4_finTest
+			lbeq			check4_comprueba4_finTest
 	
 	
-	check4_md_comprueba4_caseCol0:	
+	check4_comprueba4_caseCol0:	
 	
 		clra	
-		cmpa			check4_md_comprueba4_coordX
-		bne			check4_md_comprueba4_caseColN
+		cmpa			check4_comprueba4_coordX
+		bne			check4_comprueba4_caseColN
 		
 			jsr			comprueba4columnaArriba
-			lbeq			check4_md_comprueba4_finTest
+			lbeq			check4_comprueba4_finTest
 		
 			jsr			comprueba4diagonalArribaDerecha
-			lbeq			check4_md_comprueba4_finTest
+			lbeq			check4_comprueba4_finTest
 		
 			jsr			comprueba4filaDerecha
-			lbeq			check4_md_comprueba4_finTest
+			lbeq			check4_comprueba4_finTest
 		
 			jsr			comprueba4diagonalAbajoDerecha
-			lbeq			check4_md_comprueba4_finTest
+			lbeq			check4_comprueba4_finTest
 		
 			jsr			comprueba4columnaAbajo
-			lbeq			check4_md_comprueba4_finTest
+			lbeq			check4_comprueba4_finTest
 			
 			
-	check4_md_comprueba4_caseColN:	
+	check4_comprueba4_caseColN:	
 	
 		lda			numCols
 		deca		
-		cmpa			check4_md_comprueba4_coordX
-		bne			check4_md_comprueba4_caseDefault
+		cmpa			check4_comprueba4_coordX
+		bne			check4_comprueba4_caseDefault
 		
 			jsr			comprueba4columnaArriba
-			lbeq			check4_md_comprueba4_finTest
+			lbeq			check4_comprueba4_finTest
 		
 			jsr			comprueba4diagonalArribaIzquierda
-			lbeq			check4_md_comprueba4_finTest
+			lbeq			check4_comprueba4_finTest
 		
 			jsr			comprueba4filaIzquierda
-			lbeq			check4_md_comprueba4_finTest
+			lbeq			check4_comprueba4_finTest
 		
 			jsr			comprueba4diagonalAbajoIzquierda
-			lbeq			check4_md_comprueba4_finTest
+			lbeq			check4_comprueba4_finTest
 		
 			jsr			comprueba4columnaAbajo
-			lbeq			check4_md_comprueba4_finTest			
+			lbeq			check4_comprueba4_finTest			
 		
 		
-	check4_md_comprueba4_caseDefault:	
+	check4_comprueba4_caseDefault:	
 	
 		jsr			comprueba4diagonalArribaIzquierda
-		lbeq			check4_md_comprueba4_finTest
+		lbeq			check4_comprueba4_finTest
 	
 		jsr			comprueba4columnaArriba
-		lbeq			check4_md_comprueba4_finTest
+		lbeq			check4_comprueba4_finTest
 	
 		jsr			comprueba4diagonalArribaDerecha
-		lbeq			check4_md_comprueba4_finTest
+		lbeq			check4_comprueba4_finTest
 	
 		jsr			comprueba4filaIzquierda
-		lbeq			check4_md_comprueba4_finTest
+		lbeq			check4_comprueba4_finTest
 	
 		jsr			comprueba4filaDerecha
-		lbeq			check4_md_comprueba4_finTest
+		lbeq			check4_comprueba4_finTest
 		
 		jsr			comprueba4diagonalAbajoIzquierda
-		lbeq			check4_md_comprueba4_finTest
+		lbeq			check4_comprueba4_finTest
 		
 		jsr			comprueba4columnaAbajo
-		lbeq			check4_md_comprueba4_finTest
+		lbeq			check4_comprueba4_finTest
 		
 		jsr			comprueba4diagonalAbajoDerecha
-		lbeq			check4_md_comprueba4_finTest
+		lbeq			check4_comprueba4_finTest
 			
 			
-	check4_md_comprueba4_finTest:
+	check4_comprueba4_finTest:
 	
 		puls			y,d
 		rts
 
 ;--------------------------------------------------------------------;
-
-
-
-
-
-
-
-
-
-
-
+		; Fin comprueba4
+		
+		
+		
+		
+		
+		
