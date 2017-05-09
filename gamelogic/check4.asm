@@ -16,7 +16,6 @@
 		
 		.globl			numFils
 		.globl			numCols
-		.globl			tablero
 		
 		.globl			posicion_ij
 		
@@ -37,6 +36,27 @@ pantalla	.equ			0xFF00
 
 ;--------------------------------------------------------------------;
 		; Fin definicion de constantes
+
+
+		; Declaracion de variables
+;--------------------------------------------------------------------;	
+											
+		;>>>> Variables locales a comprueba4 <<<<
+				
+check4_md_comprueba4_coordX:
+		.byte			0
+		
+check4_md_comprueba4_coordY:		
+		.byte			0
+		
+		;------------------------------------;	
+
+
+;--------------------------------------------------------------------;
+		; Fin variables
+
+
+
 
 
 
@@ -210,7 +230,83 @@ comprueba4columnaArriba:
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;			comprueba4diagonalDerecha			;
+;			comprueba4columnaAbajo				;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Comprueba si hay cuatro en raya en la columna correspondiente, 	;
+; partiendo de la posicion indicada por Y. Lo hace comprobando solo 	;
+; hacia las filas posteriores, en orden ascendente			;
+;									;
+; Input: posicion registro Y						;
+; Output: flag Z			.				;
+;									;
+; Registros afectados: CC						;
+; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
+;		   	| | | | | |?| | |		     		;
+;								    	;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+comprueba4columnaAbajo:
+
+		pshs			y,d
+		ldb			numCols
+		clra
+		pshs			d
+		
+		lda			,y
+		cmpa			#0x20	; Caracter espacio
+		beq			check4_comprueba4columnaAbajo_desigual
+		
+		
+		
+		ldb			#3					;;;;;;;;;
+		pshs			b,a						;
+											;
+	check4_comprueba4columnaAbajo_for:						;
+											;
+		tst			1,s						;
+		beq			check4_comprueba4columnaAbajo_finFor		;
+											;
+			dec			1,s					;
+											;
+			tfr			y,d					; for (i = 3; i > 0; --i, Y += numCols)
+			addd			2,s					;	if (ContentOf(Y) != ficha)
+			tfr			d,y					;		break
+			lda			,s					;
+			cmpa			,y					;
+			bne			check4_comprueba4columnaAbajo_finTest	;
+			bra			check4_comprueba4columnaAbajo_for	;
+										;;;;;;;;;
+										
+	check4_comprueba4columnaAbajo_finFor:
+		
+		puls			b,a	; Sacamos A y B de la pila
+		
+		;orcc			#0x04	; Si hay cuatro en raya encendemos el flag Z, 
+						; no hace falta hacerlo, ya lo esta
+		bra			check4_comprueba4columnaAbajo_return
+		
+	check4_comprueba4columnaAbajo_finTest:
+
+		puls			b,a	; Sacamos A y B de la pila
+		
+	check4_comprueba4columnaAbajo_desigual:	
+	
+		andcc			#0xFB	; Si no hay cuatro en raya, apagamos el flag Z
+		
+	check4_comprueba4columnaAbajo_return:	
+		
+		puls			d	; Sacamos D de la pila
+		
+		puls			y,d
+		rts
+
+;--------------------------------------------------------------------;
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;			comprueba4diagonalArribaDerecha			;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Comprueba si hay cuatro en raya en la diagonal ascendente hacia la	;
 ; derecha, partiendo de la posicion indicada.				;
@@ -224,7 +320,7 @@ comprueba4columnaArriba:
 ;								    	;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-comprueba4diagonalDerecha:
+comprueba4diagonalArribaDerecha:
 
 		pshs			y,d
 		ldb			numCols
@@ -233,17 +329,17 @@ comprueba4diagonalDerecha:
 		
 		lda			,y
 		cmpa			#0x20	; Caracter espacio
-		beq			check4_comprueba4diagonalDerecha_desigual
+		beq			check4_comprueba4diagonalArribaDerecha_desigual
 		
 		
 		
 		ldb			#3					;;;;;;;;;
 		pshs			b,a						;
 											;
-	check4_comprueba4diagonalDerecha_for:						;
+	check4_comprueba4diagonalArribaDerecha_for:						;
 											;
 		tst			1,s						;
-		beq			check4_comprueba4diagonalDerecha_finFor		;
+		beq			check4_comprueba4diagonalArribaDerecha_finFor		;
 											;
 			dec			1,s					;
 											;
@@ -253,27 +349,27 @@ comprueba4diagonalDerecha:
 			tfr			d,y					;		
 			lda			,s					;
 			cmpa			,y					;
-			bne			check4_comprueba4diagonalDerecha_finTest;
-			bra			check4_comprueba4diagonalDerecha_for	;
+			bne			check4_comprueba4diagonalArribaDerecha_finTest;
+			bra			check4_comprueba4diagonalArribaDerecha_for	;
 										;;;;;;;;;
 										
-	check4_comprueba4diagonalDerecha_finFor:
+	check4_comprueba4diagonalArribaDerecha_finFor:
 		
 		puls			d	; Sacamos A y B de la pila
 		
 		;orcc			#0x04	; Si hay cuatro en raya encendemos el flag Z, 
 						; no hace falta hacerlo, ya lo esta
-		bra			check4_comprueba4diagonalDerecha_return
+		bra			check4_comprueba4diagonalArribaDerecha_return
 		
-	check4_comprueba4diagonalDerecha_finTest:
+	check4_comprueba4diagonalArribaDerecha_finTest:
 
 		puls			b,a	; Sacamos A y B de la pila
 		
-	check4_comprueba4diagonalDerecha_desigual:	
+	check4_comprueba4diagonalArribaDerecha_desigual:	
 	
 		andcc			#0xFB	; Si no hay cuatro en raya, apagamos el flag Z
 		
-	check4_comprueba4diagonalDerecha_return:	
+	check4_comprueba4diagonalArribaDerecha_return:	
 		
 		puls			d	; Sacamos D de la pila
 		
@@ -285,7 +381,7 @@ comprueba4diagonalDerecha:
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;			comprueba4diagonalIzquierda			;
+;			comprueba4diagonalArribaIzquierda		;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Comprueba si hay cuatro en raya en la diagonal ascendente hacia la	;
 ; izquierda, partiendo de la posicion indicada.				;
@@ -299,7 +395,7 @@ comprueba4diagonalDerecha:
 ;								    	;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-comprueba4diagonalIzquierda:
+comprueba4diagonalArribaIzquierda:
 
 		pshs			y,d
 		ldb			numCols
@@ -308,17 +404,17 @@ comprueba4diagonalIzquierda:
 		
 		lda			,y
 		cmpa			#0x20	; Caracter espacio
-		beq			check4_comprueba4diagonalIzquierda_desigual
+		beq			check4_comprueba4diagonalArribaIzquierda_desigual
 		
 		
 		
 		ldb			#3						;;;;;;;;;
 		pshs			b,a							;
 												;
-	check4_comprueba4diagonalIzquierda_for:							;
+	check4_comprueba4diagonalArribaIzquierda_for:						;
 												;
 		tst			1,s							;
-		beq			check4_comprueba4diagonalIzquierda_finFor		;
+		beq			check4_comprueba4diagonalArribaIzquierda_finFor		;
 												;
 			dec			1,s						;
 												;
@@ -328,27 +424,27 @@ comprueba4diagonalIzquierda:
 			tfr			d,y						;		
 			lda			,s						;
 			cmpa			,y						;
-			bne			check4_comprueba4diagonalIzquierda_finTest	;	
-			bra			check4_comprueba4diagonalIzquierda_for		;
+			bne			check4_comprueba4diagonalArribaIzquierda_finTest	;	
+			bra			check4_comprueba4diagonalArribaIzquierda_for		;
 											;;;;;;;;;
 										
-	check4_comprueba4diagonalIzquierda_finFor:
+	check4_comprueba4diagonalArribaIzquierda_finFor:
 	
 		puls			d	; Sacamos A y B de la pila
 	
 		;orcc			#0x04	; Si hay cuatro en raya encendemos el flag Z, 
 						; no hace falta hacerlo, ya lo esta
-		bra			check4_comprueba4diagonalIzquierda_return
+		bra			check4_comprueba4diagonalArribaIzquierda_return
 		
-	check4_comprueba4diagonalIzquierda_finTest:
+	check4_comprueba4diagonalArribaIzquierda_finTest:
 		
 		puls			b,a	; Sacamos A y B de la pila
 	
-	check4_comprueba4diagonalIzquierda_desigual:	
+	check4_comprueba4diagonalArribaIzquierda_desigual:	
 		
 		andcc			#0xFB	; Si no hay cuatro en raya, apagamos el flag Z
 		
-	check4_comprueba4diagonalIzquierda_return:	
+	check4_comprueba4diagonalArribaIzquierda_return:	
 		
 		puls			d	; Sacamos D de la pila
 		
@@ -359,11 +455,11 @@ comprueba4diagonalIzquierda:
 
 
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;				comprueba4				;
+;			comprueba4diagonalAbajoDerecha			;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Comprueba si hay cuatro en raya en el tablero, referenciado por Y.	;
+; Comprueba si hay cuatro en raya en la diagonal descendente hacia la	;
+; derecha, partiendo de la posicion indicada.				;
 ;									;
 ; Input: posicion registro Y						;
 ; Output: flag Z			.				;
@@ -374,136 +470,299 @@ comprueba4diagonalIzquierda:
 ;								    	;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-comprueba4:
+comprueba4diagonalAbajoDerecha:
 
 		pshs			y,d
+		ldb			numCols
+		clra
+		pshs			d
 		
-		lda			numCols		; Guardamos en la pila el limite
-		suba			#3		; de los bucles, que es siempre
-		ldb			numFils		; tres veces menor que el numero 
-		subb			#3		; de filas/columnas
-		pshs			d		;
-		
-		
-		tfr			s,d	; Hacemos espacio en la pila para
-		subd			#2	; dos contadores de hasta 256
-		tfr			d,s	;
+		lda			,y
+		cmpa			#0x20	; Caracter espacio
+		beq			check4_comprueba4diagonalAbajoDerecha_desigual
 		
 		
-		ldx			#tablero	; Cargamos X con
-		lda			numFils		; la posicion de abajo
-		deca					; a la izquierda
-		clrb					; del tablero, visualmente
-		jsr			posicion_ij	; hablando. Comenzamos a comprobar
-		tfr			y,x		; por ahi porque las fichas comenzaran
-							; a entrar ahi.
 		
-		clra				; Inicializamos un contador			;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-		sta			,s	; a 0											;
-																	;
-	check4_comprueba4_for1:														;
-																	;
-		lda			,s	; Contador1										;
-		cmpa			3,s	; numFils -3										;
-		beq			check4_comprueba4_finFor1									;
-																	;
-				clra				; Inicializamos el otro					;;;;;;;;;	;
-				sta			1,s	; contador a 0							;	;
-																;	;
-			check4_comprueba4_for2:											;	;
-																;	;
-				lda			1,s	; Contador2							;	;
-				cmpa			2,s	; numCols -3							;	;
-				beq			check4_comprueba4_finFor2						;	;
-																;	;
-					;- Aqui cargamos Y con la direccion adecuada para empezar a comprobar -;		;	;
-					;- Lo que hacemos es realizar un desplazamiento relativo a la posicion -;		;	;
-					;- inicial, la de abajo a la derecha -;							;	;
-					pshs			y								;	;
-					lda			numCols								;	;
-					ldb			2,s	; Counter 1						;	;
-					mul											;	;
-					jsr			negd								;	;
-					addd			,s	; Y, direccion de comienzo en e el tablero		;	;
-					pshs			d								;	;
-					clra											;	;
-					ldb			5,s	; Counter 2						;	;
-					addd			,s	; Lo que había en D					;	;
-					tfr			d,y								;	;
-					puls			d	; Sacamos lo que hemos metido temporalmente		;	;
-									; en pila						;	;
-					;----------------------------;								;	;
-																;	;
-					jsr			comprueba4filaDerecha						;	;
-					beq			check4_comprueba4_fixPC1					;	;
-																;	;
-					jsr			comprueba4columnaArriba						;	;
-					beq			check4_comprueba4_fixPC1					;	;
-																;	;
-					jsr			comprueba4diagonalDerecha					;	;
-					beq			check4_comprueba4_fixPC1					;	;
-																;	;
-					bra			check4_comprueba4_continuar					;	;
-																;	;
-				check4_comprueba4_fixPC1:									;	;
-																;	;
-					puls			y								;	;
-					bra			check4_comprueba4_finTest					;	;
-																;	;	
-																;	;
-					;- Aqui cargamos Y con la direccion adecuada para empezar a comprobar -;		;	;
-					;- Lo que hacemos es realizar un desplazamiento relativo a la posicion -;		;	;
-					;- inicial, la de abajo a la derecha							;	;
-																;	;
-				check4_comprueba4_continuar:									;	;
-																;	;
-					lda			numCols								;	;
-					ldb			2,s	; Counter 1						;	;
-					mul											;	;
-					jsr			negd								;	;
-					addd			,s	; Y, direccion de comienzo en e el tablero		;	;
-					pshs			d								;	;
-					clra											;	;
-					ldb			numCols								;	;
-					subb			#1								;	;
-					subb			5,s	; Counter 2						;	;
-					addd			,s								;	;
-					tfr			d,y								;	;
-					puls			d	; Sacamos de la pila D lo que 				;	;
-									; habiamos metido temporalmente (D)			;	;
-					;----------------------------;								;	;
-																;	;
-					jsr			comprueba4filaIzquierda						;	;
-					beq			check4_comprueba4_finfixPC2					;	;
-																;	;
-					jsr			comprueba4columnaArriba						;	;
-					beq			check4_comprueba4_finfixPC2					;	;
-																;	;
-					jsr			comprueba4diagonalIzquierda					;	;
-					beq			check4_comprueba4_finfixPC2					;	;
-																;	;
-					puls			y								;	;
-					inc			1,s								;	;
-					bra			check4_comprueba4_for2						;	;
-																;	;
-				check4_comprueba4_finfixPC2:									;	;
-																;	;
-					puls			y								;	;	
-					bra			check4_comprueba4_finTest					;	;
-																;	;
-			check4_comprueba4_finFor2:									;;;;;;;;;	;
-																	;
-			inc			,s											;
-			bra			check4_comprueba4_for1									;
-																	;
-	check4_comprueba4_finFor1:								;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		ldb			#3						;;;;;;;;;
+		pshs			b,a							;
+												;
+	check4_comprueba4diagonalAbajoDerecha_for:							;
+												;
+		tst			1,s							;
+		beq			check4_comprueba4diagonalAbajoDerecha_finFor		;
+												;
+			dec			1,s						;
+												;
+			tfr			y,d						; for (i = 3; i > 0; --i, Y-= numCols)
+			addd			2,s						;	if (ContentOf(Y) != ficha)
+			addd			#1						;		break
+			tfr			d,y						;		
+			lda			,s						;
+			cmpa			,y						;
+			bne			check4_comprueba4diagonalAbajoDerecha_finTest	;	
+			bra			check4_comprueba4diagonalAbajoDerecha_for		;
+											;;;;;;;;;
+										
+	check4_comprueba4diagonalAbajoDerecha_finFor:
 	
-		andcc			#0xFB	; Si hemos llegado aqui, Z vale 1.
-						; Lo ponemos a 0
-	check4_comprueba4_finTest:
-		puls			d	; Sacamos los contadores
-		puls			d	; Sacamos D
-		puls			y,d	; Volvemos a la rutina principal
+		puls			d	; Sacamos A y B de la pila
+	
+		;orcc			#0x04	; Si hay cuatro en raya encendemos el flag Z, 
+						; no hace falta hacerlo, ya lo esta
+		bra			check4_comprueba4diagonalAbajoDerecha_return
+		
+	check4_comprueba4diagonalAbajoDerecha_finTest:
+		
+		puls			b,a	; Sacamos A y B de la pila
+	
+	check4_comprueba4diagonalAbajoDerecha_desigual:	
+		
+		andcc			#0xFB	; Si no hay cuatro en raya, apagamos el flag Z
+		
+	check4_comprueba4diagonalAbajoDerecha_return:	
+		
+		puls			d	; Sacamos D de la pila
+		
+		puls			y,d
 		rts
 
 ;--------------------------------------------------------------------;
+
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;			comprueba4diagonalAbajoIzquierda		;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Comprueba si hay cuatro en raya en la diagonal descendente hacia la	;
+; izquierda, partiendo de la posicion indicada.				;
+;									;
+; Input: posicion registro Y						;
+; Output: flag Z			.				;
+;									;
+; Registros afectados: CC						;
+; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
+;		   	| | | | | |?| | |		     		;
+;								    	;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+comprueba4diagonalAbajoIzquierda:
+
+		pshs			y,d
+		ldb			numCols
+		clra
+		pshs			d
+		
+		lda			,y
+		cmpa			#0x20	; Caracter espacio
+		beq			check4_comprueba4diagonalAbajoIzquierda_desigual
+		
+		
+		
+		ldb			#3						;;;;;;;;;
+		pshs			b,a							;
+												;
+	check4_comprueba4diagonalAbajoIzquierda_for:							;
+												;
+		tst			1,s							;
+		beq			check4_comprueba4diagonalAbajoIzquierda_finFor		;
+												;
+			dec			1,s						;
+												;
+			tfr			y,d						; for (i = 3; i > 0; --i, Y-= numCols)
+			addd			2,s						;	if (ContentOf(Y) != ficha)
+			subd			#1						;		break
+			tfr			d,y						;		
+			lda			,s						;
+			cmpa			,y						;
+			bne			check4_comprueba4diagonalAbajoIzquierda_finTest	;	
+			bra			check4_comprueba4diagonalAbajoIzquierda_for	;
+											;;;;;;;;;
+										
+	check4_comprueba4diagonalAbajoIzquierda_finFor:
+	
+		puls			d	; Sacamos A y B de la pila
+	
+		;orcc			#0x04	; Si hay cuatro en raya encendemos el flag Z, 
+						; no hace falta hacerlo, ya lo esta
+		bra			check4_comprueba4diagonalAbajoIzquierda_return
+		
+	check4_comprueba4diagonalAbajoIzquierda_finTest:
+		
+		puls			b,a	; Sacamos A y B de la pila
+	
+	check4_comprueba4diagonalAbajoIzquierda_desigual:	
+		
+		andcc			#0xFB	; Si no hay cuatro en raya, apagamos el flag Z
+		
+	check4_comprueba4diagonalAbajoIzquierda_return:	
+		
+		puls			d	; Sacamos D de la pila
+		
+		puls			y,d
+		rts
+
+;--------------------------------------------------------------------;
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;				comprueba4				;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Comprueba si se ha generado un cuatro en raya en torno a la ficha 	;
+; con coordenadas (A,B). La direccion base del tablero debe estar en X	;
+;									;
+; Input: posicion registros A y B, tablero X				;
+; Output: flag Z			.				;
+;									;
+; Registros afectados: CC						;
+; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
+;		   	| | | | | |?| | |		     		;
+;								    	;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+comprueba4:
+		pshs			y,d
+		sta			check4_md_comprueba4_coordY	; Guardamos las coordenadas de 
+		stb			check4_md_comprueba4_coordX	; la ficha
+		
+		jsr			posicion_ij			; Obtenemos la direccion
+									; en la que se encuentra
+									; la ficha en el tablero	
+									; que queda en Y
+		
+	check4_md_comprueba4_caseFil0:
+	
+		clra		
+		cmpa			check4_md_comprueba4_coordY
+		bne			check4_md_comprueba4_caseFilN
+		
+			jsr			comprueba4filaIzquierda
+			lbeq			check4_md_comprueba4_finTest
+		
+			jsr			comprueba4filaDerecha
+			lbeq			check4_md_comprueba4_finTest
+		
+			jsr			comprueba4diagonalAbajoIzquierda
+			lbeq			check4_md_comprueba4_finTest
+		
+			jsr			comprueba4columnaAbajo
+			lbeq			check4_md_comprueba4_finTest
+		
+			jsr			comprueba4diagonalAbajoDerecha
+			lbeq			check4_md_comprueba4_finTest
+				
+	check4_md_comprueba4_caseFilN:	
+	
+		lda			numFils
+		deca		
+		cmpa			check4_md_comprueba4_coordY
+		bne			check4_md_comprueba4_caseCol0
+		
+			jsr			comprueba4filaIzquierda
+			lbeq			check4_md_comprueba4_finTest
+		
+			jsr			comprueba4filaDerecha
+			lbeq			check4_md_comprueba4_finTest
+		
+			jsr			comprueba4diagonalArribaIzquierda
+			lbeq			check4_md_comprueba4_finTest
+		
+			jsr			comprueba4columnaArriba
+			lbeq			check4_md_comprueba4_finTest
+		
+			jsr			comprueba4diagonalArribaDerecha
+			lbeq			check4_md_comprueba4_finTest
+	
+	
+	check4_md_comprueba4_caseCol0:	
+	
+		clra	
+		cmpa			check4_md_comprueba4_coordX
+		bne			check4_md_comprueba4_caseColN
+		
+			jsr			comprueba4columnaArriba
+			lbeq			check4_md_comprueba4_finTest
+		
+			jsr			comprueba4diagonalArribaDerecha
+			lbeq			check4_md_comprueba4_finTest
+		
+			jsr			comprueba4filaDerecha
+			lbeq			check4_md_comprueba4_finTest
+		
+			jsr			comprueba4diagonalAbajoDerecha
+			lbeq			check4_md_comprueba4_finTest
+		
+			jsr			comprueba4columnaAbajo
+			lbeq			check4_md_comprueba4_finTest
+			
+			
+	check4_md_comprueba4_caseColN:	
+	
+		lda			numCols
+		deca		
+		cmpa			check4_md_comprueba4_coordX
+		bne			check4_md_comprueba4_caseDefault
+		
+			jsr			comprueba4columnaArriba
+			lbeq			check4_md_comprueba4_finTest
+		
+			jsr			comprueba4diagonalArribaIzquierda
+			lbeq			check4_md_comprueba4_finTest
+		
+			jsr			comprueba4filaIzquierda
+			lbeq			check4_md_comprueba4_finTest
+		
+			jsr			comprueba4diagonalAbajoIzquierda
+			lbeq			check4_md_comprueba4_finTest
+		
+			jsr			comprueba4columnaAbajo
+			lbeq			check4_md_comprueba4_finTest			
+		
+		
+	check4_md_comprueba4_caseDefault:	
+	
+		jsr			comprueba4diagonalArribaIzquierda
+		lbeq			check4_md_comprueba4_finTest
+	
+		jsr			comprueba4columnaArriba
+		lbeq			check4_md_comprueba4_finTest
+	
+		jsr			comprueba4diagonalArribaDerecha
+		lbeq			check4_md_comprueba4_finTest
+	
+		jsr			comprueba4filaIzquierda
+		lbeq			check4_md_comprueba4_finTest
+	
+		jsr			comprueba4filaDerecha
+		lbeq			check4_md_comprueba4_finTest
+		
+		jsr			comprueba4diagonalAbajoIzquierda
+		lbeq			check4_md_comprueba4_finTest
+		
+		jsr			comprueba4columnaAbajo
+		lbeq			check4_md_comprueba4_finTest
+		
+		jsr			comprueba4diagonalAbajoDerecha
+		lbeq			check4_md_comprueba4_finTest
+			
+			
+	check4_md_comprueba4_finTest:
+	
+		puls			y,d
+		rts
+
+;--------------------------------------------------------------------;
+
+
+
+
+
+
+
+
+
+
+
