@@ -1,4 +1,4 @@
-			; Zona configuracion de memoria
+		; Zona configuracion de memoria
 ;--------------------------------------------------------------------;	
 
 		.module 		io
@@ -24,8 +24,12 @@
 		
 ;--------------------------------------------------------------------;
 		; Fin zona configuracion memoria		
-
-
+		
+		
+		
+		
+		
+		
 		; Inicio definicion de constantes
 ;--------------------------------------------------------------------;												
 			
@@ -35,14 +39,29 @@ pantalla	.equ			0xFF00
 
 ;--------------------------------------------------------------------;
 		; Fin definicion de constantes
-
-		; Variables
+		
+		
+		
+		
+		
+		
+		; Objetos subrutinas
 ;--------------------------------------------------------------------;	
+		;>>>> Objetos de clearScreenAscii <<<<
+		
+			; >>>> Constantes <<<<
 
-clrscr_code:	.asciz			"\33[2J" ; Necesario para clearScreenAscii
+			clrscr_code:	.asciz			"\33[2J"
+			
+		;------------------------------------;
+		; Fin objetos clearScreenAscii
 
 ;--------------------------------------------------------------------;	
-		; Fin variables
+		; Fin objetos subrutinas
+		
+		
+		
+		
 		
 		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -51,7 +70,7 @@ clrscr_code:	.asciz			"\33[2J" ; Necesario para clearScreenAscii
 ; Subrutina que imprime la cadena apuntada por el registro X con un 	;
 ; salto de linea al final.						;
 ;									;
-; Input: dato apuntado por REGISTRO X					;
+; Input: dato apuntado por registro X					;
 ; Output: pantalla							;
 ;									;
 ; Registros afectados: CC						;
@@ -81,17 +100,21 @@ println:
 		puls			a,x
 		rts
 				
-;---------------- Fin println --------------------------------------;
-
-
-
+;--------------------------------------------------------------------;
+		; Fin println
+		
+		
+		
+		
+		
+		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;				print					;							;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Subrutina que imprime la cadena apuntada por el registro X sin un 	;
 ; salto de linea al final.						;
 ;									;
-; Input: dato apuntado por REGISTRO X					;
+; Input: dato apuntado por registro X					;
 ; Output: pantalla							;
 ;									;
 ; Registros afectados: CC						;
@@ -116,14 +139,14 @@ print:
 		puls			a,x
 		rts
 				
-;---------------- Fin print --------------------------------------;
-
-
-
-
-
-
-
+;--------------------------------------------------------------------;
+		; Fin print
+		
+		
+		
+		
+		
+		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;				getstr					;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -132,7 +155,7 @@ print:
 ; La cadena es guardada desde la posicion indicada por el registro X	;
 ; con un caracter '\0' al final.				 	;
 ;									;
-; Input: Direccion valida, registro X					;
+; Input: Direccion registro X						;
 ; Output: Direccion registro X						;
 ;									;
 ; Registros afectados: CC						;
@@ -163,10 +186,14 @@ getstr:
 		puls			x,a
 		rts
 				
-;---------------- Fin getstr ----------------------------------------;
-
-
-
+;--------------------------------------------------------------------;
+		; Fin getstr
+		
+		
+		
+		
+		
+		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;				getchar					;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -187,9 +214,14 @@ getchar:
 				
 		rts
 				
-;---------------- Fin getstr ----------------------------------------;
-
-
+;--------------------------------------------------------------------;
+		; Fin getchar
+		
+		
+		
+		
+		
+		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;			clearScreen				    	;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -217,12 +249,11 @@ clearScreen:
 	io_clearScreen_for:					;;;;;;;;;
 									;
 		ldb			,s				;
-		cmpb			#50				;
-		beq			io_clearScreen_finFor		; for (counter = 0, A = \n; 
-									;	counter < 50;
-			inc			,s			;	++counter)	
-			sta			pantalla		;		imprime(A)
-									;	
+		cmpb			#50				; for (counter = 0, A = \n; 
+		beq			io_clearScreen_finFor		; 	counter < 50;
+									;	++counter)
+			sta			pantalla		;		imprime(A)	
+		inc			,s				;						;	
 		bra			io_clearScreen_for		;		
 								;;;;;;;;;
 		
@@ -235,10 +266,14 @@ clearScreen:
 		puls			d
 		rts
 
-;--------- Fin clearScreen ------------------------------------------;
-
-
-
+;--------------------------------------------------------------------;
+		; Fin clearScreen
+		
+		
+		
+		
+		
+		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;			clearScreenAscii			    	;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -261,16 +296,11 @@ clearScreenAscii:
 		puls			x
 		rts
 
-;--------- Fin clearScreen ------------------------------------------;
-
-
-
-
-
-
-
-
-
-
-
-
+;--------------------------------------------------------------------;
+		; Fin clearScreenAscii
+		
+		
+		
+		
+		
+		

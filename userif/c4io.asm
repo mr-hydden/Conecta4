@@ -29,7 +29,11 @@
 ;--------------------------------------------------------------------;
 		; Fin zona configuracion memoria
 		
-					
+		
+		
+		
+		
+				
 		; Inicio definicion de constantes
 ;--------------------------------------------------------------------;												
 			
@@ -39,57 +43,75 @@ pantalla	.equ			0xFF00
 
 ;--------------------------------------------------------------------;
 		; Fin definicion de constantes
-
-			
-			; Datos constantes
+		
+		
+		
+		
+		
+		
+			; Objetos subrutinas
 ;--------------------------------------------------------------------;
 
-		;>>>> Constantes compartidas <<<<
+		;>>>> Objetos de mostrarMenu <<<<
+		
+			;>>>> Constantes <<<<
+		
+			menu:		.ascii			"\t\t\t   *********************\n"	;;;;;;;;;
+					.ascii			"\t\t\t   **    CONECTA 4    **\n"		;
+					.ascii			"\t\t\t   *********************\n\n\n"		;
+					.ascii			"\t\t\t\ta) Nueva partida\n\n"			;
+					.ascii			"\t\t\t\tb) Salir"				;
+					.asciz			"\n\n\n\n\n\n\n\n"				;
+														;
+			promptMenu:	.asciz			"Opcion => "				;;;;;;;;;
+
+		;-------------------------------;
+		; Fin objetos mostrarMenu
+
+
+
+		;>>>> Objetos de imprimirTablero <<<<
+		
+			; >>>> Constantes <<<<
+		
+			inicioBaseTablero:				;;;;;;;;;
+					.asciz			"/=="		;
+			medioBaseTablero:					;
+					.asciz			"===="		;
+			finBaseTablero:						;
+					.asciz			"===\ "		;
+			inicioFila:	.asciz			" |("		;
+			medioFila:	.asciz			")|("		;
+			finFila:	.asciz			")|"	;;;;;;;;;
+
+
+		;-----------------------------------;
+		; Fin objetos imprimirTablero
 		
 		
-menu:		.ascii			"\t\t\t\t   *********************\n"	;;;;;;;;;
-		.ascii			"\t\t\t\t   **    CONECTA 4    **\n"		;
-		.ascii			"\t\t\t\t   *********************\n\n\n"	; Para mostrar
-		.ascii			"\t\t\t\t\ta) Nueva partida\n\n"		; el menu
-		.ascii			"\t\t\t\t\tb) Salir"				;
-		.asciz			"\n\n\n\n\n\n\n\n"				;
-											;
-promptMenu:	.asciz			"Opcion => "				;;;;;;;;;
-
-
-
-inicioBaseTablero:				;;;;;;;;;
-		.asciz			"/=="		;
-medioBaseTablero:					;
-		.asciz			"===="		; Par mostrar
-finBaseTablero:						; el tablero
-		.asciz			"===\ "		;
-inicioFila:	.asciz			" |("		;
-medioFila:	.asciz			")|("		;
-finFila:	.asciz			")|"	;;;;;;;;;
-
-
+		
+		;>>>> Objetos constantes compartidos <<<<
 
 fichaJugador1:	.asciz			"O"	; Representacion de las fichas 
-fichaJugador2:	.asciz			"X"	; de los jugadores, roja y azul
+fichaJugador2:	.asciz			"X"	; de los jugadores
 
-		;------------------------------; <- Fin constantes compartidas
+		;------------------------------;
+		; Fin objetos constates compartidos
 		
-		
-		
-	;>>>> Objetos estaticos de imprimirTablero <<<< Ninguno
-	;>>>> Objetos estaticos de imprimirTablero <<<< Ninguno
-	;>>>> Objetos estaticos de mostrarMenu <<<<	Ninguno
-	
 ;--------------------------------------------------------------------;
-
-
+		; Fin objetos subrutinas
+		
+		
+		
+		
+		
+		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;			imprimirTablero				    	;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Imprime un tablero de numFils x numCols apuntado por el registro Y	;
 ;									;
-; Input: tablero apuntado por REGISTRO Y				;
+; Input: tablero apuntado por registro Y				;
 ; Output: pantalla							;
 ;									;
 ; Registros afectados: CC					    	;
@@ -97,6 +119,7 @@ fichaJugador2:	.asciz			"X"	; de los jugadores, roja y azul
 ;		   	| | |X| |X|X|X|X|		     		;
 ;								    	;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 imprimirTablero:
 		pshs			x,b
 		pshs			y
@@ -107,15 +130,19 @@ imprimirTablero:
 
 		;; Imprimir numeros y flechas
 		
-		clrb							;;;;;;;;; 
+		ldb			#1				;;;;;;;;; 
 		stb			,s	; 0,s es siempre el contador,	;
 						; s no se modifica hasta el fin	;
 	c4io_imprimirTablero_for1:		; de la subrutina		;
 		ldb			,s					;
+										;
+		decb	; Decrementamos para que el comportamiento del bucle	;
+			; sea el correcto sin tener que modificar numCols	;
+										;
 		cmpb			numCols					;
 		beq			c4io_imprimirTablero_finFor1		; 
-										;	for (counter = 0; counter < numCols; ++counter)
-			inc			,s		;;;;;;;;;	;		imprime("   %d", counter)
+										;	for (counter = 1; counter <= numCols; ++counter)
+								;;;;;;;;;	;		imprime("   %d", counter)
 									;	;
 			lda			#0x20 ; Espacio		;Cuerpo	;
 			sta			pantalla		;del	;
@@ -123,9 +150,10 @@ imprimirTablero:
 			sta			pantalla		;	;
 			ldb			,s			;	;
 			addb			#0x30 ; Digito ASCII	;	;
-			stb			pantalla	;;;;;;;;;	;		
+			stb			pantalla	;;;;;;;;;	;	
 										;
-		bra			c4io_imprimirTablero_for1		;				;
+		inc			,s					;
+		bra			c4io_imprimirTablero_for1		;
 										;
 	c4io_imprimirTablero_finFor1:					;;;;;;;;;
 		
@@ -143,15 +171,16 @@ imprimirTablero:
 		cmpb			numCols					;
 		beq			c4io_imprimirTablero_finFor2		; 
 										;	for (counter = 0; counter < numCols; ++counter)
-			inc			,s		;;;;;;;;;	;		imprime("   v")
+								;;;;;;;;;	;		imprime("   v")
 									;	;
 			lda			#0x20	; Espacio	;Cuerpo	;
 			sta			pantalla		;del	;
 			sta			pantalla		;bucle	;
 			sta			pantalla		;	;
 			ldb			#0x76	;Letra 'v'	;	;
-			stb			pantalla	;;;;;;;;;	;		
+			stb			pantalla	;;;;;;;;;	;	
 										;
+		inc			,s					;
 		bra			c4io_imprimirTablero_for2		;
 										;
 	c4io_imprimirTablero_finFor2:					;;;;;;;;;
@@ -172,14 +201,15 @@ imprimirTablero:
 		cmpb			numFils					;
 		beq			c4io_imprimirTablero_finFor3		; 
 										;	for (counter = 0; counter < numFils; ++counter)
-			inc			,s		;;;;;;;;;	;		imprimeFila
+								;;;;;;;;;	;		imprimeFila
 									;	;
 			jsr			imprimirFila		;Cuerpo	;
 			tfr			y,x			;del	;
 			ldb			numCols			;bucle	;
 			abx						;	;
-			tfr			x,y		;;;;;;;;;	;		
+			tfr			x,y		;;;;;;;;;	;
 										;
+		inc			,s					;
 		bra			c4io_imprimirTablero_for3		;
 										;
 	c4io_imprimirTablero_finFor3:					;;;;;;;;;
@@ -197,11 +227,12 @@ imprimirTablero:
 		cmpb			numCols					;
 		beq			c4io_imprimirTablero_finFor4		; 
 										;	for (	counter = 1, X = &medioBaseTablero; 
-			inc			,s		;;;;;;;;;Cuerpo	;		counter < numCols; 
-									;del	;		++counter	)
-			jsr			print		;;;;;;;;;bucle	;		
+								;;;;;;;;;Cuerpo	;		counter < numCols; 
+			jsr			print			;del	;		++counter	)
+								;;;;;;;;;bucle	;		
 										;		imprime(medioBaseTablero)
 										;
+		inc			,s					;
 		bra			c4io_imprimirTablero_for4		;
 									;;;;;;;;;
 	c4io_imprimirTablero_finFor4:		
@@ -219,9 +250,14 @@ imprimirTablero:
 		puls			x,b
 		rts
 
-;;;; FIN imprimirTablero ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
+;--------------------------------------------------------------------;
+		; Fin imprimirTablero
+		
+		
+		
+		
+		
+		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;			imprimirFila				    	;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -235,6 +271,7 @@ imprimirTablero:
 ;		   	| | |X| |X|X|X|X|		     		;
 ;								    	;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 imprimirFila:
 		pshs			y,x,d
 		
@@ -256,7 +293,7 @@ imprimirFila:
 		cmpb			numCols					;
 		beq			c4io_imprimirFila_finFor		; 
 										;	for (counter = 1; counter < numCols; ++counter)
-			inc			,s		;;;;;;;;;	; 	{
+								;;;;;;;;;	; 	{
 									;	;		imprime (fila[counter-1])
 			lda			,y+			;Cuerpo	;		imprime (medioFila)
 			sta			pantalla		;del	;	}
@@ -264,6 +301,7 @@ imprimirFila:
 			ldx			#medioFila		;	;
 			jsr			print		;;;;;;;;;	;
 										;
+		inc			,s					;
 		bra			c4io_imprimirFila_for			;
 										;
 	c4io_imprimirFila_finFor:					;;;;;;;;;
@@ -284,14 +322,21 @@ imprimirFila:
 		puls			y,x,d
 		rts
 
-;;;; FIN imprimirFila ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
+;--------------------------------------------------------------------;
+		; Fin imprimirFila
+		
+		
+		
+		
+		
+		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;			mostrarMenu				    	;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Imprime una el menu y un prompt que solicita una opcion.	    	;
+;									;
+; Input: -								;
+; Output: pantalla							;
 ;								    	;	;; Se deberia INCLUIR GESTION DE OPCION
 ; Registros afectados: CC					    	;	;; INCORRECTA, ya que el string menu se encuentra
 ; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;	;; asociado unicamente a esta funcion, y por tanto
@@ -313,12 +358,11 @@ mostrarMenu:
 		
 		rts
 
-;;;; Fin mostrarMenu ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
-
-
-
-
-
+;--------------------------------------------------------------------;
+		; Fin mostrarMenu
+		
+		
+		
+		
+		
+		

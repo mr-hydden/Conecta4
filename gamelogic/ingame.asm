@@ -3,12 +3,7 @@
 		.module			ingame
 		
 		.area			_INGAME
-		
-		;>>>> Objetos globales compartidos <<<<
-		.globl			siguiente_posicion_dinamica
-		
-		
-		
+				
 		;>>>> Etiquetas globales internas <<<<
 		
 		.globl			lda_fichaJugador
@@ -41,38 +36,42 @@ pantalla	.equ			0xFF00
 			
 			
 			
-			; Variables locales
+			; Objetos subrutinas
 ;--------------------------------------------------------------------;
 
-		;>>>> Constantes compartidas <<<<
-		;------------------------------;
+		;>>>> Objetos lda_fichaJugador <<<<
 		
+			;>>>> Variables <<<<
+				; Static
+				fichaTurno:.asciz	"O" ; Se va modificando en cada turno.
+				
+		;---------------------------------;
+		; Fin objetos lda_fichaJugador
+
+
+		;>>>> Objetos generarTablero <<<<
 		
-		;>>>> Objetos estaticos <<<<
-	
-	fichaTurno:	.asciz			"O" 	; Se va modificando en cada turno. Solo la funcion lda_fichaJugador
-							; puede acceder aqui, en principio.
-	
-	;----------------------------------------------; <- Fin objetos estaticos lda_fichaJugador
-	
-	
-	
-		;>>>> Objetos locales generarTablero <<<<
-		
-	ingame_generarTablero_numCeldas:
-			.word			0
-			
+			; >>>> Variables  <<<<
+			ingame_generarTablero_numCeldas:.word	0
+				
 		;---------------------------------------;
+		; Fin objetos generarTablero
 	
+		;>>>> Objetos globales compartidos <<<<
+			; >>>> Variables <<<<
+			.globl			siguiente_posicion_dinamica
 	
 	
 ;--------------------------------------------------------------------;
-
-
-
-							
+		; Fin objetos subrutinas
+		
+		
+		
+		
+		
+				
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;				lda_fichaJugador			;
+;			lda_fichaJugador				;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Carga en el registro A la ficha del jugador al que le toca jugar.	;
 ; Se encarga por tanto de determinar quien tiene el turno, ademas de 	;
