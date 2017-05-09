@@ -18,6 +18,9 @@
 		
 		
 		
+		
+		
+		
 		; Inicio definicion de constantes
 ;--------------------------------------------------------------------;												
 			
@@ -27,8 +30,20 @@ pantalla	.equ			0xFF00
 
 ;--------------------------------------------------------------------;
 		; Fin definicion de constantes
-
-
+		
+		
+		
+		
+		; Objetos subrutinas
+;--------------------------------------------------------------------;
+;--------------------------------------------------------------------;
+		; Fin objetos subrutinas
+		
+		
+		
+		
+		
+		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;				isdigit					;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -58,8 +73,7 @@ isdigit:
 									;	if (A = B)
 			cmpb			,s			;		break
 			beq			testing_isdigit_finFor	;
-			incb						;
-									;												;
+		incb							;
 		bra			testing_isdigit_for	;;;;;;;;;
 
 	testing_isdigit_finFor:
@@ -85,10 +99,14 @@ isdigit:
 		puls			b
 		rts
 				
-;---------------- Fin isdigit ----------------------------------------;
-
-
-
+;--------------------------------------------------------------------;
+		; Fin isdigit
+		
+		
+		
+		
+		
+		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;				isalpha					;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -117,8 +135,8 @@ isalpha:
 									;	if (A = B)
 			cmpb			,s			;		break
 			beq			testing_isalpha_finFor2	;
-			incb						; En ASCII (... 'x', 'y', 'z', '[')
-									;
+									; En ASCII (... 'x', 'y', 'z', '[')
+		incb							;
 		bra			testing_isalpha_for1	;;;;;;;;;
 
 	testing_isalpha_finFor1:
@@ -133,8 +151,8 @@ isalpha:
 									;	if (A = B)
 			cmpb			,s			;		break
 			beq			testing_isalpha_finFor2	;
-			incb						; En ASCII (... 'X', 'Y', 'Z', '{')
-									;
+									; En ASCII (... 'X', 'Y', 'Z', '{')
+		incb							;
 		bra			testing_isalpha_for2	;;;;;;;;;
 
 	testing_isalpha_finFor2:
@@ -160,4 +178,11 @@ isalpha:
 		puls			b
 		rts
 				
-;---------------- Fin isalpha ----------------------------------------;
+;--------------------------------------------------------------------;
+		; Fin isalpha
+		
+		
+		
+		
+		
+		

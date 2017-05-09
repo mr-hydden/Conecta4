@@ -37,9 +37,20 @@ pantalla	.equ			0xFF00
 
 ;--------------------------------------------------------------------;
 		; Fin definicion de constantes
-
-
-
+		
+		
+		
+		
+		; Objetos subrutinas	
+;--------------------------------------------------------------------;
+;--------------------------------------------------------------------;
+		; Fin objetos subrutinas
+		
+		
+		
+		
+		
+			
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;			comprueba4filaDerecha				;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -83,9 +94,14 @@ check4_comprueba4filaDerecha_return:
 		puls			a
 		rts
 
-;--------------------------------------------------------------------;	
-
-
+;--------------------------------------------------------------------;
+		; Fin comprueba4filaDerecha
+		
+		
+		
+		
+		
+		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;			comprueba4filaIzquierda				;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -130,9 +146,13 @@ check4_comprueba4filaIzquierda_return:
 		rts
 
 ;--------------------------------------------------------------------;
-
-
-
+		; Fin comprueba4filaIzquierda
+		
+		
+		
+		
+		
+		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;			comprueba4columnaArriba				;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -170,15 +190,15 @@ comprueba4columnaArriba:
 		tst			1,s						;
 		beq			check4_comprueba4columnaArriba_finFor		;
 											;
-			dec			1,s					;
-											;
 			tfr			y,d					; for (i = 3; i > 0; --i, Y-= numCols)
 			subd			2,s					;	if (ContentOf(Y) != ficha)
 			tfr			d,y					;		break
 			lda			,s					;
 			cmpa			,y					;
 			bne			check4_comprueba4columnaArriba_finTest	;
-			bra			check4_comprueba4columnaArriba_for	;
+											;
+		dec			1,s						;	
+		bra			check4_comprueba4columnaArriba_for		;
 										;;;;;;;;;
 										
 	check4_comprueba4columnaArriba_finFor:
@@ -205,10 +225,13 @@ comprueba4columnaArriba:
 		rts
 
 ;--------------------------------------------------------------------;
-
-
-
-
+		; Fin comprueba4columnaArriba
+		
+		
+		
+		
+		
+		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;			comprueba4diagonalDerecha			;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -245,8 +268,6 @@ comprueba4diagonalDerecha:
 		tst			1,s						;
 		beq			check4_comprueba4diagonalDerecha_finFor		;
 											;
-			dec			1,s					;
-											;
 			tfr			y,d					; for (i = 3; i > 0; --i, Y-= numCols)
 			subd			2,s					;	if (ContentOf(Y) != ficha)
 			addd			#1					;		break
@@ -254,7 +275,8 @@ comprueba4diagonalDerecha:
 			lda			,s					;
 			cmpa			,y					;
 			bne			check4_comprueba4diagonalDerecha_finTest;
-			bra			check4_comprueba4diagonalDerecha_for	;
+		dec			1,s						;
+		bra			check4_comprueba4diagonalDerecha_for		;
 										;;;;;;;;;
 										
 	check4_comprueba4diagonalDerecha_finFor:
@@ -281,9 +303,13 @@ comprueba4diagonalDerecha:
 		rts
 
 ;--------------------------------------------------------------------;	
-
-
-
+		; Fin comprueba4diagonalDerecha
+		
+		
+		
+		
+		
+		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;			comprueba4diagonalIzquierda			;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -320,8 +346,6 @@ comprueba4diagonalIzquierda:
 		tst			1,s							;
 		beq			check4_comprueba4diagonalIzquierda_finFor		;
 												;
-			dec			1,s						;
-												;
 			tfr			y,d						; for (i = 3; i > 0; --i, Y-= numCols)
 			subd			2,s						;	if (ContentOf(Y) != ficha)
 			subd			#1						;		break
@@ -329,7 +353,8 @@ comprueba4diagonalIzquierda:
 			lda			,s						;
 			cmpa			,y						;
 			bne			check4_comprueba4diagonalIzquierda_finTest	;	
-			bra			check4_comprueba4diagonalIzquierda_for		;
+		dec			1,s							;
+		bra			check4_comprueba4diagonalIzquierda_for			;
 											;;;;;;;;;
 										
 	check4_comprueba4diagonalIzquierda_finFor:
@@ -356,10 +381,13 @@ comprueba4diagonalIzquierda:
 		rts
 
 ;--------------------------------------------------------------------;	
-
-
-
-
+		; Fin comprueba4diagonalIzquierda
+		
+		
+		
+		
+		
+		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;				comprueba4				;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -507,3 +535,10 @@ comprueba4:
 		rts
 
 ;--------------------------------------------------------------------;
+		; Fin comprueba4
+		
+		
+		
+		
+		
+		

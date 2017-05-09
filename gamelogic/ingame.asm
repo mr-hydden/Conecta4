@@ -107,9 +107,13 @@ lda_fichaJugador:
 		rts
 		
 ;--------------------------------------------------------------------;
-
-
-
+		; Fin lda_fichaJugador
+		
+		
+		
+		
+		
+		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;				posicion_ij				;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -122,7 +126,7 @@ lda_fichaJugador:
 ;									;
 ; Registros afectados: CC, Y						;
 ; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
-;		   	| | |X| |X|X|X|X|		     		;
+;		   	| | | | | | | | |		     		;
 ;								    	;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -150,13 +154,17 @@ posicion_ij:
 		rts
 
 ;--------------------------------------------------------------------;		
+		; Fin posicion_ij
+		
+		
+		
 		
 		
 		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;			generarTablero					;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Genera un tablero vacio con las dimensiones indicadas en D, cuya	;
+; Genera un tablero vacio con el numero de celdas indicado en D, cuya	;
 ; direccion devuelve en Y.						;
 ;									;
 ; Input: numero de celdas registro D					;
@@ -164,7 +172,7 @@ posicion_ij:
 ;									;
 ; Registros afectados: CC, Y						;
 ; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
-;		   	| | |X| |X|X|X|X|		     		;
+;		   	| | | | | | | | |		     		;
 ;								    	;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -174,7 +182,7 @@ generarTablero:
 		std			ingame_generarTablero_numCeldas
 		
 		tfr			s,d	; Hacemos espacio para 
-		subd			#2	; un contador en la pila	;<--- Recordar "arreglar PC"
+		subd			#2	; un contador en la pila
 		tfr			d,s	;
 		
 		ldd			siguiente_posicion_dinamica		;;;;;;;;;
@@ -184,10 +192,10 @@ generarTablero:
 		std			2,s	; Inicializamos contador a 0		;
 											;
 	ingame_generarTablero_for:							;
-											;
-		ldd			2,s						;
-		cmpd			ingame_generarTablero_numCeldas			;
-		beq			ingame_generarTablero_finFor			;
+											; for (contador = 0; contador < numCeldas; contador++)
+		ldd			2,s						;	guarda(caracterEspacio,
+		cmpd			ingame_generarTablero_numCeldas			;		siguiente_posicion_dinamica)
+		beq			ingame_generarTablero_finFor			;	siguiente_posicion_dinamica++
 											;
 			lda			#0x20					;
 			sta			[siguiente_posicion_dinamica]		;
@@ -195,26 +203,28 @@ generarTablero:
 			addd			#1					;
 			std			siguiente_posicion_dinamica		;
 											;
-			ldd			2,s					;
-			addd			#1					;
-			std			2,s					;
-											;
+		ldd			2,s						;
+		addd			#1						;
+		std			2,s						;
 		bra			ingame_generarTablero_for			;
 										;;;;;;;;;
 	ingame_generarTablero_finFor:			
 		
 		puls			y	; Guardamos direccion de inicio del tablero
 		
-		puls			d	; Eliminamos contadores
+		puls			d	; Eliminamos contador
 		puls			d	; Sacamos D de la pila
 		
 		rts
 
 ;--------------------------------------------------------------------;
-
-
-
-
+		; Fin generarTablero
+		
+		
+		
+		
+		
+		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;				colocarFicha				;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -234,21 +244,11 @@ colocarFicha:
 		sta			,y
 		rts
 		
-
-			
-			
-			
+;--------------------------------------------------------------------;
+		; Fin colocarFicha
 		
 		
 		
 		
 		
 		
-		
-		
-		
-		
-		
-
-	
-
