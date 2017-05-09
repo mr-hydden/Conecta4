@@ -59,11 +59,12 @@ pantalla	.equ			0xFF00
 			menu:		.ascii			"\t\t\t   *********************\n"	;;;;;;;;;
 					.ascii			"\t\t\t   **    CONECTA 4    **\n"		;
 					.ascii			"\t\t\t   *********************\n\n\n"		;
-					.ascii			"\t\t\t\ta) Nueva partida\n\n"			;
-					.ascii			"\t\t\t\tb) Salir"				;
+					.ascii			"\t\t\t   a) \033[4mNueva partida\033[0m\n\n"
+					.ascii			"\t\t\t   b) \033[4mInstrucciones\033[0m\n\n"			;
+					.ascii			"\t\t\t   c) \033[4mSalir\033[0m"				;
 					.asciz			"\n\n\n\n\n\n\n\n"				;
 														;
-			promptMenu:	.asciz			"Opcion => "				;;;;;;;;;
+			promptMenu:	.asciz			"\033[F\033[FOpcion: "				;;;;;;;;;
 
 		;-------------------------------;
 		; Fin objetos mostrarMenu
@@ -84,7 +85,11 @@ pantalla	.equ			0xFF00
 			medioFila:	.asciz			")|("		;
 			finFila:	.asciz			")|"	;;;;;;;;;
 
-
+			colorRojo:	.asciz			"\033[31m"
+			colorAzul:	.asciz			"\033[34m"
+			colorAmarillo:	.asciz			"\033[33m"
+			colorOriginal:	.asciz			"\033[0m"
+			
 		;-----------------------------------;
 		; Fin objetos imprimirTablero
 		
@@ -92,8 +97,8 @@ pantalla	.equ			0xFF00
 		
 		;>>>> Objetos constantes compartidos <<<<
 
-fichaJugador1:	.asciz			"O"	; Representacion de las fichas 
-fichaJugador2:	.asciz			"X"	; de los jugadores
+fichaJugador1:	.asciz			"0"	; Representacion de las fichas 
+fichaJugador2:	.asciz			"O"	; de los jugadores
 
 		;------------------------------;
 		; Fin objetos constates compartidos
@@ -130,6 +135,12 @@ imprimirTablero:
 
 		;; Imprimir numeros y flechas
 		
+		
+		lda			#'\t
+		sta			pantalla	; Para alinear el tablero
+		sta			pantalla	;
+		sta			pantalla	;
+		
 		ldb			#1				;;;;;;;;; 
 		stb			,s	; 0,s es siempre el contador,	;
 						; s no se modifica hasta el fin	;
@@ -161,6 +172,11 @@ imprimirTablero:
 		sta			pantalla	;;
 		
 		
+	
+		lda			#'\t
+		sta			pantalla	;
+		sta			pantalla	; Para alinear el tablero
+		sta			pantalla	;
 		
 		
 		clrb							;;;;;;;;; 
@@ -187,11 +203,14 @@ imprimirTablero:
 		
 		lda			#0x0A		;; Imprimimos un salto de linea
 		sta			pantalla	;;
+		sta			pantalla	;;
 		
 
 		
 		ldy			1,s	; Direccion del tablero
 
+		ldx			#colorAzul	; Imprimimos el tablero
+		jsr			print		; en color azul
 
 		clrb							;;;;;;;;; 
 		stb			,s					;
@@ -203,6 +222,10 @@ imprimirTablero:
 										;	for (counter = 0; counter < numFils; ++counter)
 								;;;;;;;;;	;		imprimeFila
 									;	;
+			lda			#'\t			;	;
+			sta			pantalla ; Alinear	;	;
+			sta			pantalla ; tablero	;	;
+			sta			pantalla ;		;	;
 			jsr			imprimirFila		;Cuerpo	;
 			tfr			y,x			;del	;
 			ldb			numCols			;bucle	;
@@ -215,6 +238,11 @@ imprimirTablero:
 	c4io_imprimirTablero_finFor3:					;;;;;;;;;
 		
 		
+		
+		lda			#'\t
+		sta			pantalla
+		sta			pantalla
+		sta			pantalla
 		ldx			#inicioBaseTablero
 		jsr			print
 		
@@ -242,6 +270,9 @@ imprimirTablero:
 		ldx			#finBaseTablero
 		jsr			println
 
+		ldx			#colorOriginal	; Reseteamos el color
+		jsr			print		; del terminal
+		
 		tfr			s,d	; Eliminamos el espacio
 		incb				; para el contador
 		tfr			d,s	;
@@ -285,32 +316,62 @@ imprimirFila:
 		jsr			print
 		
 		
-		ldb			#1				;;;;;;;;; 
-		stb			,s	; 0,s es siempre el contador,	;
-						; pues s no se modifica hasta	;
-	c4io_imprimirFila_for:			; el final de la subrutina	;
-		ldb			,s					;
-		cmpb			numCols					;
-		beq			c4io_imprimirFila_finFor		; 
-										;	for (counter = 1; counter < numCols; ++counter)
-								;;;;;;;;;	; 	{
-									;	;		imprime (fila[counter-1])
-			lda			,y+			;Cuerpo	;		imprime (medioFila)
-			sta			pantalla		;del	;	}
-									;bucle	;
-			ldx			#medioFila		;	;
-			jsr			print		;;;;;;;;;	;
-										;
-		inc			,s					;
-		bra			c4io_imprimirFila_for			;
-										;
-	c4io_imprimirFila_finFor:					;;;;;;;;;
+		ldb			#1					;;;;;;;;; 
+		stb			,s	; 0,s es siempre el contador,		;
+						; pues s no se modifica hasta		;
+	c4io_imprimirFila_for:			; el final de la subrutina		;
+		ldb			,s						;
+		cmpb			numCols						;
+		beq			c4io_imprimirFila_finFor			;	 
+											; for (counter = 1; counter < numCols; ++counter)
+									;;;;;;;;;	; {
+										;	;	imprime (fila[counter-1])
+			lda			,y+				;Cuerpo	;	imprime (medioFila)
+			cmpa			fichaJugador1				
+			bne			c4io_imprimirFila_otraFicha	;del	; }
+			ldx			#colorRojo			;bucle	;
+			jsr			print				;	;
+			bra			c4io_imprimirFila_imprimirFicha	;	;
+										;	;
+		c4io_imprimirFila_otraFicha:					;	;
+										;	;
+			ldx			#colorAmarillo			;	;
+			jsr			print				;	;
+										;	;
+		c4io_imprimirFila_imprimirFicha:				;	;
+										;	;
+			sta			pantalla			;	;
+										;	;
+			ldx			#colorAzul			;	;
+			jsr			print				;	;
+			ldx			#medioFila			;	;
+			jsr			print			;;;;;;;;;	;
+											;
+		inc			,s						;
+		bra			c4io_imprimirFila_for				;
+											;
+	c4io_imprimirFila_finFor:						;;;;;;;;;
 	
 	
 	
 		lda			,y			;; Imprime el ultimo dato de la fila
+		cmpa			fichaJugador1
+		bne			c4io_imprimirFila_ultimo_otraFicha
+		ldx			#colorRojo
+		jsr			print
+		bra			c4io_imprimirFila_ultimo_imprimirFicha
+		
+	c4io_imprimirFila_ultimo_otraFicha:
+	
+		ldx			#colorAmarillo
+		jsr			print		
+		
+	c4io_imprimirFila_ultimo_imprimirFicha:
+		
 		sta			pantalla
 		
+		ldx			#colorAzul
+		bsr			print
 		ldx			#finFila		;; Imprime el final de la fila
 		jsr			println
 		
