@@ -217,13 +217,13 @@ generarTablero:
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;			colocarFicha					;
+;				colocarFicha				;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Coloca la ficha contenida en A en su representacion ASCII en la	;
-; columna indicada por B. La posicion base del tablero debe estar en X	; ; NO COMPRUEBA QUE LA COLUMNA ESTE LIBRE
-;									; ; SE SUPONE QUE YA HAY UNA SUBRUTINA QUE
-; Input: ficha registro A, columna registro B, tablero registro X 	; ; SE ENCARGA DE ESTO.
-; Output: tablero modificado en X	.				;
+; posicion indicada por Y.						;
+;									;
+; Input: posicion registro Y						;
+; Output: posicion registro Y, disponible para comprueba4		;
 ;									;
 ; Registros afectados: CC						;
 ; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
@@ -232,41 +232,10 @@ generarTablero:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 colocarFicha:
-		pshs			x,d
+		sta			,y
+		rts
 		
-		abx					;
-		lda			numCols		;
-		ldb			numFils		;
-		decb					; Cargamos X con
-		mul					; la posicion mas baja
-		pshs			x		; (visualmente) en la 
-		addd			,s		; columna en que hay
-		puls			x		; que colocar
-		tfr			d,x		;
 
-		clrb	; Usamos B de contador				;;;;;;;;;
-										;
-	ingame_colocarFicha_for:						;
-										;
-		cmpb			numFils					;
-		beq			ingame_colocarFicha_finFor		;
-										;
-			lda			,x				;
-			cmpa			#0x20	; Caracter espacio	;
-			beq			ingame_colocarFicha_hueco	;
-										;
-			incb							;
-			pshs			b				;
-			lda			numCols				;
-			mul							;
-			jsr			negd				;
-			addd			x				;
-			tfr			d,x				;
-			puls			b				;
-										;
-		bra			ingame_colocarFicha_for			;
-									;;;;;;;;;
-	ingame_colocarFicha_finFor:
 			
 			
 			
