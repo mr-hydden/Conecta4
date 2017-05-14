@@ -23,6 +23,7 @@
 		.globl			print
 		.globl			getchar
 		.globl			clearScreen
+		.globl			tolower
 		
 		;------------------------------------;
 		
@@ -65,7 +66,9 @@ pantalla	.equ			0xFF00
 					.asciz			"\n\n\n\n\n\n\n\n"				;
 														;
 			promptMenu:	.asciz			"\033[F\033[FOpcion: "				;;;;;;;;;
-
+			
+			promptMenuAdvertencia:
+					.asciz			"\033[F\033[FOpcion incorrecta.\nSeleccione una opcion disponible: "
 		;-------------------------------;
 		; Fin objetos mostrarMenu
 
@@ -407,16 +410,53 @@ imprimirFila:
 
 
 mostrarMenu:
+		pshs			b
+		
+		clrb
+		
+	c4io_mostrarMenu_opcionIncorrecta:		
+		
 		jsr			clearScreen
 		
 		ldx			#menu
 		jsr			print
 		
+		tstb
+		bne			c4io_mostrarMenu_promptAdvertencia
+		
 		ldx			#promptMenu
 		jsr			print
 		
-		jsr			getchar
+		bra			c4io_mostrarMenu_promptNormal
 		
+	c4io_mostrarMenu_promptAdvertencia:
+	
+		ldx			#promptMenuAdvertencia
+		jsr			print
+		
+	c4io_mostrarMenu_promptNormal:
+	
+		jsr			getchar
+		jsr			tolower
+		
+		cmpa			#'a
+		beq			c4io_mostrarMenu_opcionCorrecta
+		cmpa			#'b
+		beq			c4io_mostrarMenu_opcionCorrecta
+		cmpa			#'c
+		beq			c4io_mostrarMenu_opcionCorrecta
+		
+		tstb							; Si se elige una opcion incorrecta
+		bne			c4io_mostrarMenu_flagSet	; ponemos un flag para imprimir mensaje
+		incb							; de opcion incorrecta
+		
+	c4io_mostrarMenu_flagSet:
+	
+		bra			c4io_mostrarMenu_opcionIncorrecta
+		
+	c4io_mostrarMenu_opcionCorrecta:
+		
+		puls			b
 		rts
 
 ;--------------------------------------------------------------------;
