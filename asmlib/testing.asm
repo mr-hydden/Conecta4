@@ -9,6 +9,8 @@
 		
 		.globl			isdigit
 		.globl			isalpha
+		.globl			tolower
+		.globl			toupper
 		
 		;------------------------------------;
 		
@@ -185,4 +187,69 @@ isalpha:
 		
 		
 		
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;				toupper					;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Cambia los caracteres alfabeticos por sus correspondientes mayusculas	;
+;									;	
+; Input: Dato contenido en registro A 					;
+; Output: Dato contenido en el registro A 				;
+;									;
+; Registros afectados: A, CC						;
+; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
+;			| | |X| |X|X|X|X|				;
+;									;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+toupper:
+
+		cmpa			#'a
+		blo			testing_toupper_sinCambios
+		cmpa			#'z
+		bhi			testing_toupper_sinCambios
 		
+		suba			#0x20	; Diferencia entre letra minuscula y
+						; mayuscula en el codigo ASCII
+		
+	testing_toupper_sinCambios:
+	
+		rts
+		
+;--------------------------------------------------------------;
+		; Fin toupper
+		
+		
+		
+		
+		
+		
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;				tolower					;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Cambia los caracteres alfabeticos por sus correspondientes minusculas	;
+;									;	
+; Input: Dato contenido en registro A 					;
+; Output: Dato contenido en el registro A 				;
+;									;
+; Registros afectados: A, CC						;
+; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
+;			| | |X| |X|X|X|X|				;
+;									;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+tolower:
+
+		cmpa			#'A
+		blo			testing_tolower_sinCambios
+		cmpa			#'Z
+		bhi			testing_tolower_sinCambios
+		
+		adda			#0x20	; Diferencia entre letra minuscula y
+						; mayuscula en el codigo ASCII
+		
+	testing_tolower_sinCambios:
+	
+		rts
+		
+;--------------------------------------------------------------;
+		; Fin tolower
