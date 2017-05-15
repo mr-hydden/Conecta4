@@ -8,6 +8,8 @@
 		
 		.globl			imprimirTablero
 		.globl			mostrarMenu
+		.globl			fichaJugador1
+		.globl			fichaJugador2
 		
 		;------------------------------------;
 		
@@ -100,8 +102,8 @@ pantalla	.equ			0xFF00
 		
 		;>>>> Objetos constantes compartidos <<<<
 
-fichaJugador1:	.asciz			"0"	; Representacion de las fichas 
-fichaJugador2:	.asciz			"O"	; de los jugadores
+fichaJugador1:	.byte			#'0	; Representacion de las fichas 
+fichaJugador2:	.byte			#'O	; de los jugadores
 
 		;------------------------------;
 		; Fin objetos constates compartidos

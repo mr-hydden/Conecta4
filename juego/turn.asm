@@ -1,34 +1,27 @@
-;
-;
-;
-;
-;ESTA HECHO UNA MIERDA EL FICHERO, 
-;MAÑANA SIGO QUE HOY NO PUEDO ESTARME MAS
-;
-;
-;
-;
-;
-;
-;
-;	
-	; Zona configuracion de memoria
+		; Zona configuracion de memoria
 ;--------------------------------------------------------------------;		
 		.module			turn
 		
 		.area			_TURN
 		
+		;>>>> Etiquetas globales internas <<<<
 		
+		.globl			comprobarColumnaLLena
+		
+		;------------------------------------;
 		
 		;>>>> Etiquetas globales externas <<<<
 		
 		.globl			numFils
 		.globl			numCols
-		.globl			tablero
+		;.globl			tablero
 		
 		.globl			posicion_ij
 		
 		.globl			negd
+		
+		.globl			fichaJugador1
+		.globl			fichaJugador2
 		
 		;------------------------------------;
 		
@@ -45,75 +38,113 @@ pantalla	.equ			0xFF00
 
 ;--------------------------------------------------------------------;
 		; Fin definicion de constantes
+		
+		; Objetos subrutinas
+;--------------------------------------------------------------------;
+
+		;>>>> Objetos de comprobarColumnaLlena <<<<
+		
+			;>>>> Variables <<<<
+			turno_comprobarColumnaLlena_col:
+				.byte			0
+		
+		;-------------------------------;
+		; Fin objetos comprobarColumnaLlena
+;--------------------------------------------------------------;
+		; Fin objetos subrutinas
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;			compruebaColumnaLlena				;
+;			comprobarColumnaLlena				;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Comprueba si hay algun hueco libre en la columna y guarda el primer 	;
-; lugar libre de la columna si lo hay. Si no hay lugar libre, cambia el	;
-; flag Z								;
+; Comprueba si hay algun hueco libre en la columna indicada en el 	;
+; registro B y guarda la direccion del primer hueco libre.		;
+; Mediante el flag Z se indica si existe ese hueco libre: si esta a 1	;
+; se encontro un hueco libre que se devuelve en el registro Y. En caso	;
+; contrario, Z = 0							;
 ;									;
-; Input: columna elegida en Y						;
-; Output: flag Z							;
+; Input: direccion base del tablero en X, numero de columna en B.	;
+; Output: registro Y, flag Z						;
 ;									;
-; Registros afectados: CC						;
+; Registros afectados: Y, CC						;
 ; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
 ;		   	| | | | | |?| | |		     		;
 ;								    	;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-compruebaColumnaLLena:
+comprobarColumnaLLena:
 
-		pshs			y	;introduce en la pila la lista de registros Y
-		ldb			numFils	;carga el numero de columnas en el registro B
-		clra				;limpia el registro A
-		pshs			d	;Introduce en la pila D
+		pshs			d
 		
+		decb
+		stb			turno_comprobarColumnaLlena_col
+			
+		tfr			s,d	; Hacemos hueco
+		subd			#1	; en la pila para
+		tfr			d,s	; un contador
 		
-		
-		
-		ldb			numFils					;;;;;;;;;
-		pshs			b,a						;
+		lda			numFils					;;;;;;;;;
+		deca									;
+		deca									;
+		sta			,s	; Inicializamos contador a 0 e Y	;
+						; a la posicion mas baja del tablero	;
+		lda			numFils	; en esa columna			;
+		deca									;
+		ldb			turno_comprobarColumnaLlena_col			;
+		jsr			posicion_ij					;
 											;
-	turn_Comprueba_Columna_for:							;
+	turno_comprobarColumnaLlena_for:						;
 											;
-		tst			1,s						;
-		beq			turn_Comprueba_Columna_finFor			;
+		tst			,s						;
+		beq			turno_comprobarColumnaLlena_finFor		; for (contador = numFils -2;
+		lda			,y						;	contador >= 0, Y == fichaJugador;
+		cmpa			fichaJugador1					;	--contador)
+		bne			turno_comprobarColumnaLlena_compararFicha2	;
+		bra			turno_comprobarColumnaLlena_seguir		;	Y = posicion_ij (contador, 
+											;			turno_comprobarColumnaLlena_col);
+	turno_comprobarColumnaLlena_compararFicha2:					;
 											;
-			dec			1,s					;
+		cmpa			fichaJugador2					;
+		bne			turno_comprobarColumnaLlena_finFor		;
 											;
-			tfr			y,d					; for (i = numFils; i > 0; --i, Y-= y)
-			subd			2,s					;	if (ContentOf(Y) == #0x20)
-			tfr			d,y					;		break
+	turno_comprobarColumnaLlena_seguir:						;
+											;
 			lda			,s					;
-			cmpa			,y					;
-			bne			turn_Comprueba_Columna_finTest		;
-			bra			turn_Comprueba_Columna_for		;
-										;;;;;;;;;
-										
-	turn_Comprueba_Columna_finFor:
-		
-		puls			b,a	; Sacamos A y B de la pila
-		
-		bra			turn_Comprueba_Columna_return
-		
-	turn_Comprueba_Columna_finTest:
-
-		puls			b,a	; Sacamos A y B de la pila
-		
-	turn_Comprueba_Columna_HayHueco:	
+			ldb			turno_comprobarColumnaLlena_col		;
+			; X no se ha visto modificado.					;
+			jsr			posicion_ij				;		
+											;
+		dec			,s						;
+		bra			turno_comprobarColumnaLlena_for			;
+											;
+	turno_comprobarColumnaLlena_finFor:					;;;;;;;;;
 	
-		andcc			#0xFB	; Si no hay cuatro en raya, apagamos el flag Z
+		lda			,y
+		cmpa			fichaJugador1
+		beq			turno_comprobarColumnaLlena_Llena
+		cmpa			fichaJugador2
+		beq			turno_comprobarColumnaLlena_Llena
 		
-	turn_Comprueba_Columna_return:	
+		orcc			#0x04	; Ponemos a 1 el flag Z
+		bra			turno_comprobarColumnaLlena_finTest
 		
-		puls			d	; Sacamos D de la pila
+	turno_comprobarColumnaLlena_Llena:
 		
-		puls			y,d
+		andcc			#0xFB	; Ponemos a 0 el flag Z
+		
+	turno_comprobarColumnaLlena_finTest:
+	
+		puls			a	; Eliminamos el contador de la pila
+		
+		puls			d	
 		rts
+		
 
 ;--------------------------------------------------------------------;
+		; Fin comprobarColumnaLLena
+
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;			pideColumnaJugador				;
