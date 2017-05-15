@@ -65,15 +65,23 @@ instrucciones_inferior:
 		.asciz			"\n"
 		
 		
+		
+instrucciones_mensaje_imagen1:
+		.asciz			"(4 en raya en columna 3)\n"
+
 instrucciones_imagen1:
 
 		.ascii			"       "
 		.ascii			"       "
-		.ascii			"   0   "
-		.ascii			" O00   "
-		.ascii			" OO0O  "
+		.ascii			"  0    "
+		.ascii			" O0O   "
+		.ascii			" O00O  "
 		.ascii			"0O00OOO"
-		
+
+
+
+instrucciones_mensaje_imagen2:
+		.asciz			"(4 en raya en ultima fila)\n"
 		
 instrucciones_imagen2:
 
@@ -83,6 +91,11 @@ instrucciones_imagen2:
 		.ascii			" O0O   "
 		.ascii			" OO0O  "
 		.ascii			"0000OOO"
+		
+		
+		
+instrucciones_mensaje_imagen3:
+		.asciz			"(4 en raya en diagonal ascendente columnas 1-4)\n"
 		
 instrucciones_imagen3:
 
@@ -140,6 +153,8 @@ mostrar_instrucciones:
 		ldx			#instrucciones_goUpLine
 		jsr			println
 		
+		ldx			#instrucciones_mensaje_imagen1
+		jsr			println
 		ldy			#instrucciones_imagen1
 		jsr			imprimirTablero
 		lda			#'\n
@@ -147,6 +162,14 @@ mostrar_instrucciones:
 		sta			pantalla
 		sta			pantalla
 		
+		ldx			#instrucciones_prompt
+		jsr			print
+		jsr			getchar
+		ldx			#instrucciones_goUpLine
+		jsr			println
+		
+		ldx			#instrucciones_mensaje_imagen2
+		jsr			println
 		ldy			#instrucciones_imagen2
 		jsr			imprimirTablero
 		lda			#'\n
@@ -154,6 +177,14 @@ mostrar_instrucciones:
 		sta			pantalla
 		sta			pantalla
 		
+		ldx			#instrucciones_prompt
+		jsr			print
+		jsr			getchar
+		ldx			#instrucciones_goUpLine
+		jsr			println
+		
+		ldx			#instrucciones_mensaje_imagen3
+		jsr			println
 		ldy			#instrucciones_imagen3
 		jsr			imprimirTablero
 		lda			#'\n
