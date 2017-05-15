@@ -1,17 +1,4 @@
-;
-;
-;
-;
-;ESTA HECHO UNA MIERDA EL FICHERO, 
-;MAÑANA SIGO QUE HOY NO PUEDO ESTARME MAS
-;
-;
-;
-;
-;
-;
-;
-;	
+	
 	; Zona configuracion de memoria
 ;--------------------------------------------------------------------;		
 		.module			turn
@@ -51,8 +38,8 @@ pantalla	.equ			0xFF00
 ;			compruebaColumnaLlena				;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Comprueba si hay algun hueco libre en la columna y guarda el primer 	;
-; lugar libre de la columna si lo hay. Si no hay lugar libre, cambia el	;
-; flag Z								;
+; lugar libre de la columna si lo hay en Y. Si no hay lugar libre, 	;
+; cambia el flag Z							;
 ;									;
 ; Input: columna elegida en Y						;
 ; Output: flag Z							;
@@ -84,7 +71,7 @@ compruebaColumnaLLena:
 			dec			1,s					;
 											;
 			tfr			y,d					; for (i = numFils; i > 0; --i, Y-= y)
-			subd			2,s					;	if (ContentOf(Y) == #0x20)
+			subd			2,s					;	if (ContentOf(Y) != ficha)
 			tfr			d,y					;		break
 			lda			,s					;
 			cmpa			,y					;
@@ -100,11 +87,9 @@ compruebaColumnaLLena:
 		
 	turn_Comprueba_Columna_finTest:
 
+		ldy			a       ;dejo el valor del hueco que esta vacio en y 		
 		puls			b,a	; Sacamos A y B de la pila
-		
-	turn_Comprueba_Columna_HayHueco:	
-	
-		andcc			#0xFB	; Si no hay cuatro en raya, apagamos el flag Z
+		 
 		
 	turn_Comprueba_Columna_return:	
 		
@@ -133,6 +118,12 @@ compruebaColumnaLLena:
 
 pideColumnaJugador:
 		lda			teclado ;recojo la fila y la meto en el acumulador A
+		ldy			a
+		jsr			compruebaColumnaLlena
+		pshs			y	;introduce en la pila la lista de registros Y		
+		cmpy			#0x20
+		puls			y,a
+		rts
 		
 
 
