@@ -147,7 +147,7 @@ comprobarColumnaLLena:
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;			pideColumnaJugador				;
+;				promptTurno				;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Pide por pantalla al jugador que le toque en este turno la columna	;
 ; de la 1 a la 7 donde quiere colocar su ficha, despues de saber la  	;
@@ -162,8 +162,19 @@ comprobarColumnaLLena:
 ;								    	;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-pideColumnaJugador:
-		lda			teclado ;recojo la fila y la meto en el acumulador A
+promptTurno:
+		;pshs			d
 		
+		;lda			teclado
+		;suba			#0x30
+		;cmpa			#1
+		;bhs			turno_promptTurno_seguir
+	
+	turno_promptTurno_seguir:
+	
+		;cmpa			numCols
+		;bhi			turno_promptTurno_while
+		
+		;rts				
 
 

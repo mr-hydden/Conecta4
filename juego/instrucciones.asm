@@ -108,10 +108,10 @@ instrucciones_imagen3:
 		
 				
 instrucciones_prompt:
-		.asciz			"Pulsa <Return> para continuar..."
+		.asciz			"Pulsa una tecla para continuar..."
 		
 instrucciones_goUpLine:
-		.asciz			"\033[F                                "
+		.asciz			"\033[F\033[F                                  "
 		
 		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -141,6 +141,8 @@ mostrar_instrucciones:
 		ldx			#instrucciones_prompt
 		jsr			print
 		jsr			getchar
+		lda			#'\n
+		sta			pantalla
 		ldx			#instrucciones_goUpLine
 		jsr			println
 
@@ -150,6 +152,8 @@ mostrar_instrucciones:
 		ldx			#instrucciones_prompt
 		jsr			print
 		jsr			getchar
+		lda			#'\n
+		sta			pantalla
 		ldx			#instrucciones_goUpLine
 		jsr			println
 		
@@ -165,6 +169,8 @@ mostrar_instrucciones:
 		ldx			#instrucciones_prompt
 		jsr			print
 		jsr			getchar
+		lda			#'\n
+		sta			pantalla
 		ldx			#instrucciones_goUpLine
 		jsr			println
 		
@@ -180,6 +186,8 @@ mostrar_instrucciones:
 		ldx			#instrucciones_prompt
 		jsr			print
 		jsr			getchar
+		lda			#'\n
+		sta			pantalla
 		ldx			#instrucciones_goUpLine
 		jsr			println
 		
@@ -197,6 +205,8 @@ mostrar_instrucciones:
 		ldx			#instrucciones_prompt
 		jsr			print
 		jsr			getchar
+		lda			#'\n
+		sta			pantalla
 		ldx			#instrucciones_goUpLine
 		jsr			println
 		

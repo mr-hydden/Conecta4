@@ -376,7 +376,7 @@ imprimirFila:
 		sta			pantalla
 		
 		ldx			#colorAzul
-		bsr			print
+		jsr			print
 		ldx			#finFila		;; Imprime el final de la fila
 		jsr			println
 		

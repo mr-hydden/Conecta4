@@ -1,0 +1,35 @@
+#!/bin/bash
+
+OPT=
+
+echo 'Necesita los programas as6809, aslink y m6809-run para'
+echo 'hacer funcionar este programa.'
+echo
+read -p '¿Desea instalarlos? [S/N] ' OPT
+echo
+
+if [ $OPT == 's' ] || [ $OPT == 'S' ]; then
+
+	echo 'Ejecutando script instaladorcii...'
+	
+	if [ -ne ./instaladorcii.sh ]; then
+		echo 'No existe el script de instalacion.'
+		echo 'Abortando instalacion...'
+		echo
+		exit -1
+		
+	else
+		./instaladorcii.sh
+		
+	fi
+	
+else
+	echo 'No se han instalado los programas indicados.'
+
+fi
+
+
+echo 'Configuracion completa.'
+echo
+
+exit 0
