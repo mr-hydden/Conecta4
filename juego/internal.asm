@@ -1,14 +1,15 @@
 		; Zona configuracion de memoria
 ;--------------------------------------------------------------------;		
-		.module			ingame
+		.module			internal
 		
-		.area			_INGAME
+		.area			_INTERNAL
 				
 		;>>>> Etiquetas globales internas <<<<
 		
-		.globl			lda_fichaJugador
 		.globl			posicion_ij
 		.globl			generarTablero
+		.globl			tableroLleno
+		.globl			comprobarColumnaLlena
 		
 		;------------------------------------;
 		
@@ -16,7 +17,10 @@
 		
 		;>>>> Etiquetas globales externas <<<<
 		
+		.globl			numFils
 		.globl			numCols
+		.globl			fichaJugador1
+		.globl			fichaJugador2
 		
 		;------------------------------------;
 		
@@ -39,16 +43,15 @@ pantalla	.equ			0xFF00
 			; Objetos subrutinas
 ;--------------------------------------------------------------------;
 
-		;>>>> Objetos lda_fichaJugador <<<<
+		;>>>> Objetos de comprobarColumnaLlena <<<<
 		
 			;>>>> Variables <<<<
-				; Static
-				fichaTurno:.asciz	"O" ; Se va modificando en cada turno.
-				
-		;---------------------------------;
-		; Fin objetos lda_fichaJugador
-
-
+			turno_comprobarColumnaLlena_col:
+				.byte			0
+		;-------------------------------;
+		; Fin objetos comprobarColumnaLlena
+		
+		
 		;>>>> Objetos generarTablero <<<<
 		
 			; >>>> Variables  <<<<
@@ -64,50 +67,6 @@ pantalla	.equ			0xFF00
 	
 ;--------------------------------------------------------------------;
 		; Fin objetos subrutinas
-		
-		
-		
-		
-		
-				
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;			lda_fichaJugador				;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Carga en el registro A la ficha del jugador al que le toca jugar.	;
-; Se encarga por tanto de determinar quien tiene el turno, ademas de 	;
-; proporcionar una manera de identificarlo.				;
-;									;
-; Input: ninguno (necesita fichas para funcionar)			;
-; Output: registro A, ficha correspondiente.				;
-;									;
-; Registros afectados: CC, variable fichaTurno				;
-; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
-;		   	| | |X| |X|X|0|X|		     		;
-;								    	;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-lda_fichaJugador:
-		pshs			b
-		
-		lda			fichaTurno			;;;;;;;;;
-		cmpa			#'O				
-		beq			ingame_lda_fichaJugador_else		; if (fichaTurno = 'O')
-			ldb			#'O
-			stb			fichaTurno			;	A <- 'O' 
-			bra			ingame_lda_fichaJugador_finIf	;	fichaTurno <- 'X'
-			
-	ingame_lda_fichaJugador_else:						; else	
-										;	A <- 'X', fichaTurno <- 'O'
-			ldb			#'X
-			stb			fichaTurno		;;;;;;;;;
-				
-	ingame_lda_fichaJugador_finIf:
-	
-		puls			b
-		rts
-		
-;--------------------------------------------------------------------;
-		; Fin lda_fichaJugador
 		
 		
 		
@@ -168,7 +127,7 @@ posicion_ij:
 ; direccion devuelve en Y.						;
 ;									;
 ; Input: numero de celdas registro D					;
-; Output: registro Y			.				;
+; Output: registro Y			 				;
 ;									;
 ; Registros afectados: CC, Y						;
 ; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
@@ -224,31 +183,158 @@ generarTablero:
 		
 		
 		
-		
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;				colocarFicha				;
+;			comprobarColumnaLlena				;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Coloca la ficha contenida en A en su representacion ASCII en la	;
-; posicion indicada por Y.						;
+; Comprueba si hay algun hueco libre en la columna indicada en el 	;
+; registro B y guarda la direccion del primer hueco libre.		;
+; Mediante el flag Z se indica si existe ese hueco libre: si esta a 1	;
+; se encontro un hueco libre que se devuelve en el registro Y. En caso	;
+; contrario, Z = 0							;
 ;									;
-; Input: posicion registro Y						;
-; Output: posicion registro Y, disponible para comprueba4		;
+; Input: direccion base del tablero en X, numero de columna en B.	;
+; Output: registro Y, flag Z						;
 ;									;
-; Registros afectados: CC						;
+; Registros afectados: Y, CC						;
 ; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
-;		   	| | | | | | | | |		     		;
+;		   	| | | | | |?| | |		     		;
 ;								    	;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-colocarFicha:
-		sta			,y
+comprobarColumnaLlena:
+
+		pshs			d
+		
+		decb
+		stb			turno_comprobarColumnaLlena_col
+			
+		tfr			s,d	; Hacemos hueco
+		subd			#1	; en la pila para
+		tfr			d,s	; un contador
+		
+		lda			numFils					;;;;;;;;;
+		deca									;
+		sta			,s	; Inicializamos contador a NumFils -1 	;
+						; e Y a la posicion mas baja del tablero;
+		lda			numFils	; en esa columna			;
+		deca									;
+		ldb			turno_comprobarColumnaLlena_col			;
+		jsr			posicion_ij					;
+											;
+	turno_comprobarColumnaLlena_for:						;
+											;
+		lda			#-1						;
+		cmpa			,s						;
+		beq			turno_comprobarColumnaLlena_finFor		; for (contador = numFils -1;
+		lda			,y						;	contador >= 0, Y == fichaJugador;
+		cmpa			fichaJugador1					;	--contador)
+		bne			turno_comprobarColumnaLlena_compararFicha2	;
+		bra			turno_comprobarColumnaLlena_seguir		;	Y = posicion_ij (contador, 
+											;			turno_comprobarColumnaLlena_col);
+	turno_comprobarColumnaLlena_compararFicha2:					;
+											;
+		cmpa			fichaJugador2					;
+		bne			turno_comprobarColumnaLlena_finFor		;
+											;
+	turno_comprobarColumnaLlena_seguir:						;
+											;
+			lda			,s					;
+			ldb			turno_comprobarColumnaLlena_col		;
+			; X no se ha visto modificado.					;
+			jsr			posicion_ij				;		
+											;
+		dec			,s						;
+		bra			turno_comprobarColumnaLlena_for			;
+											;
+	turno_comprobarColumnaLlena_finFor:					;;;;;;;;;
+	
+		lda			,y
+		cmpa			fichaJugador1
+		beq			turno_comprobarColumnaLlena_Llena
+		cmpa			fichaJugador2
+		beq			turno_comprobarColumnaLlena_Llena
+		
+		orcc			#0x04	; Ponemos a 1 el flag Z
+		bra			turno_comprobarColumnaLlena_finTest
+		
+	turno_comprobarColumnaLlena_Llena:
+		
+		andcc			#0xFB	; Ponemos a 0 el flag Z
+		
+	turno_comprobarColumnaLlena_finTest:
+	
+		puls			a	; Eliminamos el contador de la pila
+		
+		puls			d	
 		rts
 		
+
 ;--------------------------------------------------------------------;
-		; Fin colocarFicha
+		; Fin comprobarColumnaLlena
 		
 		
 		
+		
+		
+		
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;				tableroLleno				;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Comprueba si el tablero con base en X esta lleno. Devuelve Z = 1 si 	;
+; esta lleno y Z = 0 si hay algun hueco.				;
+;									;
+; Input: base tablero registro X					;
+; Output: flag Z							;
+;									;
+; Registros afectados: CC						;
+; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
+;		   	| | | | | |?| | |		     		;
+;								    	;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+tableroLleno:
+		pshs			y,x,d
+		
+		lda			numFils				
+		ldb			numCols				
+		deca							
+		decb							
+		lbsr			posicion_ij			
+		pshs			y				
+									
+	internal_tableroLleno_while:					;;;;;;;;;
+										;
+		tfr			x,d					;
+		cmpd			,s					;
+		bhi			internal_tableroLleno_finWhile		;
+										;
+			lda			#0x20 ; Caracter espacio	; for  (X = tablero[0][0];
+			cmpa			,x+				;	X < tablero[numFils - 1][numCols -1];
+			beq			internal_tableroLleno_hueco	;	++X)
+										;		if (esHueco)
+		bra			internal_tableroLleno_while		;			break
+										;
+	internal_tableroLleno_hueco:						;
+										;
+		andcc			#0xFB	; Ponemos Z a 0			;
+		bra			internal_tableroLleno_finTest		;
+										;
+	internal_tableroLleno_finWhile:					;;;;;;;;;
+	
+		orcc			#0x04	; Ponemos Z a 1
+		
+	internal_tableroLleno_finTest:
+	
+		puls			y	; Sacamos el valor de la Y final
+		puls			y,x,d
+	
+		rts
+	
+	
+		
+;--------------------------------------------------------------------;
+		; Fin tableroLleno
 		
 		
 		

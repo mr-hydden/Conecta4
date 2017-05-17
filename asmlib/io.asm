@@ -291,7 +291,7 @@ clearScreen:
 clearScreenAscii:
 
 		pshs			x
-		ldx			#clrscr_code
+		leax			clrscr_code,pcr		; Ver si funciona
 		jsr			print
 		puls			x
 		rts

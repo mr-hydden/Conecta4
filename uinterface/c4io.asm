@@ -62,12 +62,12 @@ pantalla	.equ			0xFF00
 			menu:		.ascii			"\t\t\t   *********************\n"	;;;;;;;;;
 					.ascii			"\t\t\t   **    CONECTA 4    **\n"		;
 					.ascii			"\t\t\t   *********************\n\n\n"		;
-					.ascii			"\t\t\t   a) \033[4mNueva partida\033[0m\n\n"
-					.ascii			"\t\t\t   b) \033[4mInstrucciones\033[0m\n\n"			;
-					.ascii			"\t\t\t   c) \033[4mSalir\033[0m"				;
+					.ascii			"\t\t\t   a) \033[4mNueva partida\033[0m\n\n"	;
+					.ascii			"\t\t\t   b) \033[4mInstrucciones\033[0m\n\n"	;
+					.ascii			"\t\t\t   c) \033[4mSalir\033[0m"		;
 					.asciz			"\n\n\n\n\n\n\n\n"				;
 														;
-			promptMenu:	.asciz			"\033[F\033[FOpcion: "				;;;;;;;;;
+			promptMenu:	.asciz			"\033[F\033[FOpcion: "			;;;;;;;;;
 			
 			promptMenuAdvertencia:
 					.asciz			"\033[F\033[FOpcion incorrecta.\nSeleccione una opcion disponible: "
@@ -102,8 +102,10 @@ pantalla	.equ			0xFF00
 		
 		;>>>> Objetos constantes compartidos <<<<
 
-fichaJugador1:	.byte			#'0	; Representacion de las fichas 
-fichaJugador2:	.byte			#'O	; de los jugadores
+fichaJugador1:	.byte			#'0	
+fichaJugador2:	.byte			#'O	
+						; Representacion de las fichas 
+						; de los jugadores
 
 		;------------------------------;
 		; Fin objetos constates compartidos
@@ -403,11 +405,11 @@ imprimirFila:
 ;									;
 ; Input: -								;
 ; Output: pantalla							;
-;								    	;	;; Se deberia INCLUIR GESTION DE OPCION
-; Registros afectados: CC					    	;	;; INCORRECTA, ya que el string menu se encuentra
-; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;	;; asociado unicamente a esta funcion, y por tanto
-;		   	| | |X| |X|X|0|X|		     		;	;; las opciones que contiene serian naturalmente 
-;								    	;	;; gestionadas por esta subrutina.
+;								    	;
+; Registros afectados: CC					    	;
+; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
+;		   	| | |X| |X|X|0|X|		     		;
+;								    	;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
@@ -464,7 +466,25 @@ mostrarMenu:
 ;--------------------------------------------------------------------;
 		; Fin mostrarMenu
 		
-		
+	
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;			mensajeGanador				    	;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Muestra un mensaje con el ganador					;
+;									;
+; Input: -								;
+; Output: pantalla							;
+;								    	;
+; Registros afectados: CC					    	;
+; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
+;		   	| | |X| |X|X|0|X|		     		;
+;								    	;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+;--------------------------------------------------------------------;
+		; Fin mostrarMenu	
 		
 		
 		

@@ -119,7 +119,7 @@ instrucciones_goUpLine:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Imprime un las instrucciones con el formato adecuado			;
 ;									;
-; Input: -				;
+; Input: -								;
 ; Output: pantalla							;
 ;									;
 ; Registros afectados: CC					    	;
@@ -213,5 +213,6 @@ mostrar_instrucciones:
 		puls			y,x,d
 		rts
 		
-		
+;--------------------------------------------------------------------;
+		; Fin mostrar_instrucciones		
 		
