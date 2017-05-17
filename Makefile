@@ -10,7 +10,7 @@ EXE_EXT= s19
 
 OBJS = main.$(OBJ_EXT) ./uinterface/c4io.$(OBJ_EXT) \
 ./juego/instrucciones.$(OBJ_EXT) ./asmlib/io.$(OBJ_EXT) \
-./asmlib/testing.$(OBJ_EXT) ./juego/turn.$(OBJ_EXT) \
+./asmlib/testing.$(OBJ_EXT) ./juego/turno.$(OBJ_EXT) \
 ./juego/internal.$(OBJ_EXT) ./asmlib/artlog.$(OBJ_EXT)
 
 EMUL= m6809-run
@@ -28,8 +28,8 @@ main.$(OBJ_EXT): main.$(SOURCE_EXT)
 ./juego/instrucciones.$(OBJ_EXT): ./juego/instrucciones.$(SOURCE_EXT)
 	$(ASMBLR) $(ASMOPS) ./juego/instrucciones.$(SOURCE_EXT)
 	
-./juego/turn.$(OBJ_EXT): ./juego/turn.$(SOURCE_EXT)
-	$(ASMBLR) $(ASMOPS) ./juego/turn.$(SOURCE_EXT)
+./juego/turno.$(OBJ_EXT): ./juego/turno.$(SOURCE_EXT)
+	$(ASMBLR) $(ASMOPS) ./juego/turno.$(SOURCE_EXT)
 	
 ./asmlib/io.$(OBJ_EXT): ./asmlib/io.$(SOURCE_EXT)
 	$(ASMBLR) $(ASMOPS) ./asmlib/io.$(SOURCE_EXT)
