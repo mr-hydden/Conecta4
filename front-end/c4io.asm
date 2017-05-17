@@ -8,25 +8,22 @@
 		
 		.globl			imprimirTablero
 		.globl			mostrarMenu
-		.globl			fichaJugador1
-		.globl			fichaJugador2
+		.globl			mostrarJugadorTurno
 		
 		;------------------------------------;
 		
 		
 		
 		;>>>> Etiquetas globales externas <<<<
-		
-		.globl			numFils
-		.globl			numCols
 		;.globl			tablero
 		
 		.globl			println
 		.globl			print
 		.globl			getchar
-		.globl			clearScreen
+		.globl			clrscr
 		.globl			tolower
 		
+		.globl			fichaTurno
 		;------------------------------------;
 		
 ;--------------------------------------------------------------------;
@@ -40,9 +37,7 @@
 		; Inicio definicion de constantes
 ;--------------------------------------------------------------------;												
 			
-fin		.equ			0xFF01				
-teclado		.equ			0xFF02
-pantalla	.equ			0xFF00
+		.include		"include.txt"
 
 ;--------------------------------------------------------------------;
 		; Fin definicion de constantes
@@ -80,35 +75,37 @@ pantalla	.equ			0xFF00
 		
 			; >>>> Constantes <<<<
 		
-			inicioBaseTablero:				;;;;;;;;;
-					.asciz			"/=="		;
-			medioBaseTablero:					;
-					.asciz			"===="		;
-			finBaseTablero:						;
-					.asciz			"===\ "		;
-			inicioFila:	.asciz			" |("		;
-			medioFila:	.asciz			")|("		;
-			finFila:	.asciz			")|"	;;;;;;;;;
+			sImprimirTablero_InicioBaseTablero:				;;;;;;;;;
+					.asciz			"/=="				;
+												;
+			sImprimirTablero_MedioBaseTablero:					;
+					.asciz			"===="				;
+												;
+			sImprimirTablero_FinBaseTablero:					;
+					.asciz			"===\ "				;
+												;
+			sImprimirTablero_InicioFila:	.asciz			" |("		;
+			sImprimirTablero_MedioFila:	.asciz			")|("		;
+			sImprimirTablero_FinFila:	.asciz			")|"	;;;;;;;;;
 
-			colorRojo:	.asciz			"\033[31m"
-			colorAzul:	.asciz			"\033[34m"
-			colorAmarillo:	.asciz			"\033[33m"
-			colorOriginal:	.asciz			"\033[0m"
+			sImprimirTablero_ColorRojo:	.asciz			"\033[31m"
+			sImprimirTablero_ColorAzul:	.asciz			"\033[34m"
+			sImprimirTablero_ColorAmarillo:	.asciz			"\033[33m"
+			sImprimirTablero_ColorOriginal:	.asciz			"\033[0m"
 			
 		;-----------------------------------;
 		; Fin objetos imprimirTablero
 		
 		
+			
+		;>>>> Objetos mostrarJugadorTurno <<<<
 		
-		;>>>> Objetos constantes compartidos <<<<
-
-fichaJugador1:	.byte			#'0	
-fichaJugador2:	.byte			#'O	
-						; Representacion de las fichas 
-						; de los jugadores
-
-		;------------------------------;
-		; Fin objetos constates compartidos
+			;>>>> Constantes <<<<
+			sMostrarJugadorTurno_MensajeTurno:
+				.asciz			"\nEs el turno del jugador "
+		;------------------------------------;
+		; Fin objetos mostrarJugadorTurno
+		
 		
 ;--------------------------------------------------------------------;
 		; Fin objetos subrutinas
@@ -121,10 +118,10 @@ fichaJugador2:	.byte			#'O
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;			imprimirTablero				    	;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Imprime un tablero de numFils x numCols apuntado por el registro Y	;
+; Imprime un tablero de NumFils x NumCols apuntado por el registro Y	;
 ;									;
 ; Input: tablero apuntado por registro Y				;
-; Output: pantalla							;
+; Output: $Pantalla							;
 ;									;
 ; Registros afectados: CC					    	;
 ; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
@@ -144,9 +141,9 @@ imprimirTablero:
 		
 		
 		lda			#'\t
-		sta			pantalla	; Para alinear el tablero
-		sta			pantalla	;
-		sta			pantalla	;
+		sta			$Pantalla	; Para alinear el tablero
+		sta			$Pantalla	;
+		sta			$Pantalla	;
 		
 		ldb			#1				;;;;;;;;; 
 		stb			,s	; 0,s es siempre el contador,	;
@@ -155,20 +152,20 @@ imprimirTablero:
 		ldb			,s					;
 										;
 		decb	; Decrementamos para que el comportamiento del bucle	;
-			; sea el correcto sin tener que modificar numCols	;
+			; sea el correcto sin tener que modificar NumCols	;
 										;
-		cmpb			numCols					;
+		cmpb			NumCols					;
 		beq			c4io_imprimirTablero_finFor1		; 
-										;	for (counter = 1; counter <= numCols; ++counter)
+										;	for (counter = 1; counter <= NumCols; ++counter)
 								;;;;;;;;;	;		imprime("   %d", counter)
 									;	;
 			lda			#0x20 ; Espacio		;Cuerpo	;
-			sta			pantalla		;del	;
-			sta			pantalla		;bucle	;
-			sta			pantalla		;	;
+			sta			$Pantalla		;del	;
+			sta			$Pantalla		;bucle	;
+			sta			$Pantalla		;	;
 			ldb			,s			;	;
 			addb			#0x30 ; Digito ASCII	;	;
-			stb			pantalla	;;;;;;;;;	;	
+			stb			$Pantalla	;;;;;;;;;	;	
 										;
 		inc			,s					;
 		bra			c4io_imprimirTablero_for1		;
@@ -176,14 +173,14 @@ imprimirTablero:
 	c4io_imprimirTablero_finFor1:					;;;;;;;;;
 		
 		lda			#0x0A		;; Imprimimos un salto de linea
-		sta			pantalla	;;
+		sta			$Pantalla	;;
 		
 		
 	
 		lda			#'\t
-		sta			pantalla	;
-		sta			pantalla	; Para alinear el tablero
-		sta			pantalla	;
+		sta			$Pantalla	;
+		sta			$Pantalla	; Para alinear el tablero
+		sta			$Pantalla	;
 		
 		
 		clrb							;;;;;;;;; 
@@ -191,17 +188,17 @@ imprimirTablero:
 										;
 	c4io_imprimirTablero_for2:						;	
 		ldb			,s					;
-		cmpb			numCols					;
+		cmpb			NumCols					;
 		beq			c4io_imprimirTablero_finFor2		; 
-										;	for (counter = 0; counter < numCols; ++counter)
+										;	for (counter = 0; counter < NumCols; ++counter)
 								;;;;;;;;;	;		imprime("   v")
 									;	;
 			lda			#0x20	; Espacio	;Cuerpo	;
-			sta			pantalla		;del	;
-			sta			pantalla		;bucle	;
-			sta			pantalla		;	;
+			sta			$Pantalla		;del	;
+			sta			$Pantalla		;bucle	;
+			sta			$Pantalla		;	;
 			ldb			#0x76	;Letra 'v'	;	;
-			stb			pantalla	;;;;;;;;;	;	
+			stb			$Pantalla	;;;;;;;;;	;	
 										;
 		inc			,s					;
 		bra			c4io_imprimirTablero_for2		;
@@ -209,33 +206,33 @@ imprimirTablero:
 	c4io_imprimirTablero_finFor2:					;;;;;;;;;
 		
 		lda			#0x0A		;; Imprimimos un salto de linea
-		sta			pantalla	;;
-		sta			pantalla	;;
+		sta			$Pantalla	;;
+		sta			$Pantalla	;;
 		
 
 		
 		ldy			1,s	; Direccion del tablero
 
-		ldx			#colorAzul	; Imprimimos el tablero
-		jsr			print		; en color azul
+		ldx			#sImprimirTablero_ColorAzul	; Imprimimos el tablero
+		jsr			print		; en sImprimirTablero_Color azul
 
 		clrb							;;;;;;;;; 
 		stb			,s					;
 										;
 	c4io_imprimirTablero_for3:						;		
 		ldb			,s					;
-		cmpb			numFils					;
+		cmpb			NumFils					;
 		beq			c4io_imprimirTablero_finFor3		; 
-										;	for (counter = 0; counter < numFils; ++counter)
+										;	for (counter = 0; counter < NumFils; ++counter)
 								;;;;;;;;;	;		imprimeFila
 									;	;
 			lda			#'\t			;	;
-			sta			pantalla ; Alinear	;	;
-			sta			pantalla ; tablero	;	;
-			sta			pantalla ;		;	;
+			sta			$Pantalla ; Alinear	;	;
+			sta			$Pantalla ; tablero	;	;
+			sta			$Pantalla ;		;	;
 			jsr			imprimirFila		;Cuerpo	;
 			tfr			y,x			;del	;
-			ldb			numCols			;bucle	;
+			ldb			NumCols			;bucle	;
 			abx						;	;
 			tfr			x,y		;;;;;;;;;	;
 										;
@@ -247,25 +244,25 @@ imprimirTablero:
 		
 		
 		lda			#'\t
-		sta			pantalla
-		sta			pantalla
-		sta			pantalla
-		ldx			#inicioBaseTablero
+		sta			$Pantalla
+		sta			$Pantalla
+		sta			$Pantalla
+		ldx			#sImprimirTablero_InicioBaseTablero
 		jsr			print
 		
 		ldb			#1				;;;;;;;;; 
 		stb			,s					;
-		ldx			#medioBaseTablero			;
+		ldx			#sImprimirTablero_MedioBaseTablero			;
 										;
 	c4io_imprimirTablero_for4:						;
 		ldb			,s					;
-		cmpb			numCols					;
+		cmpb			NumCols					;
 		beq			c4io_imprimirTablero_finFor4		; 
-										;	for (	counter = 1, X = &medioBaseTablero; 
-								;;;;;;;;;Cuerpo	;		counter < numCols; 
+										;	for (	counter = 1, X = &sImprimirTablero_MedioBaseTablero; 
+								;;;;;;;;;Cuerpo	;		counter < NumCols; 
 			jsr			print			;del	;		++counter	)
 								;;;;;;;;;bucle	;		
-										;		imprime(medioBaseTablero)
+										;		imprime(sImprimirTablero_MedioBaseTablero)
 										;
 		inc			,s					;
 		bra			c4io_imprimirTablero_for4		;
@@ -274,10 +271,10 @@ imprimirTablero:
 		
 			
 	
-		ldx			#finBaseTablero
+		ldx			#sImprimirTablero_FinBaseTablero
 		jsr			println
 
-		ldx			#colorOriginal	; Reseteamos el color
+		ldx			#sImprimirTablero_ColorOriginal	; Reseteamos el sImprimirTablero_Color
 		jsr			print		; del terminal
 		
 		tfr			s,d	; Eliminamos el espacio
@@ -302,7 +299,7 @@ imprimirTablero:
 ; Imprime una fila del tablero, apuntada por el registro Y	    	;
 ;									;
 ; Input: fila apuntada por el REGISTRO Y				;
-; Output: pantalla							;
+; Output: $Pantalla							;
 ;								    	;
 ; Registros afectados: CC					    	;
 ; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
@@ -319,7 +316,7 @@ imprimirFila:
 								; No lo inicializamos, porque lo hace el bucle for. 
 		
 		
-		ldx			#inicioFila		;; Imprime el inicio de fila
+		ldx			#sImprimirTablero_InicioFila		;; Imprime el inicio de fila
 		jsr			print
 		
 		
@@ -328,30 +325,30 @@ imprimirFila:
 						; pues s no se modifica hasta		;
 	c4io_imprimirFila_for:			; el final de la subrutina		;
 		ldb			,s						;
-		cmpb			numCols						;
+		cmpb			NumCols						;
 		beq			c4io_imprimirFila_finFor			;	 
-											; for (counter = 1; counter < numCols; ++counter)
+											; for (counter = 1; counter < NumCols; ++counter)
 									;;;;;;;;;	; {
 										;	;	imprime (fila[counter-1])
-			lda			,y+				;Cuerpo	;	imprime (medioFila)
-			cmpa			fichaJugador1				
+			lda			,y+				;Cuerpo	;	imprime (sImprimirTablero_MedioFila)
+			cmpa			FichaJugador1				
 			bne			c4io_imprimirFila_otraFicha	;del	; }
-			ldx			#colorRojo			;bucle	;
+			ldx			#sImprimirTablero_ColorRojo			;bucle	;
 			jsr			print				;	;
 			bra			c4io_imprimirFila_imprimirFicha	;	;
 										;	;
 		c4io_imprimirFila_otraFicha:					;	;
 										;	;
-			ldx			#colorAmarillo			;	;
+			ldx			#sImprimirTablero_ColorAmarillo			;	;
 			jsr			print				;	;
 										;	;
 		c4io_imprimirFila_imprimirFicha:				;	;
 										;	;
-			sta			pantalla			;	;
+			sta			$Pantalla			;	;
 										;	;
-			ldx			#colorAzul			;	;
+			ldx			#sImprimirTablero_ColorAzul			;	;
 			jsr			print				;	;
-			ldx			#medioFila			;	;
+			ldx			#sImprimirTablero_MedioFila			;	;
 			jsr			print			;;;;;;;;;	;
 											;
 		inc			,s						;
@@ -362,24 +359,24 @@ imprimirFila:
 	
 	
 		lda			,y			;; Imprime el ultimo dato de la fila
-		cmpa			fichaJugador1
+		cmpa			FichaJugador1
 		bne			c4io_imprimirFila_ultimo_otraFicha
-		ldx			#colorRojo
+		ldx			#sImprimirTablero_ColorRojo
 		jsr			print
 		bra			c4io_imprimirFila_ultimo_imprimirFicha
 		
 	c4io_imprimirFila_ultimo_otraFicha:
 	
-		ldx			#colorAmarillo
+		ldx			#sImprimirTablero_ColorAmarillo
 		jsr			print		
 		
 	c4io_imprimirFila_ultimo_imprimirFicha:
 		
-		sta			pantalla
+		sta			$Pantalla
 		
-		ldx			#colorAzul
+		ldx			#sImprimirTablero_ColorAzul
 		jsr			print
-		ldx			#finFila		;; Imprime el final de la fila
+		ldx			#sImprimirTablero_FinFila		;; Imprime el final de la fila
 		jsr			println
 		
 		
@@ -404,7 +401,7 @@ imprimirFila:
 ; Imprime una el menu y un prompt que solicita una opcion.	    	;
 ;									;
 ; Input: -								;
-; Output: pantalla							;
+; Output: $Pantalla							;
 ;								    	;
 ; Registros afectados: CC					    	;
 ; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
@@ -420,7 +417,7 @@ mostrarMenu:
 		
 	c4io_mostrarMenu_opcionIncorrecta:		
 		
-		jsr			clearScreen
+		jsr			clrscr
 		
 		ldx			#menu
 		jsr			print
@@ -466,14 +463,67 @@ mostrarMenu:
 ;--------------------------------------------------------------------;
 		; Fin mostrarMenu
 		
-	
+		
+		
+		
+		
+		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;			mensajeGanador				    	;
+;			mostrarJugadorTurno				;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Muestra un mensaje informando de que jugador tiene el turno		;
+;									;
+; Input: -								;
+; Output: $Pantalla			.				;
+;									;
+; Registros afectados: -						;
+; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
+;		   	| | | | | | | | |		     		;
+;								    	;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+mostrarJugadorTurno:
+		pshs			a,b
+		
+		lda			FichaJugador1
+		ldb			FichaJugador2
+		
+		leax			sMostrarJugadorTurno_MensajeTurno,pcr
+		lbsr			print
+		
+		cmpa			fichaTurno				;;;;;;;;;
+		beq			c4io_mostrarJugadorTurno_else			; if (fichaTurno = FichaJugador1)
+			lda			#0x31 ; Digito 1 en ASCII		;	fichaTurno <- FichaJugador2
+			bra			c4io_mostrarJugadorTurno_finIf		; else	
+											;	fichaTurno <- FichaJugador1
+	c4io_mostrarJugadorTurno_else:							; 
+											;
+			lda			#0x32 ; Digito 2 en ASCII	;;;;;;;;;
+				
+	c4io_mostrarJugadorTurno_finIf:
+	
+		sta			$Pantalla
+		lda			#'\n
+		sta			$Pantalla
+		
+		puls			a,b
+		rts
+		
+;--------------------------------------------------------------------;
+		; Fin actualizarFichaTurno
+		
+		
+		
+		
+		
+		
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;			mostrarMensajeGanador				    	;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Muestra un mensaje con el ganador					;
 ;									;
 ; Input: -								;
-; Output: pantalla							;
+; Output: $Pantalla							;
 ;								    	;
 ; Registros afectados: CC					    	;
 ; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
@@ -484,7 +534,7 @@ mostrarMenu:
 
 
 ;--------------------------------------------------------------------;
-		; Fin mostrarMenu	
+		; Fin mostrarMensajeGanador	
 		
 		
 		

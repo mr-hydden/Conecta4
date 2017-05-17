@@ -1,0 +1,16 @@
+		; Inicio definicion de constantes
+;--------------------------------------------------------------------;												
+			
+$Fin		.equ			0xFF01				
+$Teclado	.equ			0xFF02
+$Pantalla	.equ			0xFF00
+
+		.globl			NumFils
+		.globl			NumCols
+		.globl			FichaJugador1
+		.globl			FichaJugador2
+
+;--------------------------------------------------------------------;
+		; Fin definicion de constantes
+
+				

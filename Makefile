@@ -8,42 +8,49 @@ SOURCE_EXT= asm
 OBJ_EXT= rel
 EXE_EXT= s19
 
-OBJS = main.$(OBJ_EXT) ./uinterface/c4io.$(OBJ_EXT) \
-./juego/instrucciones.$(OBJ_EXT) ./asmlib/io.$(OBJ_EXT) \
-./asmlib/testing.$(OBJ_EXT) ./juego/turno.$(OBJ_EXT) \
-./juego/internal.$(OBJ_EXT) ./asmlib/artlog.$(OBJ_EXT)
+OBJS = conecta4.$(OBJ_EXT) ./front-end/c4io.$(OBJ_EXT) \
+./front-end/instrucciones.$(OBJ_EXT) ./asmlib/io.$(OBJ_EXT) \
+./asmlib/ctype.$(OBJ_EXT) ./back-end/turno.$(OBJ_EXT) \
+./back-end/internal.$(OBJ_EXT) ./asmlib/artlog.$(OBJ_EXT)
 
 EMUL= m6809-run
 
 
-main.s19: $(OBJS)
-	$(ASLINKER) $(LINKOPS) main.$(EXE_EXT) $(OBJS)
+conecta4.s19: $(OBJS)
+	$(ASLINKER) $(LINKOPS) conecta4.$(EXE_EXT) $(OBJS)
 
-main.$(OBJ_EXT): main.$(SOURCE_EXT)
-	$(ASMBLR) $(ASMOPS) main.$(SOURCE_EXT)
+conecta4.$(OBJ_EXT): conecta4.$(SOURCE_EXT)
+	$(ASMBLR) $(ASMOPS) conecta4.$(SOURCE_EXT)
 	
-./uinterface/c4io.$(OBJ_EXT): ./uinterface/c4io.$(SOURCE_EXT)
-	$(ASMBLR) $(ASMOPS) ./uinterface/c4io.$(SOURCE_EXT)
+./front-end/c4io.$(OBJ_EXT): ./front-end/c4io.$(SOURCE_EXT)
+	$(ASMBLR) $(ASMOPS) ./front-end/c4io.$(SOURCE_EXT)
 	
-./juego/instrucciones.$(OBJ_EXT): ./juego/instrucciones.$(SOURCE_EXT)
-	$(ASMBLR) $(ASMOPS) ./juego/instrucciones.$(SOURCE_EXT)
+./front-end/instrucciones.$(OBJ_EXT): ./front-end/instrucciones.$(SOURCE_EXT)
+	$(ASMBLR) $(ASMOPS) ./front-end/instrucciones.$(SOURCE_EXT)
 	
-./juego/turno.$(OBJ_EXT): ./juego/turno.$(SOURCE_EXT)
-	$(ASMBLR) $(ASMOPS) ./juego/turno.$(SOURCE_EXT)
+./back-end/turno.$(OBJ_EXT): ./back-end/turno.$(SOURCE_EXT)
+	$(ASMBLR) $(ASMOPS) ./back-end/turno.$(SOURCE_EXT)
 	
 ./asmlib/io.$(OBJ_EXT): ./asmlib/io.$(SOURCE_EXT)
 	$(ASMBLR) $(ASMOPS) ./asmlib/io.$(SOURCE_EXT)
 	
-./asmlib/testing.$(OBJ_EXT): ./asmlib/testing.$(SOURCE_EXT)
-	$(ASMBLR) $(ASMOPS) ./asmlib/testing.$(SOURCE_EXT)
+./asmlib/ctype.$(OBJ_EXT): ./asmlib/ctype.$(SOURCE_EXT)
+	$(ASMBLR) $(ASMOPS) ./asmlib/ctype.$(SOURCE_EXT)
 	
 ./asmlib/artlog.$(OBJ_EXT): ./asmlib/artlog.$(SOURCE_EXT)
 	$(ASMBLR) $(ASMOPS) ./asmlib/artlog.$(SOURCE_EXT)
 	
-./juego/internal.$(OBJ_EXT): ./juego/internal.$(SOURCE_EXT)
-	$(ASMBLR) $(ASMOPS) ./juego/internal.$(SOURCE_EXT)
+./back-end/internal.$(OBJ_EXT): ./back-end/internal.$(SOURCE_EXT)
+	$(ASMBLR) $(ASMOPS) ./back-end/internal.$(SOURCE_EXT)
 	
 exe:
-	$(EMUL) main.$(EXE_EXT)
+	$(EMUL) conecta4.$(EXE_EXT)
+	
+debug:
+	ensambla -d conecta4 ./front-end/c4io \
+	./front-end/instrucciones ./asmlib/io \
+	./asmlib/ctype ./back-end/turno \
+	./back-end/internal ./asmlib/artlog
+	
 	
 

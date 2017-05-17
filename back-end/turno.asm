@@ -12,23 +12,18 @@
 		;------------------------------------;
 		
 		;>>>> Etiquetas globales externas <<<<
-		
-		.globl			numFils
-		.globl			numCols
 		;.globl			tablero
 		
-		.globl			posicion_ij
-		.globl			clearScreen
+		.globl			posicionij
+		.globl			clrscr
 		.globl			imprimirTablero
 		.globl			getchar
 		.globl			print
-		.globl			comprobarColumnaLlena
+		.globl			columnaLlena
+		.globl			mostrarJugadorTurno
 		
 		.globl			negd
-		
-		.globl			fichaJugador1
-		.globl			fichaJugador2
-		
+				
 		;------------------------------------;
 		
 ;--------------------------------------------------------------------;
@@ -38,9 +33,7 @@
 		; Inicio definicion de constantes
 ;--------------------------------------------------------------------;												
 			
-fin		.equ			0xFF01				
-teclado		.equ			0xFF02
-pantalla	.equ			0xFF00
+		.include		"include.txt"
 
 ;--------------------------------------------------------------------;
 		; Fin definicion de constantes
@@ -56,24 +49,16 @@ pantalla	.equ			0xFF00
 				
 		;---------------------------------;
 		; Fin objetos actualizarFichaTurno
-		
-		;>>>> Objetos mostrarJugadorTurno <<<<
-		
-			;>>>> Constantes <<<<
-			mensajeTurno:
-				.asciz			"\nEs el turno del jugador "
-		;------------------------------------;
-		; Fin objetos actualizarFichaTurno
-		
+			
 		
 		;>>>> Objetos turno <<<<
 		
 			;>>>> Constantes <<<<
-			promptRecogerColumna:
+			sTurno_PromptRecogerColumna:
 				.asciz			"Siguiente jugada: columna numero _\b"
-			mensajeErrorFueraRango:
+			sTurno_MensajeErrorFueraRango:
 				.asciz			"Introduzca una columna valida.\n"
-			mensajeErrorColumnaLlena:
+			sTurno_MensajeErrorColumnaLlena:
 				.asciz			"Columna llena. Juegue en una columna disponible.\n"
 				
 		;----------------------;
@@ -102,76 +87,33 @@ pantalla	.equ			0xFF00
 actualizarFichaTurno:
 		pshs			a,b
 		
-		lda			fichaJugador1
-		ldb			fichaJugador2
+		lda			FichaJugador1
+		ldb			FichaJugador2
 		
 		cmpa			fichaTurno				;;;;;;;;;
-		beq			ingame_actualizarFichaTurno_else		; if (fichaTurno = fichaJugador1)
-			sta			fichaTurno				;	fichaTurno <- fichaJugador2
-			bra			ingame_actualizarFichaTurno_finIf	; else	
-											;	fichaTurno <- fichaJugador1
-	ingame_actualizarFichaTurno_else:						; 
+		beq			turno_actualizarFichaTurno_else			; if (fichaTurno = FichaJugador1)
+			sta			fichaTurno				;	fichaTurno <- FichaJugador2
+			bra			turno_actualizarFichaTurno_finIf	; else	
+											;	fichaTurno <- FichaJugador1
+	turno_actualizarFichaTurno_else:						; 
 											;
 			stb			fichaTurno			;;;;;;;;;
 				
-	ingame_actualizarFichaTurno_finIf:
+	turno_actualizarFichaTurno_finIf:
 	
 		puls			a,b
 		rts
 		
 ;--------------------------------------------------------------------;
 		; Fin actualizarFichaTurno
-
-
-
-
-
+		
+		
+		
+		
+		
+		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;				mostrarJugadorTurno			;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Muestra un mensaje informando de que jugador tiene el turno		;	; ESTA MENJOR EN C4IO
-;									;
-; Input: -								;
-; Output: pantalla			.				;
-;									;
-; Registros afectados: -						;
-; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
-;		   	| | | | | | | | |		     		;
-;								    	;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-mostrarJugadorTurno:
-		pshs			a,b
-		
-		lda			fichaJugador1
-		ldb			fichaJugador2
-		
-		leax			mensajeTurno,pcr
-		lbsr			print
-		
-		cmpa			fichaTurno				;;;;;;;;;
-		beq			ingame_mostrarJugadorTurno_else			; if (fichaTurno = fichaJugador1)
-			lda			#0x31 ; Digito 1 en ASCII		;	fichaTurno <- fichaJugador2
-			bra			ingame_mostrarJugadorTurno_finIf	; else	
-											;	fichaTurno <- fichaJugador1
-	ingame_mostrarJugadorTurno_else:						; 
-											;
-			lda			#0x32 ; Digito 2 en ASCII	;;;;;;;;;
-				
-	ingame_mostrarJugadorTurno_finIf:
-	
-		sta			pantalla
-		lda			#'\n
-		sta			pantalla
-		
-		puls			a,b
-		rts
-		
-;--------------------------------------------------------------------;
-		; Fin actualizarFichaTurno
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;				turno				;
+;				turno					;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Solicita al jugador una columna para realizar la proxima jugada y	;
 ; realiza las comprobaciones pertinentes para ver que es posible jugar	;
@@ -194,14 +136,14 @@ turno:
 		
 	turno_turno_while:						;;;;;;;;;
 										;
-			lbsr			clearScreen			;
+			lbsr			clrscr			;
 			puls			y				;	
 			pshs			y	; Cargamos para		;
 							; imprimir tablero	;
 										;
 			lbsr			imprimirTablero			;
 			lbsr			mostrarJugadorTurno		;
-			leax			promptRecogerColumna,pcr	;
+			leax			sTurno_PromptRecogerColumna,pcr	;
 			lbsr			print				;
 										;
 			lbsr			getchar				;
@@ -214,29 +156,29 @@ turno:
 										;
 	turno_turno_test2:							; do
 										;	PedirColumna
-		cmpa			numCols					; 	if (Columna < 1 || columna > numCols)
+		cmpa			NumCols					; 	if (Columna < 1 || columna > NumCols)
 		bhi			turno_turno_mensajeErrorFueraRango	;		mensajeFueraRango
 		bra			turno_turno_test3			;		continuar
 										;	if (columnaLlena)
 	turno_turno_test3:							;		mensajeColumaLlena
 										;		continuar
-		puls			x					; while (columna < 1 || columna > numCols || columnaLlena)
+		puls			x					; while (columna < 1 || columna > NumCols || columnaLlena)
 		pshs			x					;
 		tfr			a,b					;
-		lbsr			comprobarColumnaLlena			;
+		lbsr			columnaLlena			;
 		bne			turno_turno_mensajeErrorColumnaLlena	;
 		bra			turno_turno_finWhile			;
 										;
 										;
 	turno_turno_mensajeErrorFueraRango:					;
 										;
-		leax			mensajeErrorFueraRango,pcr		;
+		leax			sTurno_MensajeErrorFueraRango,pcr	;
 		lbsr			print					;
 		bra			turno_turno_while			;
 										;
 	turno_turno_mensajeErrorColumnaLlena:					;
 										;
-		leax			mensajeErrorColumnaLlena,pcr		;
+		leax			sTurno_MensajeErrorColumnaLlena,pcr	;
 		lbsr			print					;
 		bra			turno_turno_while			;
 										;

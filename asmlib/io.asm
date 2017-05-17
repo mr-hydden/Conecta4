@@ -11,8 +11,8 @@
 		.globl			print
 		.globl			getstr
 		.globl			getchar
-		.globl			clearScreen
-		.globl			clearScreenAscii
+		.globl			clrscr
+		.globl			clrscrAscii
 		
 		;------------------------------------;
 		
@@ -47,14 +47,14 @@ pantalla	.equ			0xFF00
 		
 		; Objetos subrutinas
 ;--------------------------------------------------------------------;	
-		;>>>> Objetos de clearScreenAscii <<<<
+		;>>>> Objetos de clrscrAscii <<<<
 		
 			; >>>> Constantes <<<<
 
-			clrscr_code:	.asciz			"\33[2J"
+			sClrscr_ClrScrAsciiCode:	.asciz		"\33[2J"
 			
 		;------------------------------------;
-		; Fin objetos clearScreenAscii
+		; Fin objetos clrscrAscii
 
 ;--------------------------------------------------------------------;	
 		; Fin objetos subrutinas
@@ -223,7 +223,7 @@ getchar:
 		
 		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;			clearScreen				    	;
+;			clrscr				    	;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Limpia la pantalla, imprimiendo 50 saltos de linea. Feo, pero portable;
 ;								    	;
@@ -235,7 +235,7 @@ getchar:
 ;		   	| | |X| |X|X|0|X|		     		;
 ;								    	;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-clearScreen:
+clrscr:
 		pshs			d
 		
 		tfr			s,d	; Hacemos espacio en la pila para
@@ -246,18 +246,18 @@ clearScreen:
 		stb			,s	; 0,s es siempre el contador
 		lda			#'\n
 		
-	io_clearScreen_for:					;;;;;;;;;
+	io_clrscr_for:						;;;;;;;;;
 									;
 		ldb			,s				;
 		cmpb			#50				; for (counter = 0, A = \n; 
-		beq			io_clearScreen_finFor		; 	counter < 50;
+		beq			io_clrscr_finFor		; 	counter < 50;
 									;	++counter)
 			sta			pantalla		;		imprime(A)	
 		inc			,s				;						;	
-		bra			io_clearScreen_for		;		
+		bra			io_clrscr_for			;		
 								;;;;;;;;;
 		
-	io_clearScreen_finFor:
+	io_clrscr_finFor:
 		
 		tfr			s,d	; Eliminamos el espacio
 		incb				; para el contador
@@ -267,7 +267,7 @@ clearScreen:
 		rts
 
 ;--------------------------------------------------------------------;
-		; Fin clearScreen
+		; Fin clrscr
 		
 		
 		
@@ -275,7 +275,7 @@ clearScreen:
 		
 		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;			clearScreenAscii			    	;
+;			clrscrAscii			    	;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Limpia la pantalla utilizando el codigo de escape ascii "\33[2J"   	;
 ; No portable, mas elegante.						;
@@ -288,16 +288,16 @@ clearScreen:
 ;		   	| | | | |X|X|0| |		     		;
 ;								    	;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-clearScreenAscii:
+clrscrAscii:
 
 		pshs			x
-		leax			clrscr_code,pcr		; Ver si funciona
+		leax			sClrscr_ClrScrAsciiCode,pcr
 		jsr			print
 		puls			x
 		rts
 
 ;--------------------------------------------------------------------;
-		; Fin clearScreenAscii
+		; Fin clrscrAscii
 		
 		
 		

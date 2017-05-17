@@ -1,9 +1,9 @@
 			; Zona configuracion de memoria
 ;--------------------------------------------------------------------;
 		
-		.module 		testing
+		.module 		ctype
 		
-		.area			_TESTING
+		.area			_CTYPE
 		
 		;>>>> Etiquetas globales internas <<<<
 		
@@ -68,35 +68,35 @@ isdigit:
 		ldb			#0x30			;;;;;;;;;
 		pshs			a				;
 									;	
-	testing_isdigit_for:						;
+	ctype_isdigit_for:						;
 									;
 		cmpb			#0x3A				;
-		beq			testing_isdigit_finFor		; Bucle for (B = 0x30; B <= 0x40; ++B)
+		beq			ctype_isdigit_finFor		; Bucle for (B = 0x30; B <= 0x40; ++B)
 									;	if (A = B)
 			cmpb			,s			;		break
-			beq			testing_isdigit_finFor	;
+			beq			ctype_isdigit_finFor	;
 		incb							;
-		bra			testing_isdigit_for	;;;;;;;;;
+		bra			ctype_isdigit_for	;;;;;;;;;
 
-	testing_isdigit_finFor:
+	ctype_isdigit_finFor:
 	
 		puls			a
 		
 		cmpb			#0x3A			;;;;;;;;;
-		beq			testing_isdigit_notDigit	;
+		beq			ctype_isdigit_notDigit		;
 									;
 		orcc			#0x04 	; Ponemos a		; 	
 						; 1 el flag Z		; if (B = 0x3A)
 									;	noEsUnDigito
-		bra			testing_isdigit_finIsDigit	; else	
+		bra			ctype_isdigit_finIsDigit	; else	
 									; 	esDigito
-	testing_isdigit_notDigit:					;	
+	ctype_isdigit_notDigit:						;	
 									;
 		andcc			#0xFB	; Ponemos a		;
 						; 0 el flag Z		; 
 								;;;;;;;;;	
 												
-	testing_isdigit_finIsDigit:
+	ctype_isdigit_finIsDigit:
 	
 		puls			b
 		rts
@@ -130,52 +130,52 @@ isalpha:
 		ldb			#0x41			;;;;;;;;;
 		pshs			a				;
 									;
-	testing_isalpha_for1:						;
+	ctype_isalpha_for1:						;
 									;
 		cmpb			#0x5B				;
-		beq			testing_isalpha_finFor1		; Bucle for (B = 'A'; B <= '['; ++B)
+		beq			ctype_isalpha_finFor1		; Bucle for (B = 'A'; B <= '['; ++B)
 									;	if (A = B)
 			cmpb			,s			;		break
-			beq			testing_isalpha_finFor2	;
+			beq			ctype_isalpha_finFor2	;
 									; En ASCII (... 'x', 'y', 'z', '[')
 		incb							;
-		bra			testing_isalpha_for1	;;;;;;;;;
+		bra			ctype_isalpha_for1	;;;;;;;;;
 
-	testing_isalpha_finFor1:
+	ctype_isalpha_finFor1:
 		
 		
 		ldb			#0x61			;;;;;;;;;
 									;
-	testing_isalpha_for2:						;
+	ctype_isalpha_for2:						;
 									;
 		cmpb			#0x7B				;
-		beq			testing_isalpha_finFor2		; Bucle for (B = 'a'; B <= '{'; ++B)
+		beq			ctype_isalpha_finFor2		; Bucle for (B = 'a'; B <= '{'; ++B)
 									;	if (A = B)
 			cmpb			,s			;		break
-			beq			testing_isalpha_finFor2	;
+			beq			ctype_isalpha_finFor2	;
 									; En ASCII (... 'X', 'Y', 'Z', '{')
 		incb							;
-		bra			testing_isalpha_for2	;;;;;;;;;
+		bra			ctype_isalpha_for2	;;;;;;;;;
 
-	testing_isalpha_finFor2:
+	ctype_isalpha_finFor2:
 		
 		
 		puls			a
 				
 		cmpb			#0x5B			;;;;;;;;;
-		beq			testing_isalpha_notAlpha	;
+		beq			ctype_isalpha_notAlpha		;
 		cmpb			#0x7B				; if (B = 0x5B || B = 0x7B)
-		beq			testing_isalpha_notAlpha	;	noEsAlpha
+		beq			ctype_isalpha_notAlpha		;	noEsAlpha
 		orcc			#0x04	; Ponemos a 		; else
 						; 1 el flag Z		;	esAlpha
-		bra			testing_isalpha_finIsAlpha	;		
+		bra			ctype_isalpha_finIsAlpha	;		
 									; 
-	testing_isalpha_notAlpha:					;
+	ctype_isalpha_notAlpha:						;
 									;	
 		andcc			#0xFB	; Ponemos a 		;
 						; 0 el flag Z		;
 								;;;;;;;;;					
-	testing_isalpha_finIsAlpha:
+	ctype_isalpha_finIsAlpha:
 			
 		puls			b
 		rts
@@ -204,14 +204,14 @@ isalpha:
 toupper:
 
 		cmpa			#'a
-		blo			testing_toupper_sinCambios
+		blo			ctype_toupper_sinCambios
 		cmpa			#'z
-		bhi			testing_toupper_sinCambios
+		bhi			ctype_toupper_sinCambios
 		
 		suba			#0x20	; Diferencia entre letra minuscula y
 						; mayuscula en el codigo ASCII
 		
-	testing_toupper_sinCambios:
+	ctype_toupper_sinCambios:
 	
 		rts
 		
@@ -240,14 +240,14 @@ toupper:
 tolower:
 
 		cmpa			#'A
-		blo			testing_tolower_sinCambios
+		blo			ctype_tolower_sinCambios
 		cmpa			#'Z
-		bhi			testing_tolower_sinCambios
+		bhi			ctype_tolower_sinCambios
 		
 		adda			#0x20	; Diferencia entre letra minuscula y
 						; mayuscula en el codigo ASCII
 		
-	testing_tolower_sinCambios:
+	ctype_tolower_sinCambios:
 	
 		rts
 		

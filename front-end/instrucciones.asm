@@ -6,23 +6,21 @@
 		.globl			print  
 		.globl			println
 		   
-		.globl			mostrar_instrucciones
-		.globl			clearScreenAscii
+		.globl			mostrarInstrucciones
+		.globl			clrscrAscii
 		.globl			getchar
 		   
 		   
 		; Inicio definicion de constantes
 ;--------------------------------------------------------------------;												
 			
-fin		.equ			0xFF01				
-teclado		.equ			0xFF02
-pantalla	.equ			0xFF00
+		.include		"include.txt"
 
 ;--------------------------------------------------------------------;
 		; Fin definicion de constantes		   
 		   
    
-instrucciones_superior1:   
+sMostrarInstrucciones_Superior1:   
    
 		.ascii			"			CONECTA 4\n"   
 		.ascii			"			\n"   
@@ -46,7 +44,7 @@ instrucciones_superior1:
 		.ascii			"mesa)."   
 		.asciz			"\n"
 		
-instrucciones_superior2:
+sMostrarInstrucciones_Superior2:
 
 		.ascii			"3. Los jugadores continuan colocando fichas alternativamente\n"   
 		.ascii			"hasta que uno de los dos consigue 4 fichas en linea. El cuatro\n"   
@@ -57,7 +55,7 @@ instrucciones_superior2:
 		
 		
 		
-instrucciones_inferior:
+sMostrarInstrucciones_Inferior:
   
 		.ascii			"4. Si eres el primer jugador en conseguir cuatro en raya, has\n"   
 		.ascii			"ganado el juego!\n"   
@@ -66,10 +64,10 @@ instrucciones_inferior:
 		
 		
 		
-instrucciones_mensaje_imagen1:
+sMostrarInstrucciones_MensajeImagen1:
 		.asciz			"(4 en raya en columna 3)\n"
 
-instrucciones_imagen1:
+sMostrarInstrucciones_Imagen1:
 
 		.ascii			"       "
 		.ascii			"       "
@@ -80,10 +78,10 @@ instrucciones_imagen1:
 
 
 
-instrucciones_mensaje_imagen2:
+sMostrarInstrucciones_MensajeImagen2:
 		.asciz			"(4 en raya en ultima fila)\n"
 		
-instrucciones_imagen2:
+sMostrarInstrucciones_Imagen2:
 
 		.ascii			"       "
 		.ascii			"       "
@@ -94,10 +92,10 @@ instrucciones_imagen2:
 		
 		
 		
-instrucciones_mensaje_imagen3:
+sMostrarInstrucciones_MensajeImagen3:
 		.asciz			"(4 en raya en diagonal ascendente columnas 1-4)\n"
 		
-instrucciones_imagen3:
+sMostrarInstrucciones_Imagen3:
 
 		.ascii			"       "
 		.ascii			"       "
@@ -107,20 +105,20 @@ instrucciones_imagen3:
 		.ascii			"00O0OOO"
 		
 				
-instrucciones_prompt:
+sMostrarInstrucciones_Prompt:
 		.asciz			"Pulsa una tecla para continuar..."
 		
-instrucciones_goUpLine:
+sMostrarInstrucciones_UpLineChar:
 		.asciz			"\033[F\033[F                                  "
 		
 		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;			mostrar_instrucciones				;
+;			mostrarInstrucciones				;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Imprime un las instrucciones con el formato adecuado			;
 ;									;
 ; Input: -								;
-; Output: pantalla							;
+; Output: $Pantalla							;
 ;									;
 ; Registros afectados: CC					    	;
 ; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
@@ -129,90 +127,90 @@ instrucciones_goUpLine:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;		
 		
 		
-mostrar_instrucciones:
+mostrarInstrucciones:
 
 		pshs			y,x,d
 		
-		jsr			clearScreenAscii
+		jsr			clrscrAscii
 		
-		ldx			#instrucciones_superior1
+		ldx			#sMostrarInstrucciones_Superior1
 		jsr			print
 		
-		ldx			#instrucciones_prompt
+		ldx			#sMostrarInstrucciones_Prompt
 		jsr			print
 		jsr			getchar
 		lda			#'\n
-		sta			pantalla
-		ldx			#instrucciones_goUpLine
+		sta			$Pantalla
+		ldx			#sMostrarInstrucciones_UpLineChar
 		jsr			println
 
-		ldx			#instrucciones_superior2
+		ldx			#sMostrarInstrucciones_Superior2
 		jsr			print
 		
-		ldx			#instrucciones_prompt
+		ldx			#sMostrarInstrucciones_Prompt
 		jsr			print
 		jsr			getchar
 		lda			#'\n
-		sta			pantalla
-		ldx			#instrucciones_goUpLine
+		sta			$Pantalla
+		ldx			#sMostrarInstrucciones_UpLineChar
 		jsr			println
 		
-		ldx			#instrucciones_mensaje_imagen1
+		ldx			#sMostrarInstrucciones_MensajeImagen1
 		jsr			println
-		ldy			#instrucciones_imagen1
+		ldy			#sMostrarInstrucciones_Imagen1
 		jsr			imprimirTablero
 		lda			#'\n
-		sta			pantalla
-		sta			pantalla
-		sta			pantalla
+		sta			$Pantalla
+		sta			$Pantalla
+		sta			$Pantalla
 		
-		ldx			#instrucciones_prompt
+		ldx			#sMostrarInstrucciones_Prompt
 		jsr			print
 		jsr			getchar
 		lda			#'\n
-		sta			pantalla
-		ldx			#instrucciones_goUpLine
+		sta			$Pantalla
+		ldx			#sMostrarInstrucciones_UpLineChar
 		jsr			println
 		
-		ldx			#instrucciones_mensaje_imagen2
+		ldx			#sMostrarInstrucciones_MensajeImagen2
 		jsr			println
-		ldy			#instrucciones_imagen2
+		ldy			#sMostrarInstrucciones_Imagen2
 		jsr			imprimirTablero
 		lda			#'\n
-		sta			pantalla
-		sta			pantalla
-		sta			pantalla
+		sta			$Pantalla
+		sta			$Pantalla
+		sta			$Pantalla
 		
-		ldx			#instrucciones_prompt
+		ldx			#sMostrarInstrucciones_Prompt
 		jsr			print
 		jsr			getchar
 		lda			#'\n
-		sta			pantalla
-		ldx			#instrucciones_goUpLine
+		sta			$Pantalla
+		ldx			#sMostrarInstrucciones_UpLineChar
 		jsr			println
 		
-		ldx			#instrucciones_mensaje_imagen3
+		ldx			#sMostrarInstrucciones_MensajeImagen3
 		jsr			println
-		ldy			#instrucciones_imagen3
+		ldy			#sMostrarInstrucciones_Imagen3
 		jsr			imprimirTablero
 		lda			#'\n
-		sta			pantalla
-		sta			pantalla
+		sta			$Pantalla
+		sta			$Pantalla
 		
-		ldx			#instrucciones_inferior
+		ldx			#sMostrarInstrucciones_Inferior
 		jsr			print
 		
-		ldx			#instrucciones_prompt
+		ldx			#sMostrarInstrucciones_Prompt
 		jsr			print
 		jsr			getchar
 		lda			#'\n
-		sta			pantalla
-		ldx			#instrucciones_goUpLine
+		sta			$Pantalla
+		ldx			#sMostrarInstrucciones_UpLineChar
 		jsr			println
 		
 		puls			y,x,d
 		rts
 		
 ;--------------------------------------------------------------------;
-		; Fin mostrar_instrucciones		
+		; Fin mostrarInstrucciones		
 		

@@ -6,23 +6,13 @@
 				
 		;>>>> Etiquetas globales internas <<<<
 		
-		.globl			posicion_ij
+		.globl			posicionij
 		.globl			generarTablero
 		.globl			tableroLleno
-		.globl			comprobarColumnaLlena
+		.globl			columnaLlena
 		
 		;------------------------------------;
 		
-		
-		
-		;>>>> Etiquetas globales externas <<<<
-		
-		.globl			numFils
-		.globl			numCols
-		.globl			fichaJugador1
-		.globl			fichaJugador2
-		
-		;------------------------------------;
 		
 ;--------------------------------------------------------------------;
 		; Fin zona configuracion memoria
@@ -31,9 +21,7 @@
 		; Inicio definicion de constantes
 ;--------------------------------------------------------------------;												
 			
-fin		.equ			0xFF01				
-teclado		.equ			0xFF02
-pantalla	.equ			0xFF00
+		.include		"include.txt"
 
 ;--------------------------------------------------------------------;
 		; Fin definicion de constantes
@@ -43,26 +31,26 @@ pantalla	.equ			0xFF00
 			; Objetos subrutinas
 ;--------------------------------------------------------------------;
 
-		;>>>> Objetos de comprobarColumnaLlena <<<<
+		;>>>> Objetos de columnaLlena <<<<
 		
 			;>>>> Variables <<<<
-			turno_comprobarColumnaLlena_col:
+			bColumnaLlena_Col:
 				.byte			0
 		;-------------------------------;
-		; Fin objetos comprobarColumnaLlena
+		; Fin objetos columnaLlena
 		
 		
 		;>>>> Objetos generarTablero <<<<
 		
 			; >>>> Variables  <<<<
-			ingame_generarTablero_numCeldas:.word	0
+			wGenerarTablero_NumCeldas:.word	0
 				
 		;---------------------------------------;
 		; Fin objetos generarTablero
 	
 		;>>>> Objetos globales compartidos <<<<
 			; >>>> Variables <<<<
-			.globl			siguiente_posicion_dinamica
+			.globl			SiguientePosicionDinamica
 	
 	
 ;--------------------------------------------------------------------;
@@ -74,7 +62,7 @@ pantalla	.equ			0xFF00
 		
 		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;				posicion_ij				;
+;				posicionij				;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Devuelve en el registro Y la direccion de la posicion ij del tablero	;
 ; siendo i indicado en el registro A y j en el registro B. La direccion	;
@@ -89,7 +77,7 @@ pantalla	.equ			0xFF00
 ;								    	;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-posicion_ij:
+posicionij:
 		pshs			d
 
 		clra
@@ -97,12 +85,12 @@ posicion_ij:
 		pshs			x	; Guardamos X en la pila
 		ldd			4,s
 		
-		ldb			numCols
+		ldb			NumCols
 		mul
 		
 		addd			,s
 		addd			2,s 	; Operacion resultante: A*B+X+B = 
-						; = posicion base + fila * numCols + col
+						; = posicion base + fila * NumCols + col
 		
 		puls			y	; Sacamos X y 0/B de la pila
 		puls			y
@@ -113,7 +101,7 @@ posicion_ij:
 		rts
 
 ;--------------------------------------------------------------------;		
-		; Fin posicion_ij
+		; Fin posicionij
 		
 		
 		
@@ -138,36 +126,36 @@ posicion_ij:
 generarTablero:
 		pshs			d
 		
-		std			ingame_generarTablero_numCeldas
+		std			wGenerarTablero_NumCeldas
 		
 		tfr			s,d	; Hacemos espacio para 
 		subd			#2	; un contador en la pila
 		tfr			d,s	;
 		
-		ldd			siguiente_posicion_dinamica		;;;;;;;;;
+		ldd			SiguientePosicionDinamica		;;;;;;;;;
 		pshs			d						;
 		clra									;
 		clrb									;
 		std			2,s	; Inicializamos contador a 0		;
 											;
-	ingame_generarTablero_for:							;
+	internal_generarTablero_for:							;
 											; for (contador = 0; contador < numCeldas; contador++)
 		ldd			2,s						;	guarda(caracterEspacio,
-		cmpd			ingame_generarTablero_numCeldas			;		siguiente_posicion_dinamica)
-		beq			ingame_generarTablero_finFor			;	siguiente_posicion_dinamica++
+		cmpd			wGenerarTablero_NumCeldas			;		SiguientePosicionDinamica)
+		beq			internal_generarTablero_finFor			;	SiguientePosicionDinamica++
 											;
 			lda			#0x20					;
-			sta			[siguiente_posicion_dinamica]		;
-			ldd			siguiente_posicion_dinamica		;
+			sta			[SiguientePosicionDinamica]		;
+			ldd			SiguientePosicionDinamica		;
 			addd			#1					;
-			std			siguiente_posicion_dinamica		;
+			std			SiguientePosicionDinamica		;
 											;
 		ldd			2,s						;
 		addd			#1						;
 		std			2,s						;
-		bra			ingame_generarTablero_for			;
+		bra			internal_generarTablero_for			;
 										;;;;;;;;;
-	ingame_generarTablero_finFor:			
+	internal_generarTablero_finFor:			
 		
 		puls			y	; Guardamos direccion de inicio del tablero
 		
@@ -185,13 +173,13 @@ generarTablero:
 		
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;			comprobarColumnaLlena				;
+;			columnaLlena				;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Comprueba si hay algun hueco libre en la columna indicada en el 	;
 ; registro B y guarda la direccion del primer hueco libre.		;
-; Mediante el flag Z se indica si existe ese hueco libre: si esta a 1	;
+; Mediante el flag Z se indica si existe ese hueco libre: si esta a 0	;
 ; se encontro un hueco libre que se devuelve en el registro Y. En caso	;
-; contrario, Z = 0							;
+; contrario, Z = 1							;
 ;									;
 ; Input: direccion base del tablero en X, numero de columna en B.	;
 ; Output: registro Y, flag Z						;
@@ -202,67 +190,67 @@ generarTablero:
 ;								    	;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-comprobarColumnaLlena:
+columnaLlena:
 
 		pshs			d
 		
 		decb
-		stb			turno_comprobarColumnaLlena_col
+		stb			bColumnaLlena_Col
 			
 		tfr			s,d	; Hacemos hueco
 		subd			#1	; en la pila para
 		tfr			d,s	; un contador
 		
-		lda			numFils					;;;;;;;;;
+		lda			NumFils					;;;;;;;;;
 		deca									;
 		sta			,s	; Inicializamos contador a NumFils -1 	;
 						; e Y a la posicion mas baja del tablero;
-		lda			numFils	; en esa columna			;
+		lda			NumFils	; en esa columna			;
 		deca									;
-		ldb			turno_comprobarColumnaLlena_col			;
-		jsr			posicion_ij					;
+		ldb			bColumnaLlena_Col			;
+		jsr			posicionij					;
 											;
-	turno_comprobarColumnaLlena_for:						;
+	internal_columnaLlena_for:							;
 											;
 		lda			#-1						;
 		cmpa			,s						;
-		beq			turno_comprobarColumnaLlena_finFor		; for (contador = numFils -1;
+		beq			internal_columnaLlena_finFor			; for (contador = NumFils -1;
 		lda			,y						;	contador >= 0, Y == fichaJugador;
-		cmpa			fichaJugador1					;	--contador)
-		bne			turno_comprobarColumnaLlena_compararFicha2	;
-		bra			turno_comprobarColumnaLlena_seguir		;	Y = posicion_ij (contador, 
-											;			turno_comprobarColumnaLlena_col);
-	turno_comprobarColumnaLlena_compararFicha2:					;
+		cmpa			FichaJugador1					;	--contador)
+		bne			internal_columnaLlena_compararFicha2		;
+		bra			internal_columnaLlena_seguir			;	Y = posicionij (contador, 
+											;			bColumnaLlena_Col);
+	internal_columnaLlena_compararFicha2:						;
 											;
-		cmpa			fichaJugador2					;
-		bne			turno_comprobarColumnaLlena_finFor		;
+		cmpa			FichaJugador2					;
+		bne			internal_columnaLlena_finFor			;
 											;
-	turno_comprobarColumnaLlena_seguir:						;
+	internal_columnaLlena_seguir:							;
 											;
 			lda			,s					;
-			ldb			turno_comprobarColumnaLlena_col		;
+			ldb			bColumnaLlena_Col		;
 			; X no se ha visto modificado.					;
-			jsr			posicion_ij				;		
+			jsr			posicionij				;		
 											;
 		dec			,s						;
-		bra			turno_comprobarColumnaLlena_for			;
+		bra			internal_columnaLlena_for			;
 											;
-	turno_comprobarColumnaLlena_finFor:					;;;;;;;;;
+	internal_columnaLlena_finFor:						;;;;;;;;;
 	
 		lda			,y
-		cmpa			fichaJugador1
-		beq			turno_comprobarColumnaLlena_Llena
-		cmpa			fichaJugador2
-		beq			turno_comprobarColumnaLlena_Llena
-		
-		orcc			#0x04	; Ponemos a 1 el flag Z
-		bra			turno_comprobarColumnaLlena_finTest
-		
-	turno_comprobarColumnaLlena_Llena:
+		cmpa			FichaJugador1
+		beq			internal_columnaLlena_Llena
+		cmpa			FichaJugador2
+		beq			internal_columnaLlena_Llena
 		
 		andcc			#0xFB	; Ponemos a 0 el flag Z
+		bra			internal_columnaLlena_finTest
 		
-	turno_comprobarColumnaLlena_finTest:
+	internal_columnaLlena_Llena:
+		
+		orcc			#0x04	; Ponemos a 1 el flag Z
+		
+	internal_columnaLlena_finTest:
 	
 		puls			a	; Eliminamos el contador de la pila
 		
@@ -271,7 +259,7 @@ comprobarColumnaLlena:
 		
 
 ;--------------------------------------------------------------------;
-		; Fin comprobarColumnaLlena
+		; Fin columnaLlena
 		
 		
 		
@@ -296,11 +284,11 @@ comprobarColumnaLlena:
 tableroLleno:
 		pshs			y,x,d
 		
-		lda			numFils				
-		ldb			numCols				
+		lda			NumFils				
+		ldb			NumCols				
 		deca							
 		decb							
-		lbsr			posicion_ij			
+		lbsr			posicionij			
 		pshs			y				
 									
 	internal_tableroLleno_while:					;;;;;;;;;
@@ -310,7 +298,7 @@ tableroLleno:
 		bhi			internal_tableroLleno_finWhile		;
 										;
 			lda			#0x20 ; Caracter espacio	; for  (X = tablero[0][0];
-			cmpa			,x+				;	X < tablero[numFils - 1][numCols -1];
+			cmpa			,x+				;	X < tablero[NumFils - 1][NumCols -1];
 			beq			internal_tableroLleno_hueco	;	++X)
 										;		if (esHueco)
 		bra			internal_tableroLleno_while		;			break
