@@ -9,7 +9,7 @@
 		
 		;>>>> Etiquetas globales externas <<<<
 		
-		;.globl			comprueba4
+		.globl			comprueba4
 		.globl			columnaLlena
 		.globl			println
 		;.globl			generarTablero
@@ -18,6 +18,8 @@
 		.globl			clrscr
 		.globl			getchar
 		.globl			mostrarInstrucciones
+		.globl			fichaTurno
+		.globl			turno
 		
 		;------------------------------------;
 		
@@ -53,12 +55,12 @@
 
 
 		;>>>> Variables locales a main <<<<
-tablero:	.ascii			"   0   "
-		.ascii			"   0   "
-		.ascii			"   O   "
-		.ascii			"   0   "
-		.ascii			"0O O0O0"
-		.ascii			"O0OO000"
+tablero:	.ascii			"       "
+		.ascii			"       "
+		.ascii			"       "
+		.ascii			"       "
+		.ascii			"       "
+		.ascii			"       "
 
 
 
@@ -76,7 +78,7 @@ ptr_tablero:	.word			0x0000
 programa:			
 		jsr			mostrarMenu
 		cmpa			#'a
-		beq			nuevoJuego
+		beq			Juego
 		cmpa			#'b
 		beq			opcionB_instrucciones
 		cmpa			#'c
@@ -91,26 +93,28 @@ programa:
 	
 	
 		
-	nuevoJuego:
+	Juego:
 	
-		jsr			clrscr
-		ldy			#tablero
-		jsr			imprimirTablero
-		jsr			getchar
-		tfr			a,b
-		subb			#0x30
+		lbsr			turno
 		tfr			y,x
 		jsr			columnaLlena
 		beq			programa
-		lda			#'O
+		lda			fichaTurno
 		sta			,y
+		lbsr			comprueba4
+		beq			cuatroEnRaya
 		ldy			#tablero
 		jsr			clrscr
 		jsr			imprimirTablero
 		jsr			getchar
 		
-		bra			nuevoJuego
-		
+		bra			Juego
+	
+	cuatroEnRaya:
+		lbsr			clrscr
+		lda			#'!
+		sta			$Pantalla
+		lbsr			getchar	
 	finPrograma:
 		
 		jsr			clrscr

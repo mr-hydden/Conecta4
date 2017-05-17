@@ -165,8 +165,8 @@ turno:
 		puls			x					; while (columna < 1 || columna > NumCols || columnaLlena)
 		pshs			x					;
 		tfr			a,b					;
-		lbsr			columnaLlena			;
-		bne			turno_turno_mensajeErrorColumnaLlena	;
+		lbsr			columnaLlena				;
+		beq			turno_turno_mensajeErrorColumnaLlena	;
 		bra			turno_turno_finWhile			;
 										;
 										;
