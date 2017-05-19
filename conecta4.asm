@@ -12,7 +12,7 @@
 		.globl			comprueba4
 		.globl			columnaLlena
 		.globl			println
-		;.globl			generarTablero
+		.globl			generarTablero
 		.globl			imprimirTablero
 		.globl			mostrarMenu
 		.globl			clrscr
@@ -20,6 +20,8 @@
 		.globl			mostrarInstrucciones
 		.globl			fichaTurno
 		.globl			turno
+		.globl			tableroLleno
+		.globl			actualizarFichaTurno
 		
 		;------------------------------------;
 		
@@ -55,13 +57,6 @@
 
 
 		;>>>> Variables locales a main <<<<
-tablero:	.ascii			"       "
-		.ascii			"       "
-		.ascii			"       "
-		.ascii			"       "
-		.ascii			"       "
-		.ascii			"       "
-
 
 
 ptr_tablero:	.word			0x0000
@@ -75,47 +70,68 @@ ptr_tablero:	.word			0x0000
 
 		; Comienzo del programa
 ;--------------------------------------------------------------------;
-programa:			
+programa:	
+		ldd			#0xEE00
+		std			SiguientePosicionDinamica
+		lda			FichaJugador1
+		sta			fichaTurno
+		lda			NumFils
+		ldb			NumCols
+		mul
+		lbsr			generarTablero
+		sty			ptr_tablero
+		
+	programa_menu:
+		
 		jsr			mostrarMenu
 		cmpa			#'a
-		beq			Juego
+		beq			programa_partida
 		cmpa			#'b
-		beq			opcionB_instrucciones
+		beq			programa_instrucciones
 		cmpa			#'c
-		beq			finPrograma
-		bra			programa
+		beq			programa_finPrograma
 		
-	opcionB_instrucciones:
+		bra			programa_menu
+		
+	programa_instrucciones:
 		
 		jsr			clrscr
 		jsr			mostrarInstrucciones
-		bra			programa
+		bra			programa_menu
 	
-	
+	programa_partida:
 		
-	Juego:
-	
+		leax			[ptr_tablero,pcr]
+		lbsr			tableroLleno
+		beq			programa_empate
 		lbsr			turno
-		tfr			y,x
-		jsr			columnaLlena
-		beq			programa
+		lbsr			actualizarFichaTurno
 		lda			fichaTurno
 		sta			,y
 		lbsr			comprueba4
-		beq			cuatroEnRaya
-		ldy			#tablero
-		jsr			clrscr
-		jsr			imprimirTablero
-		jsr			getchar
+		beq			programa_cuatroEnRaya
 		
-		bra			Juego
+		bra			programa_partida
 	
-	cuatroEnRaya:
+	programa_cuatroEnRaya:
+	
 		lbsr			clrscr
 		lda			#'!
 		sta			$Pantalla
 		lbsr			getchar	
-	finPrograma:
+		
+		bra			programa
+	
+	programa_empate:
+	
+		lbsr			clrscr
+		lda			#'?
+		sta			$Pantalla
+		lbsr			getchar
+		
+		bra			programa
+		
+	programa_finPrograma:
 		
 		jsr			clrscr
 		lbra			reset
