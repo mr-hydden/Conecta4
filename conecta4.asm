@@ -71,6 +71,7 @@ ptr_tablero:	.word			0x0000
 		; Comienzo del programa
 ;--------------------------------------------------------------------;
 programa:	
+		lds			#0xFE00
 		ldd			#0xEE00
 		std			SiguientePosicionDinamica
 		lda			FichaJugador1
@@ -105,9 +106,9 @@ programa:
 		lbsr			tableroLleno
 		beq			programa_empate
 		lbsr			turno
-		lbsr			actualizarFichaTurno
 		lda			fichaTurno
 		sta			,y
+		lbsr			actualizarFichaTurno
 		lbsr			comprueba4
 		beq			programa_cuatroEnRaya
 		

@@ -24,6 +24,9 @@
 		;>>>> Etiquetas globales externas <<<<
 		
 		.globl			amodb
+		.globl			div
+		.globl			ldaFila
+		.globl			ldaColumna
 		
 		;------------------------------------;
 		

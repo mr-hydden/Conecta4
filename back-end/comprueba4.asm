@@ -23,6 +23,9 @@
 		.globl			ejecutarDiagPosibleCodigoA
 		.globl			codificaAdiagPosible
 		
+		.globl			ldaFila
+		.globl			ldaColumna
+		
 		;------------------------------------;
 		
 ;--------------------------------------------------------------------;
@@ -72,92 +75,99 @@ comprueba4horizontal:
 		pshs			y,a,cc
 		
 		lbsr			ldaColumna
+		inca
 		pshs			a		; Almacen temporal
 		suba			NumCols
 		nega					; Dividimos las opciones entre
 		cmpa			,s		; las posiciones entre 0-[NumCols/2]
 							; y NumCols/2-NumCols
 							
-		bhs			comprueba4_c4horizontal_mitadAlta
+		lblo			c4_c4h_mitadAlta
 		
 		
 		
 		
-	comprueba4_c4horizontal_mitadBaja:
+	c4_c4h_mitadBaja:
 												;;;;;;;;;
-		tfr			s,d	; Hueco en la pila					;
-		subd			#1	; para un contador					;
-		tfr			d,s	;							;
+		pshs			a	; Hueco en la pila					;
+						; para un contador					;
+						;							;
 													;
 		clra				; Inicializamos contador a 0				;
 		sta			,s	;							;
 													;
-		comprueba4_c4horizontal_for1:								;
+		c4_c4h_for1:								;
 													;
 			lda			#4							;
 			cmpa			,s							;
-			beq			comprueba4_c4horizontal_finFor1				;
-			lbsr			posColumna0						;
-			beq			comprueba4_c4horizontal_Col0				;
+			lbeq			c4_c4h_finFor1				;
+			lbsr			ldaColumna						;
+			tsta
+			lbeq			c4_c4h_Col0				;
 													;
 				lbsr			comprueba4filaDerecha				; for (contador = 0;
-				beq			comprueba4_c4horizontal_4enRaya			;	contador < 4, Posicion > 0;
+				lbeq			c4_c4h_4enRaya			;	contador < 4, Posicion > 0;
 				tfr			y,d	; Comprobamos en la posicion anterior	;	contador++, 
 				subd			#1	;					;	Posicion = Posicion_anterior)
 				tfr			d,y	;					;
 				inc			,s	; Aumentamos contador			;	Comprobar4filaDerecha
 													;
-			bra			comprueba4_c4horizontal_for1				;
+			lbra			c4_c4h_for1				;
 													;
-			comprueba4_c4horizontal_Col0:							;
+			c4_c4h_Col0:							;
 													;
 			lbsr			comprueba4filaDerecha					;
-			beq			comprueba4_c4horizontal_4enRaya				;
+			lbeq			c4_c4h_4enRaya				;
 													;
-	comprueba4_c4horizontal_finFor1:							;;;;;;;;;
+	c4_c4h_finFor1:							;;;;;;;;;
 			
-		bra			comprueba4_c4horizontal_finTest	; No hay cuatro en raya
+		lbra			c4_c4h_finTest	; No hay cuatro en raya
 			
 			
 			
-	comprueba4_c4horizontal_mitadAlta:
+	c4_c4h_mitadAlta:
 												;;;;;;;;;
-		tfr			s,d	; Hueco en la pila					;
-		subd			#1	; para un contador					;
-		tfr			d,s	;							;
+		pshs			a	; Hueco en la pila					;
+						; para un contador					;
 													;
 		clra				; Inicializamos contador a 0				;
 		sta			,s	;							;
 													;
-		comprueba4_c4horizontal_for2:								;
+		c4_c4h_for2:								;
 													;
 			lda			#4							;
 			cmpa			,s							;
-			beq			comprueba4_c4horizontal_finFor2				;
-			lbsr			posColumnaN						;
-			beq			comprueba4_c4horizontal_ColN				;
+			lbeq			c4_c4h_finFor2				;
+			lbsr			ldaColumna						;
+			pshs			a							;
+			lda			NumCols							;
+			deca										;
+			cmpa			,s							;
+			lbeq			c4_c4h_ColN				;
 													;
+				puls			b ; Sacamos el A guardado temporalmente		;
 				lbsr			comprueba4filaIzquierda				; for (contador = 0;
-				beq			comprueba4_c4horizontal_4enRaya			;	contador < 4, 
+				lbeq			c4_c4h_4enRaya			;	contador < 4, 
 				tfr			y,d	; Comprobamos en la posicion anterior	;	Posicion < NumCols;
 				addd			#1	;					;	contador++,
 				tfr			d,y	;					;	Posicion = Posicion_siguiente)
 				inc			,s	; Aumentamos contador			;	
 													;	Comprobar4filaIzquierda
-			bra			comprueba4_c4horizontal_for2				;	
+			lbra			c4_c4h_for2				;	
 													;
-			comprueba4_c4horizontal_ColN:							;
+			c4_c4h_ColN:							;
 													;
+			puls			b ; Sacamos el A guardado temporalmente			;
 			lbsr			comprueba4filaIzquierda					;
-			beq			comprueba4_c4horizontal_4enRaya				;
+			lbeq			c4_c4h_4enRaya				;
 													;
-	comprueba4_c4horizontal_finFor2:							;;;;;;;;;
+	c4_c4h_finFor2:							;;;;;;;;;
 			
-		bra			comprueba4_c4horizontal_finTest	; No hay cuatro en raya
+		lbra			c4_c4h_finTest	; No hay cuatro en raya
 	
 	
 	
-	comprueba4_c4horizontal_4enRaya:
+	c4_c4h_4enRaya:
 	
 		puls			a	; Eliminamos el contador
 		puls			a	; Eliminamos el almacenamiento temporal
@@ -167,7 +177,7 @@ comprueba4horizontal:
 		rts
 		
 	
-	comprueba4_c4horizontal_finTest:
+	c4_c4h_finTest:
 		
 		puls			a	; Eliminamos el contador
 		puls			a	; Eliminamos el almacenamiento temporal
@@ -205,36 +215,37 @@ comprueba4vertical:
 		pshs			y,a,cc
 		
 		lbsr			ldaFila
+		inca
 		pshs			a		; Almacen temporal
 		suba			NumFils
 		nega					; Dividimos las opciones entre
 		cmpa			,s		; las posiciones entre 0-[NumFils/2]
 							; y NumFils/2-NumFils
 							
-		bhs			comprueba4_c4vertical_mitadAlta
+		lblo			c4_c4v_mitadAlta
 		
 		
 		
 		
-	comprueba4_c4vertical_mitadBaja:
+	c4_c4v_mitadBaja:
 												;;;;;;;;;
-		tfr			s,d	; Hueco en la pila					;
-		subd			#1	; para un contador					;
-		tfr			d,s	;							;
+		pshs			a	; Hueco en la pila					;
+						; para un contador					;
 													;
 		clra				; Inicializamos contador a 0				;
 		sta			,s	;							;
 													;
-		comprueba4_c4vertical_for1:								;
+		c4_c4v_for1:								;
 													;
 			lda			#4							;
 			cmpa			,s							;
-			beq			comprueba4_c4vertical_finFor1				;
-			lbsr			posFila0						;
-			beq			comprueba4_c4vertical_Fil0				;
+			lbeq			c4_c4v_finFor1				;
+			lbsr			ldaFila							;
+			tsta
+			lbeq			c4_c4v_Fil0				;
 													;
 				lbsr			comprueba4columnaAbajo				; for (contador = 0;
-				beq			comprueba4_c4vertical_4enRaya			;	contador < 4, Posicion > 0;
+				lbeq			c4_c4v_4enRaya			;	contador < 4, Posicion > 0;
 				pshs			y	; Temporal				;
 				ldb			NumCols	; 					;	contador++, 
 				clra				; Comprobamos posicion anterior		;	Posicion = Posicion_anterior)
@@ -245,38 +256,42 @@ comprueba4vertical:
 													;
 				inc			,s	; Aumentamos contador			;	
 													;
-			bra			comprueba4_c4vertical_for1				;
+			lbra			c4_c4v_for1				;
 													;
-			comprueba4_c4vertical_Fil0:							;
+			c4_c4v_Fil0:							;
 													;
 			lbsr			comprueba4columnaAbajo					;
-			beq			comprueba4_c4vertical_4enRaya				;
+			lbeq			c4_c4v_4enRaya				;
 													;
-	comprueba4_c4vertical_finFor1:								;;;;;;;;;
+	c4_c4v_finFor1:								;;;;;;;;;
 			
-		bra			comprueba4_c4vertical_finTest	; No hay cuatro en raya
+		lbra			c4_c4v_finTest	; No hay cuatro en raya
 			
 			
 			
-	comprueba4_c4vertical_mitadAlta:
+	c4_c4v_mitadAlta:
 												;;;;;;;;;
-		tfr			s,d	; Hueco en la pila					;
-		subd			#1	; para un contador					;
-		tfr			d,s	;							;
+		pshs			a	; Hueco en la pila					;
+						; para un contador					;
 													;
 		clra				; Inicializamos contador a 0				;
 		sta			,s	;							;
 													;
-		comprueba4_c4vertical_for2:								;
+		c4_c4v_for2:								;
 													;
 			lda			#4							;
 			cmpa			,s							;
-			beq			comprueba4_c4vertical_finFor2				;
-			lbsr			posFilaN						;
-			beq			comprueba4_c4vertical_FilN				;
+			lbeq			c4_c4v_finFor2				;
+			lbsr			ldaFila							;
+			pshs			a							;
+			lda			NumFils							;
+			deca										;
+			cmpa			,s							;
+			lbeq			c4_c4v_FilN				;
 													;
+				puls			b ; Sacamos el A guardado temporalmente		;
 				lbsr			comprueba4columnaArriba				; for (contador = 0;
-				beq			comprueba4_c4vertical_4enRaya			;	contador < 4, 
+				lbeq			c4_c4v_4enRaya			;	contador < 4, 
 				pshs			y	; Temporal				;	Posicion < NumCols;
 				ldb			NumCols ;					;	contador++,
 				clra				; Comprobamos posicion siguiente	;	Posicion = Posicion_anterior)
@@ -285,33 +300,33 @@ comprueba4vertical:
 				tfr			d,y	;					;	
 				inc			,s	; Aumentamos contador			;	
 													;	
-			bra			comprueba4_c4vertical_for2				;	
+			lbra			c4_c4v_for2				;	
 													;
-			comprueba4_c4vertical_FilN:							;
-													;
+			c4_c4v_FilN:							;
+			puls			b ; Sacamos el A guardado temporalmente			;
 			lbsr			comprueba4columnaArriba					;
-			beq			comprueba4_c4vertical_4enRaya				;
+			lbeq			c4_c4v_4enRaya				;
 													;
-	comprueba4_c4vertical_finFor2:								;;;;;;;;;
+	c4_c4v_finFor2:								;;;;;;;;;
 			
-		bra			comprueba4_c4vertical_finTest	; No hay cuatro en raya
+		lbra			c4_c4v_finTest	; No hay cuatro en raya
 	
 	
 	
-	comprueba4_c4vertical_4enRaya:
+	c4_c4v_4enRaya:
 	
 		puls			a	; Eliminamos el contador
-		puls			a	; Eliminamos el almacenamiento temporal
+		puls			a	; Eliminamos almacen temporal
 		puls			y,a,cc 	; Recuperamos estado
 		
 		orcc			#0x04	; Ponemos el flag Z a 1
 		rts
 		
 	
-	comprueba4_c4vertical_finTest:
+	c4_c4v_finTest:
 		
 		puls			a	; Eliminamos el contador
-		puls			a	; Eliminamos el almacenamiento temporal
+		puls			a	; Eliminamos almacen temporal
 		puls			y,a,cc 	; Recuperamos estado
 		
 		andcc			#0xFB	; Ponemos el flag Z a 0
@@ -349,27 +364,27 @@ comprueba4diagonal:
 		clra
 		pshs		a	; Nos servira de contador
 
-	c4_c4diagonal_while_ArribaIzquierda:					;;;;;;;;;
+	c4_c4d_while_ArI:					;;;;;;;;;
 											;
 		lda			,s						;
 		cmpa			#4						;
-		lbeq			c4_c4diagonal_finWhile_ArribaIzquierda		;
+		lbeq			c4_c4d_finWhile_ArI		;
 											;
 		lbsr			ldaFila						;
 		tsta									;
-		lbeq			c4_c4diagonal_while_ArribaIzquierda_borde	;
+		lbeq			c4_c4d_while_ArI_borde	;
 											;
 		lbsr			ldaColumna					;
 		tsta									;
-		lbeq			c4_c4diagonal_while_ArribaIzquierda_borde	;	
+		lbeq			c4_c4d_while_ArI_borde	;	
 											; while (contador < 4 && posAux != borde)
 			lbsr			codificaAdiagPosible			;	comprueba4diagonalPosible
 			anda			#0x02	; Solo queremos comprobar si	;	posAux = sigPosDiagArribaIzquierda
 							; se ha formado abajoDerecha	;	contador++
 			lbsr			ejecutarDiagPosibleCodigoA		;
-			lbeq			comprueba4diagonal_4enRaya		;	
+			lbeq			c4_c4d_4enRaya		;	
 											;
-		inc			,s	; Contador				;
+		inc			,s	; Contador				; ; ENTRE AQUI Y $$$$ SE MODIFICA Y, Y NO DEBE
 		ldb			NumCols						;
 		clra									;
 		pshs			d						;
@@ -379,18 +394,18 @@ comprueba4diagonal:
 		tfr			d,y						;
 		puls			d						;
 											;
-		lbra			c4_c4diagonal_while_ArribaIzquierda		;
+		lbra			c4_c4d_while_ArI		;
 											;
 											;
-		c4_c4diagonal_while_ArribaIzquierda_borde:				;
+		c4_c4d_while_ArI_borde:				;
 											;
 			lbsr			codificaAdiagPosible			;
 			anda			#0x02	; Solo queremos comprobar si	;
 							; se ha formado abajoDerecha	;
 			lbsr			ejecutarDiagPosibleCodigoA		;
-			lbeq			comprueba4diagonal_4enRaya		;
+			lbeq			c4_c4d_4enRaya		;
 											;
-	c4_c4diagonal_finWhile_ArribaIzquierda:					;;;;;;;;;
+	c4_c4d_finWhile_ArI:					;;;;;;;;;
 
 
 
@@ -399,29 +414,29 @@ comprueba4diagonal:
 		clra
 		sta			,s	; Reiniciamos contador
 		
-	c4_c4diagonal_while_ArribaDerecha:							;;;;;;;;;
+	c4_c4d_while_ArD:							;;;;;;;;;
 													;
 		lda			,s								;
 		cmpa			#4								;
-		lbeq			c4_c4diagonal_finWhile_ArribaDerecha				;	
+		lbeq			c4_c4d_finWhile_ArD				;	
 													;	
 		lbsr			ldaFila								;
 		tsta											;
-		lbeq			c4_c4diagonal_while_ArribaDerecha_borde				;	
+		lbeq			c4_c4d_while_ArD_borde				;	
 													;	
 		lbsr			ldaColumna							;	
 		pshs			a								;	
 		lda			NumCols								;
 		deca											;
 		cmpa			,s								;	
-		lbeq			c4_c4diagonal_while_ArribaDerecha_borde				; while (contador < 4 &&
+		lbeq			c4_c4d_while_ArD_bordeA				; while (contador < 4 &&
 													; 	posAux != borde)	
 			puls			a	; Sacamos la A que hemos metido temporalmente	; {	
 			lbsr			codificaAdiagPosible					; comprueba4diagonalPosible
 			anda			#0x01	; Solo queremos comprobar si			; posAux = sigPosDiagArribaDerecha
 							; se ha formado abajoIzquierda			; contador++
 			lbsr			ejecutarDiagPosibleCodigoA				; }
-			lbeq			comprueba4diagonal_4enRaya				;
+			lbeq			c4_c4d_4enRaya				;
 													;
 		inc			,s	; Contador						;
 		ldb			NumCols								;
@@ -433,36 +448,40 @@ comprueba4diagonal:
 		tfr			d,y								;
 		puls			d								;
 													;
-		lbra			c4_c4diagonal_while_ArribaDerecha				;
+		lbra			c4_c4d_while_ArD				;
 													;
+			
+		c4_c4d_while_ArD_bordeA:
+		
+			puls			a	; Sacamos la A que hemos metido temporalmente	;
 													;
-		c4_c4diagonal_while_ArribaDerecha_borde:						;
+		c4_c4d_while_ArD_borde:						;
 													;
 			lbsr			codificaAdiagPosible					;
 			anda			#0x01	; Solo queremos comprobar si			;
 							; se ha formado abajoDerecha			;
 			lbsr			ejecutarDiagPosibleCodigoA				;
-			lbeq			comprueba4diagonal_4enRaya				;
+			lbeq			c4_c4d_4enRaya				;
 													;
-	c4_c4diagonal_finWhile_ArribaDerecha:							;;;;;;;;;
+	c4_c4d_finWhile_ArD:							;;;;;;;;;
 
 
-		ldy			4,s	; Recuperamos posicion original
+		ldy			4,s	; Recuperamos posicion original	; SE MODIFICA Y
 		clra
 		sta			,s	; Reiniciamos contador
 		
-	c4_c4diagonal_while_AbajoDerecha:						;;;;;;;;;
+	c4_c4d_while_AbD:						;;;;;;;;;
 												;
 		lda			,s							;
 		cmpa			#4							;
-		lbeq			c4_c4diagonal_finWhile_AbajoDerecha			;
+		lbeq			c4_c4d_finWhile_AbD			;
 												;
 		lbsr			ldaFila							;
 		pshs			a							;
 		lda			NumFils							;
 		deca										;
 		cmpa			,s							;
-		lbeq			c4_c4diagonal_while_AbajoDerecha_borde			;
+		lbeq			c4_c4d_while_AbD_borde			;
 												;
 		puls			a	; Sacamos la A que hemos metido temporalmente	;	
 		lbsr			ldaColumna						; while (contador < 4 &&
@@ -470,14 +489,14 @@ comprueba4diagonal:
 		lda			NumCols							;{	
 		deca										; comprueba4diagonalPosible
 		cmpa			,s							; posAux = sigPosDiagAbajoDerecha
-		lbeq			c4_c4diagonal_while_AbajoDerecha_borde			; contador++
+		lbeq			c4_c4d_while_AbD_borde			; contador++
 												;}
 			puls			a ; Sacamos la A que hemos metido temporalmente	;
 			lbsr			codificaAdiagPosible				;
 			anda			#0x08	; Solo queremos comprobar si		;
 							; se ha formado arribaIzquierda		;
 			lbsr			ejecutarDiagPosibleCodigoA			;
-			lbeq			comprueba4diagonal_4enRaya			;
+			lbeq			c4_c4d_4enRaya			;
 												;
 		inc			,s	; Contador					;
 		ldb			NumCols							;
@@ -489,47 +508,48 @@ comprueba4diagonal:
 		tfr			d,y							;
 		puls			d							;
 												;	
-		lbra			c4_c4diagonal_while_AbajoDerecha			;
+		lbra			c4_c4d_while_AbD			;
 												;
 												;
-		c4_c4diagonal_while_AbajoDerecha_borde:						;
+		c4_c4d_while_AbD_borde:						;
 												;
+			puls			a ; Sacamos la A que hemos metido temporalmente	;
 			lbsr			codificaAdiagPosible				;
 			anda			#0x08	; Solo queremos comprobar si		;
 							; se ha formado abajoDerecha		;
 			lbsr			ejecutarDiagPosibleCodigoA			;
-			lbeq			comprueba4diagonal_4enRaya			;
+			lbeq			c4_c4d_4enRaya			;
 												;
-	c4_c4diagonal_finWhile_AbajoDerecha:						;;;;;;;;;
+	c4_c4d_finWhile_AbD:						;;;;;;;;;
 	
 	
 		ldy			4,s	; Recuperamos posicion original
 		clra
 		sta			,s	; Reiniciamos contador
 		
-	c4_c4diagonal_while_AbajoIzquierda:						;;;;;;;;;
+	c4_c4d_while_AbI:						;;;;;;;;; ; $$$$
 												;
 		lda			,s							;	
 		cmpa			#4							;
-		lbeq			c4_c4diagonal_finWhile_AbajoIzquierda			;
+		lbeq			c4_c4d_finWhile_AbI			;
 												;
 		lbsr			ldaFila							;
 		pshs			a							;
 		lda			NumFils							;
 		deca										;
 		cmpa			,s							;
-		lbeq			c4_c4diagonal_while_AbajoIzquierda_borde		;
+		lbeq			c4_c4d_while_AbI_bordeA		;
 												;
 		puls			a ; Sacamos la A que hemos metido temporalmente		;	
 		lbsr			ldaColumna						; while (contador < 4 &&	
 		tsta										; 	posAux != borde)
-		lbeq			c4_c4diagonal_while_AbajoIzquierda_borde		;{	
+		lbeq			c4_c4d_while_AbI_borde		;{	
 												; comprueba4diagonalPosible
 			lbsr			codificaAdiagPosible				; posAux = sigPosDiagAbajoIzquierda
 			anda			#0x04	; Solo queremos comprobar si		; contador++
 							; se ha formado arribaDerecha		;}
 			lbsr			ejecutarDiagPosibleCodigoA			;
-			lbeq			comprueba4diagonal_4enRaya			;
+			lbeq			c4_c4d_4enRaya			;
 												;
 		inc			,s	; Contador					;
 		ldb			NumCols							;
@@ -541,18 +561,21 @@ comprueba4diagonal:
 		tfr			d,y							;
 		puls			d							;
 												;
-		lbra			c4_c4diagonal_while_AbajoIzquierda			;
+		lbra			c4_c4d_while_AbI			;
 												;
+		c4_c4d_while_AbI_bordeA:
+		
+			puls			a ; Sacamos la A que hemos metido temporalmente	;			
 												;
-		c4_c4diagonal_while_AbajoIzquierda_borde:					;
+		c4_c4d_while_AbI_borde:					;
 												;
 			lbsr			codificaAdiagPosible				;
 			anda			#0x04	; Solo queremos comprobar si		;
 							; se ha formado abajoDerecha		;
 			lbsr			ejecutarDiagPosibleCodigoA			;
-			lbeq			comprueba4diagonal_4enRaya			;
+			lbeq			c4_c4d_4enRaya			;
 												;
-	c4_c4diagonal_finWhile_AbajoIzquierda:						;;;;;;;;;
+	c4_c4d_finWhile_AbI:						;;;;;;;;;
 
 
 
@@ -561,7 +584,7 @@ comprueba4diagonal:
 		andcc			#0xFB	; Ponemos Z a 0
 		rts
 
-	comprueba4diagonal_4enRaya:
+	c4_c4d_4enRaya:
 
 		puls			a	; Eliminamos el contador
 		puls			y,d,cc
