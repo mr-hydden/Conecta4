@@ -8,6 +8,7 @@
 		
 		.globl			turno
 		.globl			fichaTurno
+		.globl			actualizarFichaTurno
 		
 		;------------------------------------;
 		
@@ -45,7 +46,7 @@
 		
 			;>>>> Variables <<<<
 				; Static
-				fichaTurno:.asciz	"O" ; Se va modificando en cada turno.
+				fichaTurno:	.byte	0 ; Se va modificando en cada turno.
 				
 		;---------------------------------;
 		; Fin objetos actualizarFichaTurno
@@ -184,8 +185,6 @@ turno:
 										;
 										;
 	turno_turno_finWhile:						;;;;;;;;;
-	
-		lbsr			actualizarFichaTurno
 	
 		puls			x
 		puls			d
