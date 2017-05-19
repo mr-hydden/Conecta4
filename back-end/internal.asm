@@ -10,6 +10,15 @@
 		.globl			generarTablero
 		.globl			tableroLleno
 		.globl			columnaLlena
+		.globl			ldaFila
+		.globl			ldaColumna
+		
+		;------------------------------------;
+		
+		;>>>> Etiquetas globales internas <<<<
+		
+		.globl			amodb
+		.globl			div
 		
 		;------------------------------------;
 		
@@ -55,6 +64,86 @@
 	
 ;--------------------------------------------------------------------;
 		; Fin objetos subrutinas
+		
+		
+		
+		
+		
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;				ldaFila					;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Carga en A la fila en la que se encuentra la posicion indicada 	;
+; en el registro Y. La posicion base del tablero debe estar en X	;
+;									;
+; Input: posicion registro Y, tablero registro X			;
+; Output: registro A			.				;
+;									;
+; Registros afectados: A						;
+; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
+;		   	| | | | | | | | |		     		;
+;								    	;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;		
+
+ldaFila:
+		pshs			x,b,cc
+		
+		tfr			y,d
+		subd			2,s		; Posicion base del tablero
+		
+		lda			NumCols		;
+		pshs			a		; Guardamos temporalmente NumCols con 16 bits
+		clra					; en la pila para poder dividir
+		pshs			a		; 
+		
+		tfr			s,x		; La posicion siempre es igual a NumCols*fila + columna
+		lbsr			div		; por ello [(NumCols*fila + columna)/NumCols] = fila
+						
+		tfr			b,a	; Siempre menor o igual a NumFils
+		
+		puls			x	; Extraemos NumCols
+		puls			x,b,cc
+		
+		rts
+		
+;--------------------------------------------------------------;
+		; Fin ldaFila
+		
+		
+		
+		
+		
+		
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;				ldaColumna				;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Carga en A la columna en la que se encuentra la posicion indicada 	;
+; en el registro Y. La posicion base del tablero debe estar en X	;
+;									;
+; Input: posicion registro Y, tablero registro X			;
+; Output: registro A			.				;
+;									;
+; Registros afectados: A						;
+; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
+;		   	| | | | | | | | |		     		;
+;								    	;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;		
+
+ldaColumna:
+		pshs			x,b,cc
+		
+		tfr			y,d
+		subd			2,s	; Posicion base del tablero
+		tfr			b,a	; Siempre menor de NumFils * NumCols < 256
+		ldb			NumCols	; La posicion siempre es igual a NumCols*fila + columna
+		lbsr			amodb	; por ello [NumCols*fila + columna] = columna
+		tfr			b,a
+		
+		puls			x,b,cc
+		
+		rts
+		
+;--------------------------------------------------------------;
+		; Fin ldaColumna
 		
 		
 		
@@ -173,7 +262,7 @@ generarTablero:
 		
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;			columnaLlena				;
+;				columnaLlena				;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Comprueba si hay algun hueco libre en la columna indicada en el 	;
 ; registro B y guarda la direccion del primer hueco libre.		;

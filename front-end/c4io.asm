@@ -492,7 +492,7 @@ mostrarJugadorTurno:
 		lbsr			print
 		
 		cmpa			fichaTurno				;;;;;;;;;
-		beq			c4io_mostrarJugadorTurno_else			; if (fichaTurno = FichaJugador1)
+		bne			c4io_mostrarJugadorTurno_else			; if (fichaTurno = FichaJugador1)
 			lda			#0x31 ; Digito 1 en ASCII		;	fichaTurno <- FichaJugador2
 			bra			c4io_mostrarJugadorTurno_finIf		; else	
 											;	fichaTurno <- FichaJugador1
