@@ -9,6 +9,7 @@
 		.globl			imprimirTablero
 		.globl			mostrarMenu
 		.globl			mostrarJugadorTurno
+		.globl			mostrarMensajeGanador
 		
 		;------------------------------------;
 		
@@ -106,6 +107,18 @@
 		;------------------------------------;
 		; Fin objetos mostrarJugadorTurno
 		
+		
+		;>>>> Objetos mostrarMensajeGanador <<<<
+		
+			;>>>> Constantes <<<<
+			sMostrarMensajeGanador_MensajeGanador:
+				.ascii			"\n"
+				.asciz			"Victoria del JUGADOR "
+				
+			sMostrarMensajeGanador_Prompt:
+				.asciz			"Pulse una tecla para volver al menu..."
+		;------------------------------------;
+		; Fin objetos mostrarMensajeGanador
 		
 ;--------------------------------------------------------------------;
 		; Fin objetos subrutinas
@@ -492,17 +505,46 @@ mostrarJugadorTurno:
 		lbsr			print
 		
 		cmpa			fichaTurno				;;;;;;;;;
-		bne			c4io_mostrarJugadorTurno_else			; if (fichaTurno = FichaJugador1)
-			lda			#0x31 ; Digito 1 en ASCII		;	fichaTurno <- FichaJugador2
-			bra			c4io_mostrarJugadorTurno_finIf		; else	
-											;	fichaTurno <- FichaJugador1
+		bne			c4io_mostrarJugadorTurno_else			;
+											;
+			lda			#0x31 ; Digito 1 en ASCII		;
+			sta			$Pantalla				;
+			lda			#0x20	; Caracter espacio		;
+			sta			$Pantalla				;
+											;
+			lda			#'(					;
+			sta			$Pantalla				;
+			leax			sImprimirTablero_ColorRojo,pcr		;
+			lbsr			print					;
+			lda			FichaJugador1				;
+			sta			$Pantalla				; if (fichaTurno = FichaJugador1)
+			leax			sImprimirTablero_ColorOriginal,pcr	;	imprimir(FichaJugador1)
+			lbsr			print					; else	
+			lda			#')					;	imprimir(FichaJugador2)
+			sta			$Pantalla				;
+											;
+			bra			c4io_mostrarJugadorTurno_finIf		; 
+											;
 	c4io_mostrarJugadorTurno_else:							; 
 											;
-			lda			#0x32 ; Digito 2 en ASCII	;;;;;;;;;
-				
-	c4io_mostrarJugadorTurno_finIf:
+			lda			#0x32 ; Digito 1 en ASCII		;
+			sta			$Pantalla				;
+			lda			#0x20	; Caracter espacio		;
+			sta			$Pantalla				;
+											;
+			lda			#'(					;
+			sta			$Pantalla				;
+			leax			sImprimirTablero_ColorAmarillo,pcr	;	;
+			lbsr			print					;
+			lda			FichaJugador2				;
+			sta			$Pantalla				;
+			leax			sImprimirTablero_ColorOriginal,pcr	;
+			lbsr			print					;
+			lda			#')					;
+			sta			$Pantalla				;
+											;
+	c4io_mostrarJugadorTurno_finIf:						;;;;;;;;;
 	
-		sta			$Pantalla
 		lda			#'\n
 		sta			$Pantalla
 		
@@ -522,16 +564,46 @@ mostrarJugadorTurno:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Muestra un mensaje con el ganador					;
 ;									;
-; Input: -								;
+; Input: Posicion Y							;
 ; Output: $Pantalla							;
 ;								    	;
-; Registros afectados: CC					    	;
+; Registros afectados: -					    	;
 ; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
-;		   	| | |X| |X|X|0|X|		     		;
+;		   	| | | | | | | | |		     		;
 ;								    	;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
+mostrarMensajeGanador:
+		pshs			x,a,cc
+		
+		leax			sMostrarMensajeGanador_MensajeGanador,pcr
+		lbsr			print
+		lda			FichaJugador1
+		cmpa			,y
+		bne			c4io_mMensajeGanador_J2
+		
+			lda			#0x31	; Digito 1
+			sta			$Pantalla
+			lbra			c4io_mMensajeGanador_finMensaje
+			
+	c4io_mMensajeGanador_J2:
+	
+			lda			#0x32	; Digito 1
+			sta			$Pantalla
+		
+	c4io_mMensajeGanador_finMensaje:
+		
+		lda			#'!
+		sta			$Pantalla
+		lda			#'\n
+		sta			$Pantalla
+		
+		leax			sMostrarMensajeGanador_Prompt,pcr
+		lbsr			print
+		lbsr			getchar
+		
+		puls			x,a,cc
+		rts
 
 ;--------------------------------------------------------------------;
 		; Fin mostrarMensajeGanador	

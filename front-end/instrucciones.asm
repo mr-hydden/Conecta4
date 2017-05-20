@@ -106,7 +106,7 @@ sMostrarInstrucciones_Imagen3:
 		
 				
 sMostrarInstrucciones_Prompt:
-		.asciz			"Pulsa una tecla para continuar..."
+		.asciz			"Pulse una tecla para continuar..."
 		
 sMostrarInstrucciones_UpLineChar:
 		.asciz			"\033[F\033[F                                  "

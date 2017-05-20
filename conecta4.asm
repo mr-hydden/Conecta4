@@ -22,6 +22,7 @@
 		.globl			turno
 		.globl			tableroLleno
 		.globl			actualizarFichaTurno
+		.globl			mostrarMensajeGanador
 		
 		;------------------------------------;
 		
@@ -72,6 +73,7 @@ ptr_tablero:	.word			0x0000
 ;--------------------------------------------------------------------;
 programa:	
 		lds			#0xFE00
+		ldu			#0xFC00
 		ldd			#0xEE00
 		std			SiguientePosicionDinamica
 		lda			FichaJugador1
@@ -106,20 +108,23 @@ programa:
 		lbsr			tableroLleno
 		beq			programa_empate
 		lbsr			turno
+		pshu			y	; Para mostrar mensaje ganador
 		lda			fichaTurno
 		sta			,y
 		lbsr			actualizarFichaTurno
 		lbsr			comprueba4
 		beq			programa_cuatroEnRaya
-		
+		pulu			y
 		bra			programa_partida
 	
 	programa_cuatroEnRaya:
-	
+		
 		lbsr			clrscr
-		lda			#'!
-		sta			$Pantalla
-		lbsr			getchar	
+		leay			[ptr_tablero,pcr]
+		lbsr			imprimirTablero
+		pulu			y
+		lda			,y
+		lbsr			mostrarMensajeGanador
 		
 		bra			programa
 	
