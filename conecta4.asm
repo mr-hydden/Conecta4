@@ -41,6 +41,7 @@
 		.globl			tableroLleno
 		.globl			actualizarFichaTurno
 		.globl			mostrarMensajeGanador
+		.globl			mostrarMensajeEmpate
 		
 		;------------------------------------;
 		
@@ -215,10 +216,8 @@ programa:
 	
 		lbsr			clrscr		;;;;;;;;;
 		leay			[ptr_tablero,pcr]	;
-		lbsr			imprimirTablero		;
-		lda			#'?			;
-		sta			$Pantalla		; Si hay empate,
-		lbsr			getchar			; se muestra el tablero y un 
+		lbsr			imprimirTablero		; Si hay empate,
+		lbsr			mostrarMensajeEmpate	; se muestra el tablero y un 
 								; mensaje de empate.
 		bra			programa		;
 							;;;;;;;;;

@@ -10,6 +10,7 @@
 		.globl			mostrarMenu
 		.globl			mostrarJugadorTurno
 		.globl			mostrarMensajeGanador
+		.globl			mostrarMensajeEmpate
 		
 		;------------------------------------;
 		
@@ -114,11 +115,26 @@
 			sMostrarMensajeGanador_MensajeGanador:
 				.ascii			"\n"
 				.asciz			"Victoria del JUGADOR "
-				
-			sMostrarMensajeGanador_Prompt:
-				.asciz			"Pulse una tecla para volver al menu..."
+
 		;------------------------------------;
 		; Fin objetos mostrarMensajeGanador
+		
+		
+		;>>>> Objetos mostrarMensajeEmpate <<<<
+		
+			;>>>> Constantes <<<<
+			sMostrarMensajeEmpate_MensajeEmpate:
+				.ascii			"\n"
+				.asciz			"Hay un EMPATE."
+		;------------------------------------;
+		; Fin objetos mostrarMensajeEmpate
+		
+		
+		;>>>> Objetos compartidos <<<<
+		sMostrarMensaje_Prompt:
+			.asciz			"Pulse una tecla para volver al menu..."
+		;----------------------------;
+		; Fin objetos compartidos
 		
 ;--------------------------------------------------------------------;
 		; Fin objetos subrutinas
@@ -560,7 +576,7 @@ mostrarJugadorTurno:
 		
 		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;			mostrarMensajeGanador				    	;
+;			mostrarMensajeGanador				;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Muestra un mensaje con el ganador					;
 ;									;
@@ -598,7 +614,7 @@ mostrarMensajeGanador:
 		lda			#'\n
 		sta			$Pantalla
 		
-		leax			sMostrarMensajeGanador_Prompt,pcr
+		leax			sMostrarMensaje_Prompt,pcr
 		lbsr			print
 		lbsr			getchar
 		
@@ -606,7 +622,43 @@ mostrarMensajeGanador:
 		rts
 
 ;--------------------------------------------------------------------;
-		; Fin mostrarMensajeGanador	
+		; Fin mostrarMensajeGanador
+		
+		
+		
+		
+		
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;			mostrarMensajeEmpate				;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Muestra un mensaje de empate						;
+;									;
+; Input: Posicion Y							;
+; Output: pantalla							;
+;								    	;
+; Registros afectados: -					    	;
+;								    	;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+mostrarMensajeEmpate:
+
+		pshs			x,a,cc
+		
+		leax			sMostrarMensajeEmpate_MensajeEmpate,pcr
+		lbsr			print
+		
+		lda			#'\n
+		sta			$Pantalla
+		
+		leax			sMostrarMensaje_Prompt,pcr
+		lbsr			print
+		lbsr			getchar
+		
+		puls			x,a,cc
+		rts
+
+;--------------------------------------------------------------------;
+		; Fin mostrarMensajeEmpate	
 		
 		
 		
