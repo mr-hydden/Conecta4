@@ -1,0 +1,48 @@
+*****************************************************************
+* 			Conecta 4				*
+*****************************************************************
+*								*
+* 	Creado por Samuel Gomez Sanchez y Miguel Diaz Galan	*
+*								*
+*****************************************************************
+
+Como comenzar a jugar
+---------------------
+
+Ver fichero INSTALL.
+
+
+
+
+Sobre la interfaz inicial
+-------------------------
+
+Al iniciar el juego se presenta una interfaz similar a 
+la siguiente:
+
+	
+		*************************
+		*	Conecta 4	*
+		*************************
+		
+		a) Nuevo juego
+		b) Instrucciones
+		c) Salir
+		
+	Opcion: _
+	
+
+	Si pulsa la letra 'a' en su teclado, comenzara un juego 
+nuevo para dos jugadores.
+	Si pulsa la letra 'b' en su teclado, podra acceder a una
+seccion con instrucciones para aprender a jugar.
+	Si desea cerrar la aplicacion, basta con pulsar la letra
+'c' en su teclado.
+
+
+
+
+Informacion tecnica
+-------------------
+
+Desarrollada en el fichero DOC.pdf que se incluye en esta carpeta.

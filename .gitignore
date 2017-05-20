@@ -5,9 +5,6 @@
 *.rst
 *.s19
 
-README*
-main.asm
-DOC
 REVISION*
 .~lock.DOC.odt#
 DOC.odt
