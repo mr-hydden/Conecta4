@@ -8,6 +8,7 @@
 		
 		.globl			negd
 		.globl			amodb
+		.globl			div
 		
 		;------------------------------------;
 		
