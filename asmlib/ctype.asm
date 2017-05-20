@@ -1,3 +1,22 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;				io.asm				;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Modulo de funciones genericas para el tratamiento de		;
+; caracteres alfanumericos.					;
+; 								;
+; Autor: Samuel Gomez Sanchez					;
+;								;
+; Subrutinas:	isdigit						;
+;		isalpha						;
+;		toupper						;
+;		tolower						;
+;								;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;			
+			
+			
+			
+			
+			
 			; Zona configuracion de memoria
 ;--------------------------------------------------------------------;
 		
@@ -57,12 +76,12 @@ pantalla	.equ			0xFF00
 ;									;
 ; Registros afectados: CC						;
 ; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
-;			| | |X| |X|X|0|X|				;
+;			| | | | | |X| | |				;
 ;									;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 isdigit:		
-		pshs			b
+		pshs			b,cc
 		
 		
 		ldb			#0x30			;;;;;;;;;
@@ -85,21 +104,21 @@ isdigit:
 		cmpb			#0x3A			;;;;;;;;;
 		beq			ctype_isdigit_notDigit		;
 									;
-		orcc			#0x04 	; Ponemos a		; 	
-						; 1 el flag Z		; if (B = 0x3A)
+			puls			cc			;
+			orcc			#0x04 	; Ponemos a	; 	
+							; 1 el flag Z	; 
+			puls			b			;
+			rts						; if (B = 0x3A)
 									;	noEsUnDigito
-		bra			ctype_isdigit_finIsDigit	; else	
+									; else	
 									; 	esDigito
 	ctype_isdigit_notDigit:						;	
 									;
-		andcc			#0xFB	; Ponemos a		;
-						; 0 el flag Z		; 
-								;;;;;;;;;	
-												
-	ctype_isdigit_finIsDigit:
-	
-		puls			b
-		rts
+			puls			cc			;
+			andcc			#0xFB	; Ponemos a	;
+							; 0 el flag Z	;
+			puls			b			;
+			rts					;;;;;;;;;
 				
 ;--------------------------------------------------------------------;
 		; Fin isdigit
@@ -120,12 +139,12 @@ isdigit:
 ;									;
 ; Registros afectados: CC						;
 ; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
-;			| | |X| |X|X|0|X|				;
+;			| | | | | |X| | |				;
 ;									;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 isalpha:		
-		pshs			b
+		pshs			b,cc
 		
 		ldb			#0x41			;;;;;;;;;
 		pshs			a				;
@@ -166,20 +185,21 @@ isalpha:
 		beq			ctype_isalpha_notAlpha		;
 		cmpb			#0x7B				; if (B = 0x5B || B = 0x7B)
 		beq			ctype_isalpha_notAlpha		;	noEsAlpha
-		orcc			#0x04	; Ponemos a 		; else
-						; 1 el flag Z		;	esAlpha
-		bra			ctype_isalpha_finIsAlpha	;		
+			puls			cc			;
+			orcc			#0x04	; Ponemos a 	; else
+							; 1 el flag Z	;	esAlpha
+			puls			b			;
+			rts						;
 									; 
 	ctype_isalpha_notAlpha:						;
 									;	
-		andcc			#0xFB	; Ponemos a 		;
-						; 0 el flag Z		;
-								;;;;;;;;;					
-	ctype_isalpha_finIsAlpha:
+			puls			cc			;
+			andcc			#0xFB	; Ponemos a 	;
+							; 0 el flag Z	;
+			puls			b			;
+			rts						;
+								;;;;;;;;;
 			
-		puls			b
-		rts
-				
 ;--------------------------------------------------------------------;
 		; Fin isalpha
 		
@@ -195,14 +215,13 @@ isalpha:
 ; Input: Dato contenido en registro A 					;
 ; Output: Dato contenido en el registro A 				;
 ;									;
-; Registros afectados: A, CC						;
-; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
-;			| | |X| |X|X|X|X|				;
+; Registros afectados: A						;
 ;									;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 toupper:
-
+		pshs			cc
+		
 		cmpa			#'a
 		blo			ctype_toupper_sinCambios
 		cmpa			#'z
@@ -213,6 +232,7 @@ toupper:
 		
 	ctype_toupper_sinCambios:
 	
+		puls			cc
 		rts
 		
 ;--------------------------------------------------------------;
@@ -238,7 +258,8 @@ toupper:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 tolower:
-
+		pshs			cc
+		
 		cmpa			#'A
 		blo			ctype_tolower_sinCambios
 		cmpa			#'Z
@@ -249,6 +270,7 @@ tolower:
 		
 	ctype_tolower_sinCambios:
 	
+		puls			cc
 		rts
 		
 ;--------------------------------------------------------------;

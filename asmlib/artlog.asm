@@ -1,3 +1,21 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;				artlog.asm			;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Modulo de funciones genericas de operaciones arimeticas y 	;
+; logicas.							;
+; 								;
+; Autor: Samuel Gomez Sanchez					;
+;								;
+; Subrutinas:	negd						;
+;		amodb						;
+;		div						;
+;								;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;		
+		
+		
+		
+		
+		
 		; Zona configuracion de memoria
 ;--------------------------------------------------------------------;		
 		.module			artlog
@@ -58,13 +76,13 @@ pantalla	.equ			0xFF00
 ; Input: regsitro D							;
 ; Output: registro D			.				;
 ;									;
-; Registros afectados: CC, D						;
-; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
-;		   	| | |X| |X|X|X|X|		     		;
+; Registros afectados: D						;
 ;								    	;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 negd:		
+		pshs			cc
+		
 		cmpd			#0		; Si es 0, no
 		beq			artlog_negd_fin	; hace nada.
 		
@@ -75,7 +93,8 @@ negd:
 		addd			#1	
 		
 	artlog_negd_fin:	
-	
+		
+		puls			cc
 		rts
 
 ;--------------------------------------------------------------------;
@@ -132,7 +151,7 @@ amodb:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;		
 	
 div:
-		pshs			d,cc	; Guarda, CC y luego D, no? NO
+		pshs			d,cc
 		
 		tfr			s,d	; Hacemos un hueco en la pila
 		subd			#2	; para trabajar con cociente

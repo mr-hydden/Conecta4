@@ -1,3 +1,24 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;				io.asm				;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Modulo de funciones genericas de entrada/salida.		;
+; 								;
+; Autor: Samuel Gomez Sanchez					;
+;								;
+; Subrutinas:	println						;
+;		print						;
+;		getstr						;
+;		getchar						;
+;		clrscr						;
+;		clrscrAscii					;
+;								;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+
+
+
 		; Zona configuracion de memoria
 ;--------------------------------------------------------------------;	
 
@@ -15,13 +36,7 @@
 		.globl			clrscrAscii
 		
 		;------------------------------------;
-		
-		
-		
-		;>>>> Etiquetas globales externas <<<<
-		;------------------------------------;
-		
-		
+
 ;--------------------------------------------------------------------;
 		; Fin zona configuracion memoria		
 		
@@ -51,9 +66,10 @@ pantalla	.equ			0xFF00
 		
 			; >>>> Constantes <<<<
 
-			sClrscr_ClrScrAsciiCode:	.asciz		"\33[2J"
-			
-		;------------------------------------;
+			sClrscr_ClrScrAsciiCode:	.asciz		"\33[2J" ; Codigo de escape ASCII que 
+										 ; borra la pantalla poniendo el
+										 ; cursor al comienzo de esta.
+		;------------------------------------;				 
 		; Fin objetos clrscrAscii
 
 ;--------------------------------------------------------------------;	
@@ -73,14 +89,12 @@ pantalla	.equ			0xFF00
 ; Input: dato apuntado por registro X					;
 ; Output: pantalla							;
 ;									;
-; Registros afectados: CC						;
-; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
-;			| | | | |X|X|0| |				;
+; Registros afectados: -						;
 ;									;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 println:
-		pshs			a,x
+		pshs			a,x,cc
 		
 		
 							
@@ -97,7 +111,7 @@ println:
 		lda			#'\n
 		sta			pantalla
 				
-		puls			a,x
+		puls			a,x,cc
 		rts
 				
 ;--------------------------------------------------------------------;
@@ -117,14 +131,12 @@ println:
 ; Input: dato apuntado por registro X					;
 ; Output: pantalla							;
 ;									;
-; Registros afectados: CC						;
-; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
-;			| | | | |X|X|0| |				;
+; Registros afectados: -						;
 ;									;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 print:
-		pshs			a,x
+		pshs			a,x,cc
 				
 	io_print_while:					;;;;;;;;;
 		lda			,x+			;						;
@@ -136,7 +148,7 @@ print:
 								;
 	io_print_finWhile:				;;;;;;;;;	
 													
-		puls			a,x
+		puls			a,x,cc
 		rts
 				
 ;--------------------------------------------------------------------;
@@ -158,14 +170,12 @@ print:
 ; Input: Direccion registro X						;
 ; Output: Direccion registro X						;
 ;									;
-; Registros afectados: CC						;
-; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
-;			| | | | |X|X|0| |				;
+; Registros afectados: -						;
 ;									;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 getstr:
-		pshs			x,a
+		pshs			x,a,cc
 				
 
 	io_getstr_while:				;;;;;;;;;
@@ -183,7 +193,7 @@ getstr:
 		lda			#'\0
 		sta			,x+
 		
-		puls			x,a
+		puls			x,a,cc
 		rts
 				
 ;--------------------------------------------------------------------;
@@ -203,15 +213,14 @@ getstr:
 ; Input: Teclado							;
 ; Output: Registro A							;
 ;									;
-; Registros afectados: A y CC						;
-; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
-;			| | | | |X|X|0| |				;
+; Registros afectados: A						;
 ;									;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-getchar:		
+getchar:	
+		pshs			cc
 		lda			teclado
-				
+		puls			cc
 		rts
 				
 ;--------------------------------------------------------------------;
@@ -223,24 +232,22 @@ getchar:
 		
 		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;			clrscr				    	;
+;				clrscr				    	;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Limpia la pantalla, imprimiendo 50 saltos de linea. Feo, pero portable;
 ;								    	;
 ; Input: ninguno.							;
 ; Output: pantalla							;
 ;									;
-; Registros afectados: CC					    	;
-; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
-;		   	| | |X| |X|X|0|X|		     		;
+; Registros afectados: -					    	;
 ;								    	;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 clrscr:
-		pshs			d
+		pshs			d,cc
 		
-		tfr			s,d	; Hacemos espacio en la pila para
-		decb				; un contador. El bloque que lo
-		tfr			d,s	; utilice debera inicializarlo
+		pshs			b	; Hacemos espacio en la pila para
+						; un contador. 
 		
 		clrb
 		stb			,s	; 0,s es siempre el contador
@@ -259,11 +266,10 @@ clrscr:
 		
 	io_clrscr_finFor:
 		
-		tfr			s,d	; Eliminamos el espacio
-		incb				; para el contador
-		tfr			d,s	;
+		puls			b	; Eliminamos el espacio
+						; para el contador
 		
-		puls			d
+		puls			d,cc
 		rts
 
 ;--------------------------------------------------------------------;
@@ -275,7 +281,7 @@ clrscr:
 		
 		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;			clrscrAscii			    	;
+;				clrscrAscii			    	;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Limpia la pantalla utilizando el codigo de escape ascii "\33[2J"   	;
 ; No portable, mas elegante.						;
@@ -283,17 +289,15 @@ clrscr:
 ; Input: ninguno.							;
 ; Output: pantalla	.						;
 ;									;
-; Registros afectados: CC					    	;
-; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
-;		   	| | | | |X|X|0| |		     		;
+; Registros afectados: -					    	;
 ;								    	;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 clrscrAscii:
 
-		pshs			x
+		pshs			x,cc
 		leax			sClrscr_ClrScrAsciiCode,pcr
-		jsr			print
-		puls			x
+		lbsr			print
+		puls			x,cc
 		rts
 
 ;--------------------------------------------------------------------;
