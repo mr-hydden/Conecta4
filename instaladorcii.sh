@@ -6,7 +6,7 @@ F_CHECK='\e[1;93m[\e[92m \u2714 \e[93m]\e[0;96;3m '
 F_CROSS='\e[1;93m[\e[31m \u2718 \e[93m]\e[0;96;3m '
 #Path constants
 BIN_URL='http://avellano.usal.es/~compii/'
-BIN_INSTALL_PATH="/usr/local/bin/"
+BIN_INSTALL_PATH="$HOME/bin/"
 BINARIES=( 'as6809' 'aslink' 'm6809-run' )
 GEDIT_SPEC_URL="${BIN_URL}INSTALADOR/"
 GEDIT_SPEC_PATH="$HOME/.local/share/gtksourceview-3.0/language-specs/"
