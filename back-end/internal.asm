@@ -320,7 +320,7 @@ columnaLlena:
 						; e Y a la posicion mas baja del tablero;
 		lda			NumFils	; en esa columna			;
 		deca									;
-		ldb			bColumnaLlena_Col			;
+		ldb			bColumnaLlena_Col				;
 		jsr			posicionij					;
 											;
 	internal_columnaLlena_for:							;
@@ -341,7 +341,7 @@ columnaLlena:
 	internal_columnaLlena_seguir:							;
 											;
 			lda			,s					;
-			ldb			bColumnaLlena_Col		;
+			ldb			bColumnaLlena_Col			;
 			; X no se ha visto modificado.					;
 			jsr			posicionij				;		
 											;

@@ -213,24 +213,24 @@ comprueba4columnaArriba:
 		
 		
 		
-		ldb			#3					;;;;;;;;;
-		pshs			b,a						;
-											;
-	comprueba4_comprueba4columnaArriba_for:						;
-											;
-		tst			1,s						;
+		ldb			#3						;;;;;;;;;
+		pshs			b,a							;
+												;
+	comprueba4_comprueba4columnaArriba_for:							;
+												;
+		tst			1,s							;
 		beq			comprueba4_comprueba4columnaArriba_finFor		;
-											;
-			tfr			y,d					; for (i = 3; i > 0; --i, Y-= NumCols)
-			subd			2,s					;	if (ContentOf(Y) != ficha)
-			tfr			d,y					;		break
-			lda			,s					;
-			cmpa			,y					;
+												;
+			tfr			y,d						; for (i = 3; i > 0; --i, Y-= NumCols)
+			subd			2,s						;	if (ContentOf(Y) != ficha)
+			tfr			d,y						;		break
+			lda			,s						;
+			cmpa			,y						;
 			bne			comprueba4_comprueba4columnaArriba_finTest	;
-											;
-		dec			1,s						;
-		bra			comprueba4_comprueba4columnaArriba_for		;
-										;;;;;;;;;
+												;
+		dec			1,s							;
+		bra			comprueba4_comprueba4columnaArriba_for			;
+											;;;;;;;;;
 										
 	comprueba4_comprueba4columnaArriba_finFor:
 		
@@ -292,24 +292,24 @@ comprueba4columnaAbajo:
 		
 		
 		
-		ldb			#3					;;;;;;;;;
-		pshs			b,a						;
-											;
-	comprueba4_comprueba4columnaAbajo_for:						;
-											;
-		tst			1,s						;
+		ldb			#3						;;;;;;;;;
+		pshs			b,a							;
+												;
+	comprueba4_comprueba4columnaAbajo_for:							;
+												;
+		tst			1,s							;
 		beq			comprueba4_comprueba4columnaAbajo_finFor		;
-											;
-			tfr			y,d					; for (i = 3; i > 0; --i, Y += NumCols)
-			addd			2,s					;	if (ContentOf(Y) != ficha)
-			tfr			d,y					;		break
-			lda			,s					;
-			cmpa			,y					;
+												;
+			tfr			y,d						; for (i = 3; i > 0; --i, Y += NumCols)
+			addd			2,s						;	if (ContentOf(Y) != ficha)
+			tfr			d,y						;		break
+			lda			,s						;
+			cmpa			,y						;
 			bne			comprueba4_comprueba4columnaAbajo_finTest	;
-											;
-		dec			1,s						;
-		bra			comprueba4_comprueba4columnaAbajo_for		;
-										;;;;;;;;;
+												;
+		dec			1,s							;
+		bra			comprueba4_comprueba4columnaAbajo_for			;
+											;;;;;;;;;
 										
 	comprueba4_comprueba4columnaAbajo_finFor:
 		
@@ -370,25 +370,25 @@ comprueba4diagonalArribaDerecha:
 		
 		
 		
-		ldb			#3						;;;;;;;;;
-		pshs			b,a							;
-												;
-	comprueba4_comprueba4diagonalArribaDerecha_for:						;
-												;
-		tst			1,s							;
+		ldb			#3							;;;;;;;;;
+		pshs			b,a								;
+													;
+	comprueba4_comprueba4diagonalArribaDerecha_for:							;
+													;
+		tst			1,s								;
 		beq			comprueba4_comprueba4diagonalArribaDerecha_finFor		;
-												;
-			tfr			y,d						; for (i = 3; i > 0; --i, Y-= NumCols)
-			subd			2,s						;	if (ContentOf(Y) != ficha)
-			addd			#1						;		break
-			tfr			d,y						;		
-			lda			,s						;
-			cmpa			,y						;
+													;
+			tfr			y,d							; for (i = 3; i > 0; --i, Y-= NumCols)
+			subd			2,s							;	if (ContentOf(Y) != ficha)
+			addd			#1							;		break
+			tfr			d,y							;		
+			lda			,s							;
+			cmpa			,y							;
 			bne			comprueba4_comprueba4diagonalArribaDerecha_finTest	;
-												;
-		dec			1,s							;
-		bra			comprueba4_comprueba4diagonalArribaDerecha_for		;
-											;;;;;;;;;
+													;
+		dec			1,s								;
+		bra			comprueba4_comprueba4diagonalArribaDerecha_for			;
+												;;;;;;;;;
 										
 	comprueba4_comprueba4diagonalArribaDerecha_finFor:
 		
@@ -452,10 +452,10 @@ comprueba4diagonalArribaIzquierda:
 		ldb			#3							;;;;;;;;;
 		pshs			b,a								;
 													;
-	comprueba4_comprueba4diagonalArribaIzquierda_for:							;
+	comprueba4_comprueba4diagonalArribaIzquierda_for:						;
 													;
 		tst			1,s								;
-		beq			comprueba4_comprueba4diagonalArribaIzquierda_finFor			;
+		beq			comprueba4_comprueba4diagonalArribaIzquierda_finFor		;
 													;
 			tfr			y,d							; for (i = 3; i > 0; --i, Y-= NumCols)
 			subd			2,s							;	if (ContentOf(Y) != ficha)
@@ -466,7 +466,7 @@ comprueba4diagonalArribaIzquierda:
 			bne			comprueba4_comprueba4diagonalArribaIzquierda_finTest	;
 													;
 		dec			1,s								;
-		bra			comprueba4_comprueba4diagonalArribaIzquierda_for			;
+		bra			comprueba4_comprueba4diagonalArribaIzquierda_for		;
 												;;;;;;;;;
 										
 	comprueba4_comprueba4diagonalArribaIzquierda_finFor:
@@ -528,26 +528,26 @@ comprueba4diagonalAbajoDerecha:
 		
 		
 		
-		ldb			#3						;;;;;;;;;
-		pshs			b,a							;
-												;
-	comprueba4_comprueba4diagonalAbajoDerecha_for:						;
-												;
-		tst			1,s							;
+		ldb			#3							;;;;;;;;;
+		pshs			b,a								;
+													;
+	comprueba4_comprueba4diagonalAbajoDerecha_for:							;
+													;
+		tst			1,s								;
 		beq			comprueba4_comprueba4diagonalAbajoDerecha_finFor		;
-												;
-			tfr			y,d						; for (i = 3; i > 0; --i, Y-= NumCols)
-			addd			2,s						;	if (ContentOf(Y) != ficha)
-			addd			#1						;		break
-			tfr			d,y						;		
-			lda			,s						;
-			cmpa			,y						;
+													;
+			tfr			y,d							; for (i = 3; i > 0; --i, Y-= NumCols)
+			addd			2,s							;	if (ContentOf(Y) != ficha)
+			addd			#1							;		break
+			tfr			d,y							;		
+			lda			,s							;
+			cmpa			,y							;
 			bne			comprueba4_comprueba4diagonalAbajoDerecha_finTest	;
-												;
-												;
-		dec			1,s							;	
-		bra			comprueba4_comprueba4diagonalAbajoDerecha_for		;
-											;;;;;;;;;
+													;
+													;
+		dec			1,s								;	
+		bra			comprueba4_comprueba4diagonalAbajoDerecha_for			;
+												;;;;;;;;;
 										
 	comprueba4_comprueba4diagonalAbajoDerecha_finFor:
 	
@@ -608,25 +608,25 @@ comprueba4diagonalAbajoIzquierda:
 		
 		
 		
-		ldb			#3						;;;;;;;;;
-		pshs			b,a							;
-												;
+		ldb			#3							;;;;;;;;;
+		pshs			b,a								;
+													;
 	comprueba4_comprueba4diagonalAbajoIzquierda_for:						;
-												;
-		tst			1,s							;
+													;
+		tst			1,s								;
 		beq			comprueba4_comprueba4diagonalAbajoIzquierda_finFor		;
-												;
-			tfr			y,d						; for (i = 3; i > 0; --i, Y-= NumCols)
-			addd			2,s						;	if (ContentOf(Y) != ficha)
-			subd			#1						;		break
-			tfr			d,y						;		
-			lda			,s						;
-			cmpa			,y						;
+													;
+			tfr			y,d							; for (i = 3; i > 0; --i, Y-= NumCols)
+			addd			2,s							;	if (ContentOf(Y) != ficha)
+			subd			#1							;		break
+			tfr			d,y							;		
+			lda			,s							;
+			cmpa			,y							;
 			bne			comprueba4_comprueba4diagonalAbajoIzquierda_finTest	;
-												;
-		dec			1,s							;	
-		bra			comprueba4_comprueba4diagonalAbajoIzquierda_for		;
-											;;;;;;;;;
+													;
+		dec			1,s								;	
+		bra			comprueba4_comprueba4diagonalAbajoIzquierda_for			;
+												;;;;;;;;;
 										
 	comprueba4_comprueba4diagonalAbajoIzquierda_finFor:
 	
