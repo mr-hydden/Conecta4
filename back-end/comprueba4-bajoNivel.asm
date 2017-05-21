@@ -47,13 +47,6 @@
 		
 		; Objetos subrutinas	
 ;--------------------------------------------------------------------;
-		;>>>> Objetos comprueba4 <<<<
-		comprueba4_comprueba4_coordX:
-			.byte		0
-		comprueba4_comprueba4_coordY:
-			.byte		0
-		;---------------------------;
-		; Fin objetos comprueba4
 ;--------------------------------------------------------------------;
 		; Fin objetos subrutinas
 		

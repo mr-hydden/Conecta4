@@ -58,9 +58,9 @@
 			sTurno_PromptRecogerColumna:
 				.asciz			"Siguiente jugada: columna numero _\b"
 			sTurno_MensajeErrorFueraRango:
-				.asciz			"Introduzca una columna valida.\n"
+				.asciz			"Introduzca una columna valida. "
 			sTurno_MensajeErrorColumnaLlena:
-				.asciz			"Columna llena. Juegue en una columna disponible.\n"
+				.asciz			"Columna llena. Juegue en una columna disponible. "
 				
 		;----------------------;
 		; Fin objetos turno
@@ -135,56 +135,75 @@ turno:
 		pshs			x
 		
 		
-	turno_turno_while:						;;;;;;;;;
-										;
-			lbsr			clrscr			;
-			puls			y				;	
-			pshs			y	; Cargamos para		;
-							; imprimir tablero	;
-										;
-			lbsr			imprimirTablero			;
-			lbsr			mostrarJugadorTurno		;
-			leax			sTurno_PromptRecogerColumna,pcr	;
-			lbsr			print				;
-										;
-			lbsr			getchar				;
-			suba			#0x30				;
-										;
-		cmpa			#1					;
-		bhs			turno_turno_test2			;
-		bra			turno_turno_mensajeErrorFueraRango	;
-										;
-										;
-	turno_turno_test2:							; do
-										;	PedirColumna
-		cmpa			NumCols					; 	if (Columna < 1 || columna > NumCols)
-		bhi			turno_turno_mensajeErrorFueraRango	;		mensajeFueraRango
-		bra			turno_turno_test3			;		continuar
-										;	if (columnaLlena)
-	turno_turno_test3:							;		mensajeColumaLlena
-										;		continuar
-		puls			x					; while (columna < 1 || columna > NumCols || columnaLlena)
-		pshs			x					;
-		tfr			a,b					;
-		lbsr			columnaLlena				;
-		beq			turno_turno_mensajeErrorColumnaLlena	;
-		bra			turno_turno_finWhile			;
-										;
-										;
-	turno_turno_mensajeErrorFueraRango:					;
-										;
-		leax			sTurno_MensajeErrorFueraRango,pcr	;
-		lbsr			print					;
-		bra			turno_turno_while			;
-										;
-	turno_turno_mensajeErrorColumnaLlena:					;
-										;
-		leax			sTurno_MensajeErrorColumnaLlena,pcr	;
-		lbsr			print					;
-		bra			turno_turno_while			;
-										;
-										;
-	turno_turno_finWhile:						;;;;;;;;;
+	turno_turno_while:							;;;;;;;;;
+											;
+			lbsr			clrscr					;
+			puls			y					;		
+			pshs			y	; Cargamos para			;
+							; imprimir tablero		;
+											;
+			lbsr			imprimirTablero				;
+			lbra			turno_turno_sinMensajesError		;
+											;
+											;
+	turno_turno_mensajeErrorColumnaLlena:						;	
+											;
+			lbsr			clrscr					;
+			puls			y					;	
+			pshs			y	; Cargamos para			;
+							; imprimir tablero		;
+											;
+			lbsr			imprimirTablero				;
+			leax			sTurno_MensajeErrorColumnaLlena,pcr	;
+			lbsr			print					;
+			lbra			turno_turno_sinMensajesError		;
+											;
+											;
+	turno_turno_mensajeErrorFueraRango:						;
+											;
+			lbsr			clrscr					;
+			puls			y					;	
+			pshs			y	; Cargamos para			;
+							; imprimir tablero		;
+											;
+			lbsr			imprimirTablero				;
+			leax			sTurno_MensajeErrorFueraRango,pcr	;
+			lbsr			print					;
+											;
+	turno_turno_sinMensajesError:							;
+											;
+			lbsr			mostrarJugadorTurno			;
+			leax			sTurno_PromptRecogerColumna,pcr		;
+			lbsr			print					;
+											;
+		lbsr			getchar						;
+		suba			#0x30						;
+											;
+		cmpa			#1						;
+		bhs			turno_turno_test2				;
+		bra			turno_turno_mensajeErrorFueraRango		;
+											;
+											;
+	turno_turno_test2:								; do
+											;	PedirColumna
+		cmpa			NumCols						; 	if (Columna < 1 || columna > NumCols)
+		bhi			turno_turno_mensajeErrorFueraRango		;		mensajeFueraRango
+		bra			turno_turno_test3				;		continuar
+											;	if (columnaLlena)
+	turno_turno_test3:								;		mensajeColumaLlena
+											;		continuar
+		puls			x						; while (columna < 1 || 
+		pshs			x						; columna > NumCols || columnaLlena)
+		tfr			a,b						;
+		lbsr			columnaLlena					;
+		beq			turno_turno_mensajeErrorColumnaLlena		;
+		bra			turno_turno_finWhile				;
+											;
+											;
+											;
+											;
+											;
+	turno_turno_finWhile:							;;;;;;;;;
 	
 		puls			x
 		puls			d
