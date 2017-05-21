@@ -303,13 +303,14 @@ imprimirTablero:
 		
 		ldb			#1				;;;;;;;;; 
 		stb			,s					;
-		ldx			#sImprimirTablero_MedioBaseTablero			;
+		ldx			#sImprimirTablero_MedioBaseTablero	;
 										;
 	c4io_imprimirTablero_for4:						;
 		ldb			,s					;
 		cmpb			NumCols					;
 		beq			c4io_imprimirTablero_finFor4		; 
-										;	for (	counter = 1, X = &sImprimirTablero_MedioBaseTablero; 
+										;	for (	counter = 1, 
+										;               X = sImprimirTablero_MedioBaseTablero; 
 								;;;;;;;;;Cuerpo	;		counter < NumCols; 
 			jsr			print			;del	;		++counter	)
 								;;;;;;;;;bucle	;		
@@ -326,7 +327,7 @@ imprimirTablero:
 		jsr			println
 
 		ldx			#sImprimirTablero_ColorOriginal	; Reseteamos el sImprimirTablero_Color
-		jsr			print		; del terminal
+		jsr			print		                ; del terminal
 		
 		tfr			s,d	; Eliminamos el espacio
 		incb				; para el contador
@@ -382,24 +383,24 @@ imprimirFila:
 									;;;;;;;;;	; {
 										;	;	imprime (fila[counter-1])
 			lda			,y+				;Cuerpo	;	imprime (sImprimirTablero_MedioFila)
-			cmpa			FichaJugador1				
+			cmpa			FichaJugador1			;       ;
 			bne			c4io_imprimirFila_otraFicha	;del	; }
-			ldx			#sImprimirTablero_ColorRojo			;bucle	;
+			ldx			#sImprimirTablero_ColorRojo	;bucle	;
 			jsr			print				;	;
 			bra			c4io_imprimirFila_imprimirFicha	;	;
 										;	;
 		c4io_imprimirFila_otraFicha:					;	;
 										;	;
-			ldx			#sImprimirTablero_ColorAmarillo			;	;
+			ldx			#sImprimirTablero_ColorAmarillo	;	;
 			jsr			print				;	;
 										;	;
 		c4io_imprimirFila_imprimirFicha:				;	;
 										;	;
 			sta			$Pantalla			;	;
 										;	;
-			ldx			#sImprimirTablero_ColorAzul			;	;
+			ldx			#sImprimirTablero_ColorAzul	;	;
 			jsr			print				;	;
-			ldx			#sImprimirTablero_MedioFila			;	;
+			ldx			#sImprimirTablero_MedioFila	;	;
 			jsr			print			;;;;;;;;;	;
 											;
 		inc			,s						;
@@ -409,7 +410,7 @@ imprimirFila:
 	
 	
 	
-		lda			,y			;; Imprime el ultimo dato de la fila
+		lda			,y ; Imprime el ultimo dato de la fila
 		cmpa			FichaJugador1
 		bne			c4io_imprimirFila_ultimo_otraFicha
 		ldx			#sImprimirTablero_ColorRojo
@@ -427,7 +428,7 @@ imprimirFila:
 		
 		ldx			#sImprimirTablero_ColorAzul
 		jsr			print
-		ldx			#sImprimirTablero_FinFila		;; Imprime el final de la fila
+		ldx			#sImprimirTablero_FinFila ; Imprime el final de la fila
 		jsr			println
 		
 		
@@ -558,8 +559,8 @@ mostrarJugadorTurno:
 			sta			$Pantalla				; if (fichaTurno = FichaJugador1)
 			leax			sImprimirTablero_ColorOriginal,pcr	;	imprimir(FichaJugador1)
 			lbsr			print					; else	
-			lda			#')					;	imprimir(FichaJugador2)
-			sta			$Pantalla				;
+			lda			#')					
+			sta			$Pantalla				;	imprimir(FichaJugador2)
 											;
 			bra			c4io_mostrarJugadorTurno_finIf		; 
 											;
@@ -572,7 +573,7 @@ mostrarJugadorTurno:
 											;
 			lda			#'(					;
 			sta			$Pantalla				;
-			leax			sImprimirTablero_ColorAmarillo,pcr	;	;
+			leax			sImprimirTablero_ColorAmarillo,pcr	;
 			lbsr			print					;
 			lda			FichaJugador2				;
 			sta			$Pantalla				;
