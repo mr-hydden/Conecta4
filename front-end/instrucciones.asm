@@ -1,25 +1,72 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;			instrucciones.asm			;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Modulo con la subrutina de imprimir instrucciones. Escindido	;
+; de c4io.asm por su extension.					;
+; 								;
+; Autor: Samuel Gomez Sanchez y Miguel Diaz Galan		;
+;								;
+; Subrutinas:	mostrarInstrucciones				;
+;		mostrarPrompt					;
+;								;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;		
+		
+		
+		
+		
+		
+		; Zona configuracion de memoria
+;--------------------------------------------------------------------;	
+
 		.module			instrucciones   
 		   
-		.area			_INSTRUCCIONES   
-		   
+		.area			_INSTRUCCIONES  
+		
+		;>>>> Etiquetas globales internas <<<<
+			   
+		.globl			mostrarInstrucciones
+		
+		;------------------------------------;
+		
+		
+		;>>>> Etiquetas globales externas <<<<
+			   
 		.globl			imprimirTablero
 		.globl			print  
 		.globl			println
-		   
-		.globl			mostrarInstrucciones
-		.globl			clrscrAscii
+
+		.globl			clrscr
 		.globl			getchar
-		   
-		   
+		
+		;------------------------------------;
+
+;--------------------------------------------------------------------;
+		; Fin zona configuracion memoria
+		
+		
+		
+		
+		
+		
 		; Inicio definicion de constantes
 ;--------------------------------------------------------------------;												
 			
 		.include		"include.txt"
 
 ;--------------------------------------------------------------------;
-		; Fin definicion de constantes		   
-		   
-   
+		; Fin definicion de constantes
+		
+		
+		
+		
+		
+		
+		; Objetos subrutinas
+;--------------------------------------------------------------------;	
+		;>>>> Objetos de mostrarInstrucciones <<<<
+		
+		; >>>> Constantes <<<<
+
 sMostrarInstrucciones_Superior1:   
    
 		.ascii			"			CONECTA 4\n"   
@@ -103,114 +150,162 @@ sMostrarInstrucciones_Imagen3:
 		.ascii			" O0O   "
 		.ascii			" 0O0O  "
 		.ascii			"00O0OOO"
+
+		;------------------------------------;				 
+		; Fin objetos mostrarInstrucciones		
 		
+		
+		;>>>> Objetos de mostrarPrompt <<<<
+		
+		; >>>> Constantes <<<<
 				
-sMostrarInstrucciones_Prompt:
+sMostrarPrompt_Prompt:
 		.asciz			"Pulse una tecla para continuar..."
 		
-sMostrarInstrucciones_UpLineChar:
+sMostrarPrompt_UpLineChar:
 		.asciz			"\033[F\033[F                                  "
+		
+		;------------------------------------;				 
+		; Fin objetos mostrarPrompt
+		
+;--------------------------------------------------------------------;	
+		; Fin objetos subrutinas
+		
+		
+		
+		
 		
 		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;			mostrarInstrucciones				;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Imprime un las instrucciones con el formato adecuado			;
+; Imprime las instrucciones con el formato adecuado			;
 ;									;
 ; Input: -								;
-; Output: $Pantalla							;
+; Output: pantalla							;
 ;									;
-; Registros afectados: CC					    	;
-; Flags afectados: 	|E|F|H|I|N|Z|V|C|				;
-;		   	| | | | |X|X|0| |		     		;
+; Registros afectados: -					    	;
 ;								    	;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;		
 		
 		
 mostrarInstrucciones:
 
-		pshs			y,x,d
+		pshs			y,x,d,cc
 		
-		jsr			clrscrAscii
+		lbsr			clrscr
+									;;;;;;;;;
+		ldx			#sMostrarInstrucciones_Superior1 	; Mostramos mensaje 1
+		lbsr			print					;
+										;
+		lbsr			mostrarPrompt			;;;;;;;;;
 		
-		ldx			#sMostrarInstrucciones_Superior1
-		jsr			print
 		
-		ldx			#sMostrarInstrucciones_Prompt
-		jsr			print
-		jsr			getchar
+									;;;;;;;;;
+		ldx			#sMostrarInstrucciones_Superior2	; Mostramos mensaje 2
+		lbsr			print					;
+										;
+		lbsr			mostrarPrompt			;;;;;;;;;
+		
+		
+		
+								;;;;;;;;;;;;;;;;;;;;;;;;;
+									;;;;;;;;;	;
+										;	;
+		ldx			#sMostrarInstrucciones_MensajeImagen1	;	;
+		lbsr			println					;	;
+		ldy			#sMostrarInstrucciones_Imagen1		;	;
+		lbsr			imprimirTablero				;	;
 		lda			#'\n
-		sta			$Pantalla
-		ldx			#sMostrarInstrucciones_UpLineChar
-		jsr			println
-
-		ldx			#sMostrarInstrucciones_Superior2
-		jsr			print
-		
-		ldx			#sMostrarInstrucciones_Prompt
-		jsr			print
-		jsr			getchar
+		sta			$Pantalla				;	;
+		sta			$Pantalla				;	;
+		sta			$Pantalla				;	;
+										;	; Mostramos los ejemplos
+		lbsr			mostrarPrompt			;;;;;;;;;	; de posiciones ganadoras
+											;
+											;
+											;
+									;;;;;;;;;	;
+										;	;
+		ldx			#sMostrarInstrucciones_MensajeImagen2	;	;
+		lbsr			println					;	;
+		ldy			#sMostrarInstrucciones_Imagen2		;	;
+		lbsr			imprimirTablero				;	;
+		lda			#'\n					
+		sta			$Pantalla				;	;
+		sta			$Pantalla				;	;
+		sta			$Pantalla				;	;
+										;	;
+		lbsr			mostrarPrompt			;;;;;;;;;	;
+											;
+											;
+											;
+									;;;;;;;;;	;
+										;	;
+		ldx			#sMostrarInstrucciones_MensajeImagen3	;	;
+		lbsr			println					;	;
+		ldy			#sMostrarInstrucciones_Imagen3		;	;
+		lbsr			imprimirTablero				;	;
 		lda			#'\n
-		sta			$Pantalla
-		ldx			#sMostrarInstrucciones_UpLineChar
-		jsr			println
+		sta			$Pantalla				;	;
+		sta			$Pantalla				;	;
+										;	;
+		lbsr			mostrarPrompt			;;;;;;;;;	;
+								;;;;;;;;;;;;;;;;;;;;;;;;;
+								
+								
+									;;;;;;;;;
+		ldx			#sMostrarInstrucciones_Inferior		; Mostramos mensaje 3
+		lbsr			print					;
+										;
+		lbsr			mostrarPrompt			;;;;;;;;;
 		
-		ldx			#sMostrarInstrucciones_MensajeImagen1
-		jsr			println
-		ldy			#sMostrarInstrucciones_Imagen1
-		jsr			imprimirTablero
-		lda			#'\n
-		sta			$Pantalla
-		sta			$Pantalla
-		sta			$Pantalla
-		
-		ldx			#sMostrarInstrucciones_Prompt
-		jsr			print
-		jsr			getchar
-		lda			#'\n
-		sta			$Pantalla
-		ldx			#sMostrarInstrucciones_UpLineChar
-		jsr			println
-		
-		ldx			#sMostrarInstrucciones_MensajeImagen2
-		jsr			println
-		ldy			#sMostrarInstrucciones_Imagen2
-		jsr			imprimirTablero
-		lda			#'\n
-		sta			$Pantalla
-		sta			$Pantalla
-		sta			$Pantalla
-		
-		ldx			#sMostrarInstrucciones_Prompt
-		jsr			print
-		jsr			getchar
-		lda			#'\n
-		sta			$Pantalla
-		ldx			#sMostrarInstrucciones_UpLineChar
-		jsr			println
-		
-		ldx			#sMostrarInstrucciones_MensajeImagen3
-		jsr			println
-		ldy			#sMostrarInstrucciones_Imagen3
-		jsr			imprimirTablero
-		lda			#'\n
-		sta			$Pantalla
-		sta			$Pantalla
-		
-		ldx			#sMostrarInstrucciones_Inferior
-		jsr			print
-		
-		ldx			#sMostrarInstrucciones_Prompt
-		jsr			print
-		jsr			getchar
-		lda			#'\n
-		sta			$Pantalla
-		ldx			#sMostrarInstrucciones_UpLineChar
-		jsr			println
-		
-		puls			y,x,d
+		puls			y,x,d,cc
 		rts
 		
 ;--------------------------------------------------------------------;
 		; Fin mostrarInstrucciones		
+		
+		
+		
+		
+		
+		
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;				mostrarPrompt				;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Imprime el prompt de "Pulsar tecla para continuar"			;
+;									;
+; Input: -								;
+; Output: pantalla							;
+;									;
+; Registros afectados: -					    	;
+;								    	;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+mostrarPrompt:
+
+		pshs			x,a,cc
+		
+		ldx			#sMostrarPrompt_Prompt
+		lbsr			print
+		lbsr			getchar
+		
+		lda			#'\n
+		sta			$Pantalla
+		
+		ldx			#sMostrarPrompt_UpLineChar
+		lbsr			println
+		
+		puls			x,a,cc
+		
+		rts
+;--------------------------------------------------------------;
+		; Fin mostrarPrompt
+		
+		
+		
+		
+		
+		
 		

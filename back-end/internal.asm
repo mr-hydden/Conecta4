@@ -1,3 +1,27 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;			internal.asm				;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Modulo de herramientas utilizadas en el contexto del juego.	;
+; Contiene subrutinas para obtener la direccion de memoria de 	;
+; una ficha del tablero, calcular la fila o la columna de una	;
+; posicion dada en el tablero, comprobar si una columna esta	;
+; llena, etc.							;
+; 								;
+; Autor: Samuel Gomez Sanchez y Miguel Diaz Galan		;
+;								;
+; Subrutinas:	ldaFila						;
+;		ldaColumna					;
+;		posicionij					;
+;		generarTablero					;
+;		columnaLlena					;
+;		tableroLleno					;
+;								;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;		
+
+		
+		
+		
+		
 		; Zona configuracion de memoria
 ;--------------------------------------------------------------------;		
 		.module			internal

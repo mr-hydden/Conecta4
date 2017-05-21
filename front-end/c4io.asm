@@ -1,3 +1,25 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;				c4io.asm			;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Modulo de subrutinas de entrada/salida en el contexto del	;
+; juego. Contiene el codigo para mostrar el tablero, el menu 	;
+; del juego, y diferentes mensajes al usuario final.		;
+; 								;
+; Autor: Samuel Gomez Sanchez y Miguel Diaz Galan		;
+;								;
+; Subrutinas:	imprimirTablero					;
+;		imprimirFila					;
+;		mostrarMenu					;
+;		mostrarJugadorTurno				;
+;		mostrarMensajeGanador				;
+;		mostrarMensajeEmpate				;
+;								;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+			
+			
+			
+			
+			
 			; Zona configuracion de memoria
 ;--------------------------------------------------------------------;		
 		.module			c4io

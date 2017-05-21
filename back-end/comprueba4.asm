@@ -1,3 +1,25 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;			comprueba4.asm				;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Modulo de funciones de alto nivel para comprobar la existencia;
+; de una posicion de 4 en raya. Empleando las herramientas de	;
+; comprueba4-bajoNivel.asm, estas subrutinas realizan un	;
+; analisis completo y eficiente del tablero en busca de un 4	;
+; en raya, dada una posicion de referencia.			;
+; 								;
+; Autor: Samuel Gomez Sanchez y Miguel Diaz Galan		;
+;								;
+; Subrutinas:	comprueba4horizontal				;
+;		comprueba4vertical				;
+;		comprueba4diagonal				;
+;		comprueba4					;
+;								;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;		
+		
+		
+		
+		
+		
 		; Zona configuracion de memoria
 ;--------------------------------------------------------------------;		
 		.module			comprueba4

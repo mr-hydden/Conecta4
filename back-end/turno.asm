@@ -1,3 +1,21 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;			turno.asm				;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Modulo de subrutinas de operaciones a realizar durante un 	;
+; turno en la partida. 						;
+; 								;
+; Autor: Samuel Gomez Sanchez y Miguel Diaz Galan		;
+;								;
+; Subrutinas:	actualizarFichaTurno				;
+;		turno						;
+;								;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;	
+		
+		
+		
+		
+		
+		
 		; Zona configuracion de memoria
 ;--------------------------------------------------------------------;		
 		.module			turno

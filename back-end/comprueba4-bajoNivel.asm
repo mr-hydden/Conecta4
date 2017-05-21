@@ -1,3 +1,30 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;		comprueba4-bajoNivel.asm			;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Modulo de funciones de bajo nivel para determinar si se ha 	;
+; producido un cuatro en raya. Esta capa trabaja directamente	;
+; sobre los datos en memoria, y proporciona una capa de		;
+; de abstraccion para las funciones del modulo comprueba4.asm	;
+; 								;
+; Autor: Samuel Gomez Sanchez y Miguel Diaz Galan		;
+;								;
+; Subrutinas:	comprueba4filaDerecha				;
+;		comprueba4filaIzquierda				;
+;		comprueba4columnaAbajo				;
+;		comprueba4columnaArriba				;
+;		comprueba4diagonalAbajoDerecha			;
+;		comprueba4diagonalAbajoIzquierda		;
+;		comprueba4diagonalArribaDerecha			;
+;		comprueba4diagonalArribaIzquierda		;
+;		ejecutarDiagPosibleCodigoA			;
+;		codificaAdiagPosible				;
+;								;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;		
+		
+		
+		
+		
+		
 		; Zona configuracion de memoria
 ;--------------------------------------------------------------------;		
 		.module			comprueba4-bajoNivel
